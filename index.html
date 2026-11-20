@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="meta-page-title">Rumah by Dinakara — Foto Keluarga Hangat di Rumah (Yogyakarta)</title>
+  <meta id="meta-desc" name="description" content="Sesi dokumentasi foto keluarga natural dan intim tanpa flash di kenyamanan rumah Anda bersama Dinakara Visual Yogyakarta." />
+
+  <!-- Open Graph / WhatsApp Share Preview -->
+  <meta id="og-title" property="og:title" content="Rumah by Dinakara — Sesi Foto Keluarga Hangat di Rumah" />
+  <meta id="og-desc" property="og:description" content="Abadikan momen jujur bersama si kecil tanpa flash & tanpa terburu-buru di rumah Anda. Area Yogyakarta & sekitarnya." />
+  <meta id="og-image" property="og:image" content="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=80" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rumah.bydinakara.com" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-base: #F3F6F4;
+      --bg-hero-left: linear-gradient(155deg, #E5EFE9 0%, #EEF4F0 52%, #F3F6F4 100%);
+      --forest-950: #14281E;
+      --forest-900: #1C3528;
+      --forest-800: #264636;
+      --forest-700: #335C47;
+      --forest-50: #EDF3EF;
+      --text-main: #16261E;
+      --text-muted: #52635A;
+      --border-soft: rgba(28, 53, 40, 0.12);
+      --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --serif-italic: 'Instrument Serif', Georgia, serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg-base); color: var(--text-main); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg-base); overflow-x: hidden; }
+    .is-hidden { display: none !important; }
+
+    /* HERO SPLIT */
+    .hero-wrapper {
+      position: relative;
+      display: grid;
+      grid-template-columns: 52% 48%;
+      min-height: 92vh;
+      background: var(--bg-hero-left);
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.25rem 4.5rem 3.5rem 5rem;
+      z-index: 2;
+    }
+    .brand-bar { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-logo-box { display: inline-flex; align-items: center; justify-content: center; height: 36px; }
+    .brand-logo-box img { max-height: 36px; max-width: 140px; object-fit: contain; display: block; }
+    .brand-logo-fallback {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--forest-900); color: #F4F8F5;
+      font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em;
+    }
+    .brand-divider { width: 1px; height: 20px; background: rgba(28, 53, 40, 0.22); }
+    .brand-sub { font-size: 0.88rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.01em; }
+
+    .hero-content { max-width: 540px; margin: auto 0; padding: 2.5rem 0; }
+    .hero-title {
+      font-family: var(--sans);
+      font-size: clamp(2.45rem, 4.1vw, 3.65rem);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.035em;
+      color: var(--forest-950); margin-bottom: 1.35rem;
+    }
+    .hero-title em {
+      font-family: var(--serif-italic); font-style: italic; font-weight: 400;
+      font-size: 1.12em; letter-spacing: -0.01em; color: var(--forest-700); padding-right: 0.06em;
+    }
+    .hero-subtitle { font-size: 1.02rem; line-height: 1.68; color: var(--text-muted); margin-bottom: 2rem; max-width: 480px; }
+
+    .cta-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem; margin-bottom: 2.25rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, var(--forest-900) 0%, var(--forest-700) 100%);
+      color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      padding: 0.92rem 1.7rem; border-radius: 999px;
+      box-shadow: 0 10px 24px -8px rgba(28, 53, 40, 0.45);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(28, 53, 40, 0.55); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(8px);
+      color: var(--forest-900); border: 1px solid var(--border-soft);
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      padding: 0.9rem 1.55rem; border-radius: 999px;
+      transition: background 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-secondary:hover { background: #FFFFFF; transform: translateY(-2px); }
+
+    .highlights-list {
+      display: flex; flex-wrap: wrap; gap: 1.25rem 1.75rem;
+      padding-top: 1.35rem; border-top: 1px solid var(--border-soft);
+    }
+    .highlight-item { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.86rem; font-weight: 600; color: var(--forest-800); }
+    .highlight-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(28, 53, 40, 0.08); color: var(--forest-900); flex-shrink: 0;
+    }
+
+    /* RIGHT FULL-BLEED SLIDESHOW WITH SEAMLESS BOTTOM DISSOLVE */
+    .hero-right {
+      position: relative; width: 100%; height: 100%; min-height: 540px;
+      border-radius: 0; overflow: hidden; background: #DCE5DF;
+    }
+    .slide-img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transform: scale(1.03);
+      transition: opacity 1.1s ease-in-out, transform 6.5s ease-out;
+    }
+    .slide-img.active { opacity: 1; transform: scale(1); }
+    .hero-right-fade {
+      position: absolute; left: 0; right: 0; bottom: -2px; height: 36%; pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(243, 246, 244, 0) 0%,
+        rgba(243, 246, 244, 0.25) 42%,
+        rgba(243, 246, 244, 0.78) 78%,
+        #F3F6F4 100%
+      );
+      z-index: 3;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials-section { max-width: 1240px; margin: 0 auto; padding: 4.5rem 3rem 5.5rem; }
+    .section-eyebrow {
+      font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--forest-700); margin-bottom: 0.65rem;
+    }
+    .section-heading {
+      font-family: var(--sans); font-size: clamp(1.95rem, 3.1vw, 2.75rem);
+      font-weight: 800; line-height: 1.12; letter-spacing: -0.03em;
+      color: var(--forest-950); margin-bottom: 2.5rem;
+    }
+    .section-heading em {
+      font-family: var(--serif-italic); font-style: italic; font-weight: 400;
+      font-size: 1.12em; color: var(--forest-700);
+    }
+    .testimonials-row { display: flex; gap: 1.15rem; height: 410px; }
+    .testi-card {
+      position: relative; flex: 1 1 0%; min-width: 0; border-radius: 22px; overflow: hidden;
+      cursor: pointer; background: #1C3528;
+      transition: flex 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s ease;
+    }
+    .testi-card:hover, .testi-card.is-expanded { flex: 2.35 1 0%; }
+    .testi-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .testi-card:hover .testi-bg, .testi-card.is-expanded .testi-bg { transform: scale(1.05); }
+    .testi-default-shade {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(17, 34, 25, 0.78) 0%, rgba(17, 34, 25, 0.15) 45%, rgba(17, 34, 25, 0) 100%);
+      transition: opacity 0.4s ease;
+    }
+    .testi-hover-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, rgba(20, 40, 30, 0.91) 0%, rgba(34, 64, 49, 0.94) 100%);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .testi-card:hover .testi-hover-overlay, .testi-card.is-expanded .testi-hover-overlay { opacity: 1; }
+    .testi-inner {
+      position: relative; z-index: 2; height: 100%;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 1.5rem; color: #FFFFFF;
+    }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 999px; object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.75); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .testi-quote-box {
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.35s ease 0.08s, transform 0.4s ease 0.08s;
+      margin: auto 0; padding: 0.75rem 0;
+    }
+    .testi-card:hover .testi-quote-box, .testi-card.is-expanded .testi-quote-box { opacity: 1; transform: translateY(0); }
+    .testi-quote { font-size: 0.94rem; line-height: 1.62; color: rgba(244, 248, 245, 0.95); font-weight: 400; }
+    .testi-footer { padding-top: 0.5rem; }
+    .testi-family { font-family: var(--sans); font-size: 0.98rem; font-weight: 700; color: #FFFFFF; letter-spacing: -0.01em; }
+    .testi-session { font-size: 0.78rem; color: rgba(220, 232, 225, 0.82); margin-top: 0.2rem; }
+
+    /* FOOTER */
+    .site-footer { border-top: 1px solid var(--border-soft); padding: 2rem 3rem; text-align: center; font-size: 0.84rem; color: var(--text-muted); }
+
+    /* FLOATING ADMIN BUTTON */
+    .admin-fab {
+      position: fixed; right: 1.35rem; bottom: 1.35rem; z-index: 40;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(20, 40, 30, 0.88); backdrop-filter: blur(10px);
+      color: #F4F8F5; border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 0.65rem 1.05rem; border-radius: 999px;
+      font-family: var(--sans); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      box-shadow: 0 10px 25px rgba(15, 30, 22, 0.25);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+    .admin-fab:hover { transform: translateY(-2px); background: var(--forest-950); }
+
+    /* MODAL ADMIN DASHBOARD */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(15, 29, 22, 0.55); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 1.25rem;
+    }
+    .modal-window {
+      width: 100%; max-width: 820px; max-height: 88vh;
+      background: #FFFFFF; border-radius: 22px;
+      box-shadow: 0 28px 70px rgba(12, 26, 19, 0.35);
+      border: 1px solid rgba(28, 53, 40, 0.12);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-titlebar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 1.25rem; background: #F4F7F5; border-bottom: 1px solid #E2EAE5;
+    }
+    .window-dots { display: flex; gap: 0.42rem; }
+    .window-dots span { width: 11px; height: 11px; border-radius: 999px; }
+    .dot-red { background: #FF5F56; }
+    .dot-yellow { background: #FFBD2E; }
+    .dot-green { background: #27C93F; }
+    .modal-title { font-size: 0.88rem; font-weight: 700; color: var(--forest-950); }
+    .modal-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .btn-win {
+      border: 1px solid #D5E0D9; background: #FFFFFF; color: var(--forest-900);
+      font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+      padding: 0.38rem 0.72rem; border-radius: 8px; cursor: pointer;
+    }
+    .btn-win:hover { background: #EDF3EF; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+
+    /* PIN LOCK SCREEN */
+    .pin-screen { max-width: 360px; margin: 2rem auto; text-align: center; }
+    .pin-badge {
+      width: 52px; height: 52px; margin: 0 auto 1rem; border-radius: 16px;
+      background: var(--forest-50); color: var(--forest-900);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pin-screen h3 { font-size: 1.22rem; font-weight: 800; color: var(--forest-950); margin-bottom: 0.4rem; }
+    .pin-screen p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .pin-input {
+      width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #CFDCD4; border-radius: 12px;
+      font-size: 1.15rem; text-align: center; letter-spacing: 0.35em;
+      font-family: var(--sans); margin-bottom: 0.85rem; outline: none;
+    }
+    .pin-input:focus { border-color: var(--forest-800); box-shadow: 0 0 0 3px rgba(38, 70, 54, 0.14); }
+    .btn-full-primary {
+      width: 100%; padding: 0.82rem 1rem; border: none; border-radius: 12px;
+      background: var(--forest-900); color: #FFFFFF;
+      font-family: var(--sans); font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-bottom: 0.6rem;
+    }
+    .btn-full-secondary {
+      width: 100%; padding: 0.78rem 1rem; border: 1px solid #D5E0D9; border-radius: 12px;
+      background: #FFFFFF; color: var(--forest-900);
+      font-family: var(--sans); font-weight: 600; font-size: 0.86rem; cursor: pointer;
+    }
+
+    /* ADMIN TABS & FORMS */
+    .admin-tabs {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      background: #F2F6F3; padding: 0.35rem; border-radius: 14px; margin-bottom: 1.35rem;
+    }
+    .tab-btn {
+      flex: 1 1 auto; border: none; background: transparent; padding: 0.62rem 0.85rem;
+      border-radius: 10px; font-family: var(--sans); font-size: 0.8rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;
+    }
+    .tab-btn.active { background: var(--forest-900); color: #FFFFFF; }
+    .form-card { border: 1px solid #E3ECE6; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; background: #FAFDFB; }
+    .form-label {
+      display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--forest-800); margin-bottom: 0.45rem;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 0.7rem 0.85rem; border: 1px solid #CFDCD4; border-radius: 10px;
+      font-family: var(--sans); font-size: 0.88rem; color: var(--text-main);
+      background: #FFFFFF; margin-bottom: 0.85rem;
+    }
+    .form-textarea { min-height: 78px; resize: vertical; }
+    .form-hint { font-size: 0.76rem; color: var(--text-muted); margin-top: -0.55rem; margin-bottom: 0.85rem; line-height: 1.45; }
+    .btn-save-tab {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%; padding: 0.85rem 1.2rem; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--forest-900), var(--forest-700));
+      color: #FFFFFF; font-family: var(--sans); font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-danger-sm {
+      border: 1px solid #F3C6C6; background: #FFF5F5; color: #B42318;
+      padding: 0.42rem 0.75rem; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    }
+
+    /* WA SHARE PREVIEW */
+    .wa-preview-card { border: 1px solid #D7E2DC; border-radius: 14px; overflow: hidden; background: #E7F8E9; max-width: 380px; margin-top: 0.5rem; }
+    .wa-preview-img { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .wa-preview-body { padding: 0.75rem 0.95rem; background: #DCF8C6; }
+    .wa-preview-domain { font-size: 0.7rem; text-transform: uppercase; color: #5A7263; margin-bottom: 0.2rem; }
+    .wa-preview-title { font-size: 0.86rem; font-weight: 700; color: #16261E; margin-bottom: 0.2rem; }
+    .wa-preview-desc { font-size: 0.77rem; color: #465B4F; line-height: 1.4; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%) translateY(20px);
+      background: var(--forest-950); color: #FFFFFF; padding: 0.72rem 1.3rem;
+      border-radius: 999px; font-size: 0.84rem; font-weight: 600;
+      opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 200;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 960px) {
+      .hero-wrapper { grid-template-columns: 1fr; }
+      .hero-left { padding: 1.75rem 1.5rem 2.25rem; }
+      .hero-right { min-height: 400px; }
+      .testimonials-section { padding: 3rem 1.5rem 4rem; }
+      .testimonials-row { flex-direction: column; height: auto; }
+      .testi-card { min-height: 280px; }
+      .testi-card.is-expanded { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO SPLIT -->
+  <header class="hero-wrapper">
+    <div class="hero-left">
+      <div class="brand-bar">
+        <div class="brand-logo-box" id="brand-logo-container">
+          <span class="brand-logo-fallback">r.</span>
+        </div>
+        <span class="brand-divider"></span>
+        <span class="brand-sub" id="render-brand-sub">by Dinakara Visual</span>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title" id="render-hero-title">
+          Merekam Hangatnya <em>Cerita</em> di Ruang Paling <em>Nyaman.</em>
+        </h1>
+        <p class="hero-subtitle" id="render-hero-subtitle">
+          Sesi dokumentasi foto keluarga natural dan intim di rumah Anda. Tanpa pose kaku, tanpa lampu kilat yang mengganggu si kecil, mengalir apa adanya.
+        </p>
+
+        <div class="cta-group">
+          <a href="/booking" class="btn-primary" id="render-booking-btn">
+            <span id="render-booking-label">Booking Sesi</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="https://wa.me/6289673859670" target="_blank" rel="noopener" class="btn-secondary" id="render-contact-btn">
+            <span id="render-contact-label">Kontak Kami</span>
+          </a>
+        </div>
+
+        <div class="highlights-list" id="render-highlights"></div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="hero-right" id="slideshow-container">
+      <div class="hero-right-fade"></div>
+    </div>
+  </header>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section">
+    <div class="section-eyebrow" id="render-testi-eyebrow">APA KATA KELUARGA</div>
+    <h2 class="section-heading" id="render-testi-heading">
+      Cerita <em>Hangat</em> dari Ruang Keluarga.
+    </h2>
+    <div class="testimonials-row" id="render-testimonials"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" id="render-footer-copy">
+    © 2026 Rumah by Dinakara Visual — Yogyakarta. Seluruh hak cipta dilindungi.
+  </footer>
+
+  <!-- FLOATING ADMIN BUTTON -->
+  <button type="button" class="admin-fab is-hidden" id="admin-fab" onclick="openAdminModal()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>Admin Dashboard</span>
+  </button>
+
+  <!-- POPUP ADMIN DASHBOARD -->
+  <div class="modal-backdrop is-hidden" id="admin-modal">
+    <div class="modal-window">
+      <div class="modal-titlebar">
+        <div class="window-dots">
+          <span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span>
+        </div>
+        <div class="modal-title">Admin Dashboard — Rumah by Dinakara</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-win is-hidden" id="btn-lock-admin" onclick="lockAdmin()">Kunci</button>
+          <button type="button" class="btn-win" onclick="closeAdminModal()">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- PIN SCREEN -->
+        <div class="pin-screen" id="admin-pin-screen">
+          <div class="pin-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Masuk Pengelola Konten</h3>
+          <p>Masukkan PIN Admin untuk mengelola halaman.</p>
+          <input type="password" id="admin-pin-input" class="pin-input" maxlength="32" placeholder="••••••" onkeydown="if(event.key==='Enter') verifyPin()" />
+          <button type="button" class="btn-full-primary" onclick="verifyPin()">Buka Dashboard</button>
+        </div>
+
+        <!-- WORKSPACE SCREEN -->
+        <div id="admin-workspace" class="is-hidden">
+          <div class="admin-tabs">
+            <button type="button" class="tab-btn active" data-tab="tab-1" onclick="switchTab('tab-1')">1. Teks & Logo</button>
+            <button type="button" class="tab-btn" data-tab="tab-2" onclick="switchTab('tab-2')">2. Highlight & Ikon</button>
+            <button type="button" class="tab-btn" data-tab="tab-3" onclick="switchTab('tab-3')">3. Link & Share WA</button>
+            <button type="button" class="tab-btn" data-tab="tab-4" onclick="switchTab('tab-4')">4. Slideshow Drive</button>
+            <button type="button" class="tab-btn" data-tab="tab-5" onclick="switchTab('tab-5')">5. Testimoni</button>
+          </div>
+
+          <!-- TAB 1: TEKS & LOGO -->
+          <div class="tab-panel" id="tab-1">
+            <div class="form-card">
+              <label class="form-label">Logo Brand (Pojok Kiri Atas)</label>
+              <input type="file" accept="image/*" id="input-logo-file" class="form-input" onchange="handleLogoUpload(event)" />
+              <div style="display:flex; gap:0.5rem; margin-bottom:0.85rem;">
+                <button type="button" class="btn-danger-sm" onclick="resetLogo()">Hapus Logo Kustom</button>
+              </div>
+
+              <label class="form-label">Teks Samping Logo</label>
+              <input type="text" id="input-brand-sub" class="form-input" />
+
+              <label class="form-label">Judul Utama Hero (Gunakan &lt;em&gt;kata&lt;/em&gt; untuk huruf miring)</label>
+              <textarea id="input-hero-title" class="form-textarea"></textarea>
+
+              <label class="form-label">Subjudul / Deskripsi Singkat Hero</label>
+              <textarea id="input-hero-subtitle" class="form-textarea"></textarea>
+
+              <label class="form-label">Label Kecil Bagian Testimoni</label>
+              <input type="text" id="input-testi-eyebrow" class="form-input" />
+
+              <label class="form-label">Judul Utama Testimoni (Mendukung &lt;em&gt;kata&lt;/em&gt;)</label>
+              <input type="text" id="input-testi-heading" class="form-input" />
+
+              <label class="form-label">Teks Copyright Footer</label>
+              <input type="text" id="input-footer-copy" class="form-input" />
+            </div>
+            <button type="button" class="btn-save-tab" onclick="saveSection('Teks & Logo')">Simpan Teks & Logo</button>
+          </div>
+
+          <!-- TAB 2: HIGHLIGHT & IKON -->
+          <div class="tab-panel is-hidden" id="tab-2">
+            <div id="admin-highlights-list"></div>
+            <button type="button" class="btn-full-secondary" style="margin-bottom:0.85rem;" onclick="addHighlightItem()">+ Tambah Poin Highlight</button>
+            <button type="button" class="btn-save-tab" onclick="saveSection('Highlight & Ikon')">Simpan Highlight & Ikon</button>
+          </div>
+
+          <!-- TAB 3: LINK & SHARE WA -->
+          <div class="tab-panel is-hidden" id="tab-3">
+            <div class="form-card">
+              <label class="form-label">Teks Tombol Utama (Booking)</label>
+              <input type="text" id="input-booking-label" class="form-input" />
+
+              <label class="form-label">URL Tujuan Booking</label>
+              <input type="text" id="input-booking-url" class="form-input" />
+
+              <label class="form-label">Teks Tombol Kedua (Kontak)</label>
+              <input type="text" id="input-contact-label" class="form-input" />
+
+              <label class="form-label">URL WhatsApp / Kontak Kami</label>
+              <input type="text" id="input-contact-url" class="form-input" />
+            </div>
+
+            <div class="form-card">
+              <label class="form-label">Judul Halaman di Tab Browser & Share Link WhatsApp</label>
+              <input type="text" id="input-og-title" class="form-input" oninput="updateWaPreview()" />
+
+              <label class="form-label">Deskripsi Singkat Share Link WhatsApp</label>
+              <textarea id="input-og-desc" class="form-textarea" oninput="updateWaPreview()"></textarea>
+
+              <label class="form-label">URL Gambar Thumbnail Share Link</label>
+              <input type="text" id="input-og-image" class="form-input" oninput="updateWaPreview()" />
+              <p class="form-hint">Catatan: Untuk link WhatsApp crawler statis saat pertama kali di-share, pastikan juga memperbarui tag <code>og:title</code>, <code>og:description</code>, dan <code>og:image</code> di bagian atas file <code>index.html</code> jika ingin permanen bagi bot WhatsApp.</p>
+
+              <label class="form-label">Pratinjau Kartu Link WhatsApp</label>
+              <div class="wa-preview-card">
+                <img id="wa-prev-img" class="wa-preview-img" src="" alt="Preview" />
+                <div class="wa-preview-body">
+                  <div class="wa-preview-domain">rumah.bydinakara.com</div>
+                  <div class="wa-preview-title" id="wa-prev-title"></div>
+                  <div class="wa-preview-desc" id="wa-prev-desc"></div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-save-tab" onclick="saveSection('Link & Share WA')">Simpan Link & Share WA</button>
+          </div>
+
+          <!-- TAB 4: SLIDESHOW GOOGLE DRIVE -->
+          <div class="tab-panel is-hidden" id="tab-4">
+            <div class="form-card">
+              <label class="form-label">URL Web App Google Apps Script (/exec)</label>
+              <input type="text" id="input-gas-url" class="form-input" placeholder="Diisi lewat DEFAULT_GAS_URL di index.html" readonly />
+              <p class="form-hint">Alamat backend dikunci di kode (DEFAULT_GAS_URL) demi keamanan; kolom ini hanya penunjuk status.</p>
+
+              <label class="form-label">ID Folder Google Drive (Foto Slideshow Kanan)</label>
+              <input type="text" id="input-drive-folder" class="form-input" placeholder="Contoh: 1A2B3C4D5E6F7G8H9I0J" />
+              <p class="form-hint">Panduan ukuran ringan: gunakan <strong>5–8 foto</strong> (maks. 12 foto), sisi panjang <strong>1600 px</strong>, berat <strong>180–350 KB/foto</strong> (WebP / JPEG Caesium).</p>
+
+              <label class="form-label">Durasi Pergantian Slide (Detik)</label>
+              <input type="number" id="input-slide-interval" class="form-input" min="2" max="15" />
+
+              <label class="form-label">Ubah PIN Admin (Opsional, min. 6 karakter)</label>
+              <input type="password" id="input-new-pin" class="form-input" placeholder="Kosongkan jika tidak diubah (min. 6 karakter)" />
+            </div>
+            <button type="button" class="btn-save-tab" onclick="saveSection('Pengaturan Slideshow & Backend')">Simpan Pengaturan Slideshow</button>
+          </div>
+
+          <!-- TAB 5: TESTIMONI -->
+          <div class="tab-panel is-hidden" id="tab-5">
+            <div id="admin-testimonials-list"></div>
+            <button type="button" class="btn-full-secondary" style="margin-bottom:0.85rem;" onclick="addTestimonialItem()">+ Tambah Kartu Testimoni</button>
+            <button type="button" class="btn-save-tab" onclick="saveSection('Semua Testimoni')">Simpan Semua Testimoni</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast-box"></div>
+
+  <script>
+    // WAJIB DIISI SEKALI: URL Web App Google Apps Script (berakhiran /exec) dari langkah di SETUP.md.
+    // Tanpa ini pengunjung tidak akan menerima perubahan dari dashboard (slideshow Drive, teks, testimoni).
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbxOuVbVW4zUXEsZu1NEWh0BAAa6WV-Tl3sOsKhQ2p8hDPSiBiZosikDoMFExAPRdZim/exec';
+
+    /* ===== PENGAMAN: semua data dari server / penyimpanan browser dianggap TIDAK DIPERCAYA ===== */
+    const GAS_RE = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
+    const cleanGas = (u) => (typeof u === 'string' && GAS_RE.test(u.trim())) ? u.trim() : '';
+    const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
+    // Hanya path internal (/booking) atau https:// -> javascript:, data:, http: ditolak
+    function safeHref(u, fallback) {
+      const v = String(u || '').trim();
+      if (/^\/(?![\/\\])[^\s]*$/.test(v) && v.length <= 300) return v;
+      try { const x = new URL(v); if (x.protocol === 'https:' && v.length <= 600) return x.href; } catch (e) {}
+      return fallback;
+    }
+    // Link berbagi Google Drive (file/d/ID, open?id=, uc?id=) otomatis diubah menjadi alamat gambar langsung.
+    // Syarat: file di Drive dibagikan "Siapa saja yang memiliki link" (Anyone with the link).
+    function driveToImg(u) {
+      const m = String(u || '').trim().match(/^https:\/\/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([A-Za-z0-9_-]{10,100})/);
+      return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w900' : String(u || '');
+    }
+    function safeImg(u, fallback) {
+      const v = driveToImg(u).trim();
+      if (/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= 200000) return v;
+      return safeHref(v, '') && /^https:/.test(v) ? v : (/^\/(?![\/\\])/.test(v) ? v : fallback);
+    }
+    // Teks boleh memuat <em>kata</em> saja; selainnya jadi teks biasa (tidak pernah di-parse sebagai HTML)
+    function setRichEm(el, text) {
+      el.textContent = '';
+      clip(text, 300).split(/(<em>[^<]{0,120}<\/em>)/gi).forEach(part => {
+        const m = part.match(/^<em>([^<]*)<\/em>$/i);
+        if (m) { const e = document.createElement('em'); e.textContent = m[1]; el.appendChild(e); }
+        else if (part) el.appendChild(document.createTextNode(part));
+      });
+    }
+    function sanitizeConfig(raw, base) {
+      const c = (raw && typeof raw === 'object') ? raw : {};
+      const out = { ...base };
+      ['brandSub','bookingLabel','contactLabel','testiEyebrow','footerCopy','ogTitle'].forEach(k => { if (typeof c[k] === 'string') out[k] = clip(c[k], 160); });
+      ['heroTitle','testiHeading'].forEach(k => { if (typeof c[k] === 'string') out[k] = clip(c[k], 300); });
+      ['heroSubtitle','ogDesc'].forEach(k => { if (typeof c[k] === 'string') out[k] = clip(c[k], 400); });
+      if (typeof c.bookingUrl === 'string') out.bookingUrl = safeHref(c.bookingUrl, base.bookingUrl);
+      if (typeof c.contactUrl === 'string') out.contactUrl = safeHref(c.contactUrl, base.contactUrl);
+      if (typeof c.ogImage === 'string') out.ogImage = safeImg(c.ogImage, base.ogImage);
+      if (typeof c.logoDataUrl === 'string') out.logoDataUrl = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(c.logoDataUrl) && c.logoDataUrl.length <= 150000 ? c.logoDataUrl : '';
+      if (typeof c.driveFolderId === 'string') out.driveFolderId = /^[A-Za-z0-9_-]{10,100}$/.test(c.driveFolderId.trim()) ? c.driveFolderId.trim() : '';
+      if (c.slideInterval !== undefined) out.slideInterval = Math.min(15, Math.max(2, Number(c.slideInterval) || 5));
+      if (Array.isArray(c.highlights)) out.highlights = c.highlights.slice(0, 8).filter(h => h && typeof h === 'object').map(h => ({ icon: ICON_LIBRARY[h.icon] ? h.icon : 'home', text: clip(h.text, 80) }));
+      if (Array.isArray(c.testimonials)) out.testimonials = c.testimonials.slice(0, 12).filter(t => t && typeof t === 'object').map(t => ({
+        family: clip(t.family, 80), session: clip(t.session, 100), quote: clip(t.quote, 500), photo: safeImg(t.photo, '')
+      }));
+      if (Array.isArray(c.fallbackSlides)) out.fallbackSlides = c.fallbackSlides.slice(0, 12).map(u => safeImg(u, '')).filter(Boolean);
+      out.gasUrl = cleanGas(base.gasUrl);   // alamat backend TIDAK PERNAH boleh datang dari data yang bisa diubah
+      return out;
+    }
+
+    const ICON_LIBRARY = {
+      'no-flash': {
+        label: 'Tanpa Flash / Kamera Aman Bayi',
+        svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/><line x1="2" y1="2" x2="22" y2="22"/></svg>'
+      },
+      'home': {
+        label: 'Rumah / Hangat',
+        svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'
+      },
+      'heart': {
+        label: 'Hati / Intim',
+        svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+      },
+      'shield': {
+        label: 'Privasi Terjaga',
+        svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+      },
+      'sparkles': {
+        label: 'Natural / Cahaya Alami',
+        svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>'
+      }
+    };
+
+    const DEFAULT_CONFIG = {
+      logoDataUrl: '',
+      brandSub: 'by Dinakara Visual',
+      heroTitle: 'Merekam Hangatnya <em>Cerita</em> di Ruang Paling <em>Nyaman.</em>',
+      heroSubtitle: 'Sesi dokumentasi foto keluarga natural dan intim di rumah Anda. Tanpa pose kaku, tanpa lampu kilat yang mengganggu si kecil, mengalir apa adanya.',
+      bookingLabel: 'Booking Sesi',
+      bookingUrl: '/booking',
+      contactLabel: 'Kontak Kami',
+      contactUrl: 'https://wa.me/6289673859670?text=Halo%20Rumah%20by%20Dinakara%2C%20saya%20ingin%20tanya%20jadwal%20foto%20keluarga',
+      highlights: [
+        { icon: 'no-flash', text: 'Tanpa Flash (Aman untuk Bayi)' },
+        { icon: 'home', text: 'Sesi Santai di Rumah' },
+        { icon: 'shield', text: 'Privasi Galeri Terjaga' }
+      ],
+      testiEyebrow: 'APA KATA KELUARGA',
+      testiHeading: 'Cerita <em>Hangat</em> dari Ruang Keluarga.',
+      footerCopy: '© 2026 Rumah by Dinakara Visual — Yogyakarta. Seluruh hak cipta dilindungi.',
+      ogTitle: 'Rumah by Dinakara — Foto Keluarga Hangat di Rumah (Yogyakarta)',
+      ogDesc: 'Abadikan momen jujur bersama si kecil tanpa flash & tanpa terburu-buru di rumah Anda. Area Yogyakarta & sekitarnya.',
+      ogImage: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=80',
+      gasUrl: DEFAULT_GAS_URL,
+      driveFolderId: '',
+      slideInterval: 5,
+      fallbackSlides: [
+        'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1400&q=82',
+        'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&w=1400&q=82',
+        'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1400&q=82'
+      ],
+      testimonials: [
+        {
+          family: 'Keluarga Mas Dimas & Mbak Rara',
+          session: 'Sesi Pagi di Rumah • Sleman',
+          photo: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80',
+          quote: '"Anak kami biasanya rewel kalau ketemu orang baru, tapi tim Rumah by Dinakara sabar banget dan nggak pakai flash sama sekali. Hasil fotonya jujur dan hangat banget."'
+        },
+        {
+          family: 'Keluarga Bapak Ardi & Ibu Nisa',
+          session: 'Cerita Kecil Si Bungsu • Bantul',
+          photo: 'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&w=900&q=80',
+          quote: '"Nggak terasa seperti sedang pemotretan. Kami cuma main di ruang tamu dan menyusui seperti biasa, tahu-tahu semua ekspresi kecilnya terekam rapi."'
+        },
+        {
+          family: 'Keluarga Mas Fajar & Mbak Tari',
+          session: 'Dokumentasi Akhir Pekan • Kota Jogja',
+          photo: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=900&q=80',
+          quote: '"Suka banget sama tone warnanya yang adem dan natural. Bahkan kucing peliharaan kami di rumah ikut masuk frame dengan sangat manis."'
+        },
+        {
+          family: 'Keluarga Mas Yoga & Mbak Laras',
+          session: 'Newborn di Rumah • Kulon Progo',
+          photo: 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?auto=format&fit=crop&w=900&q=80',
+          quote: '"Karena baru lahiran, kami belum berani bawa bayi keluar rumah. Konsep foto di rumah tanpa lampu kilat ini benar-benar membantu dan bikin tenang."'
+        }
+      ]
+    };
+
+    let state = loadLocalConfig();
+    let activeSlides = [...state.fallbackSlides];
+    let currentSlideIdx = 0;
+    let slideTimer = null;
+    let isAdminUnlocked = false;
+    let currentSessionPin = '';
+
+    function loadLocalConfig() {
+      try {
+        const saved = localStorage.getItem('rumah_dinakara_cfg_v1');
+        if (saved) return sanitizeConfig(JSON.parse(saved), DEFAULT_CONFIG);
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    }
+
+    function persistLocalConfig() {
+      try {
+        localStorage.setItem('rumah_dinakara_cfg_v1', JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    async function syncFromBackend() {
+      const url = cleanGas(state.gasUrl);
+      if (!url) {
+        renderSlideshow(state.fallbackSlides);
+        return;
+      }
+      try {
+        const res = await fetch(url + '?action=getAll', { credentials: 'omit', referrerPolicy: 'no-referrer' });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          if (data.config) {
+            state = sanitizeConfig(data.config, { ...state, gasUrl: url });
+            persistLocalConfig();
+            renderAll();
+          }
+          if (data.photos && data.photos.length > 0) {
+            renderSlideshow(data.photos.map(p => safeImg(p && p.url, '')).filter(Boolean));
+          } else {
+            renderSlideshow(state.fallbackSlides);
+          }
+        }
+      } catch (err) {
+        renderSlideshow(state.fallbackSlides);
+      }
+    }
+
+    function renderAll() {
+      // Meta & Title
+      document.title = state.ogTitle || DEFAULT_CONFIG.ogTitle;
+      const metaOgTitle = document.getElementById('og-title');
+      const metaOgDesc = document.getElementById('og-desc');
+      const metaOgImg = document.getElementById('og-image');
+      if (metaOgTitle) metaOgTitle.setAttribute('content', state.ogTitle);
+      if (metaOgDesc) metaOgDesc.setAttribute('content', state.ogDesc);
+      if (metaOgImg) metaOgImg.setAttribute('content', safeImg(state.ogImage, DEFAULT_CONFIG.ogImage));
+
+      // Brand Logo
+      const logoBox = document.getElementById('brand-logo-container');
+      logoBox.textContent = '';
+      if (state.logoDataUrl) {
+        const li = document.createElement('img'); li.src = state.logoDataUrl; li.alt = 'Logo'; logoBox.appendChild(li);
+      } else {
+        const fb = document.createElement('span'); fb.className = 'brand-logo-fallback'; fb.textContent = 'r.'; logoBox.appendChild(fb);
+      }
+      document.getElementById('render-brand-sub').textContent = state.brandSub;
+
+      // Hero Text & CTA
+      setRichEm(document.getElementById('render-hero-title'), state.heroTitle);
+      document.getElementById('render-hero-subtitle').textContent = state.heroSubtitle;
+      document.getElementById('render-booking-label').textContent = state.bookingLabel;
+      document.getElementById('render-booking-btn').href = safeHref(state.bookingUrl, '/booking');
+      document.getElementById('render-contact-label').textContent = state.contactLabel;
+      document.getElementById('render-contact-btn').href = safeHref(state.contactUrl, DEFAULT_CONFIG.contactUrl);
+
+      // Highlights
+      const hlContainer = document.getElementById('render-highlights');
+      hlContainer.innerHTML = state.highlights.map(item => {
+        const iconObj = ICON_LIBRARY[item.icon] || ICON_LIBRARY['home'];
+        return `
+          <div class="highlight-item">
+            <span class="highlight-icon">${iconObj.svg}</span>
+            <span>${escapeHtml(item.text)}</span>
+          </div>
+        `;
+      }).join('');
+
+      // Testimonials Header & Cards
+      document.getElementById('render-testi-eyebrow').textContent = state.testiEyebrow;
+      setRichEm(document.getElementById('render-testi-heading'), state.testiHeading);
+
+      const testiContainer = document.getElementById('render-testimonials');
+      testiContainer.innerHTML = state.testimonials.map((t, idx) => `
+        <article class="testi-card" onclick="toggleMobileCard(this)">
+          <img class="testi-bg" src="${escapeHtml(t.photo)}" alt="${escapeHtml(t.family)}" loading="lazy" />
+          <div class="testi-default-shade"></div>
+          <div class="testi-hover-overlay"></div>
+          <div class="testi-inner">
+            <div>
+              <img class="testi-avatar" src="${escapeHtml(t.photo)}" alt="${escapeHtml(t.family)}" />
+            </div>
+            <div class="testi-quote-box">
+              <p class="testi-quote">${escapeHtml(t.quote)}</p>
+            </div>
+            <div class="testi-footer">
+              <div class="testi-family">${escapeHtml(t.family)}</div>
+              <div class="testi-session">${escapeHtml(t.session)}</div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      // Footer
+      document.getElementById('render-footer-copy').textContent = state.footerCopy;
+    }
+
+    function renderSlideshow(urls) {
+      activeSlides = (urls && urls.length) ? urls : state.fallbackSlides;
+      const container = document.getElementById('slideshow-container');
+      const existingImgs = container.querySelectorAll('.slide-img');
+      existingImgs.forEach(el => el.remove());
+
+      activeSlides.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.referrerPolicy = 'no-referrer';
+        img.src = safeImg(src, '');
+        img.alt = 'Dokumentasi Keluarga Rumah by Dinakara';
+        img.className = 'slide-img' + (index === 0 ? ' active' : '');
+        container.insertBefore(img, container.firstChild);
+      });
+
+      currentSlideIdx = 0;
+      if (slideTimer) clearInterval(slideTimer);
+      const intervalMs = Math.max(2, Number(state.slideInterval) || 5) * 1000;
+      if (activeSlides.length > 1) {
+        slideTimer = setInterval(() => {
+          const imgs = container.querySelectorAll('.slide-img');
+          if (!imgs.length) return;
+          imgs[currentSlideIdx].classList.remove('active');
+          currentSlideIdx = (currentSlideIdx + 1) % imgs.length;
+          imgs[currentSlideIdx].classList.add('active');
+        }, intervalMs);
+      }
+    }
+
+    function toggleMobileCard(el) {
+      if (window.innerWidth <= 960) {
+        const wasExpanded = el.classList.contains('is-expanded');
+        document.querySelectorAll('.testi-card').forEach(c => c.classList.remove('is-expanded'));
+        if (!wasExpanded) el.classList.add('is-expanded');
+      }
+    }
+
+    /* ================= ADMIN DASHBOARD LOGIC ================= */
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.remove('is-hidden');
+      syncAdminAuthView();
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('is-hidden');
+    }
+
+    function syncAdminAuthView() {
+      const pinScreen = document.getElementById('admin-pin-screen');
+      const workspace = document.getElementById('admin-workspace');
+      const lockBtn = document.getElementById('btn-lock-admin');
+      if (isAdminUnlocked) {
+        pinScreen.classList.add('is-hidden');
+        workspace.classList.remove('is-hidden');
+        lockBtn.classList.remove('is-hidden');
+        populateAdminForms();
+      } else {
+        pinScreen.classList.remove('is-hidden');
+        workspace.classList.add('is-hidden');
+        lockBtn.classList.add('is-hidden');
+      }
+    }
+
+    async function verifyPin() {
+      const inputPin = document.getElementById('admin-pin-input').value.trim();
+      if (!inputPin) return showToast('Masukkan PIN terlebih dahulu');
+      const gasUrl = cleanGas(state.gasUrl);
+      if (!gasUrl) return showToast('Backend belum terhubung. Isi DEFAULT_GAS_URL di index.html (lihat SETUP.md).');
+      try {
+        const res = await fetch(gasUrl, {
+          method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer',
+          body: JSON.stringify({ action: 'verifyPin', pin: inputPin })
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          currentSessionPin = inputPin;
+          isAdminUnlocked = true;
+          document.getElementById('admin-pin-input').value = '';
+          syncAdminAuthView();
+          showToast('Berhasil masuk ke Dashboard');
+        } else if (data.status === 'locked') {
+          showToast('Terlalu banyak percobaan. Coba lagi 15 menit lagi.');
+        } else {
+          showToast('PIN Admin tidak sesuai');
+        }
+      } catch (err) {
+        showToast('Tidak bisa menghubungi server.');
+      }
+    }
+
+    function lockAdmin() {
+      isAdminUnlocked = false;
+      currentSessionPin = '';
+      document.getElementById('admin-pin-input').value = '';
+      syncAdminAuthView();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabId);
+      });
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('is-hidden', panel.id !== tabId);
+      });
+    }
+
+    function populateAdminForms() {
+      document.getElementById('input-brand-sub').value = state.brandSub;
+      document.getElementById('input-hero-title').value = state.heroTitle;
+      document.getElementById('input-hero-subtitle').value = state.heroSubtitle;
+      document.getElementById('input-testi-eyebrow').value = state.testiEyebrow;
+      document.getElementById('input-testi-heading').value = state.testiHeading;
+      document.getElementById('input-footer-copy').value = state.footerCopy;
+
+      document.getElementById('input-booking-label').value = state.bookingLabel;
+      document.getElementById('input-booking-url').value = state.bookingUrl;
+      document.getElementById('input-contact-label').value = state.contactLabel;
+      document.getElementById('input-contact-url').value = state.contactUrl;
+      document.getElementById('input-og-title').value = state.ogTitle;
+      document.getElementById('input-og-desc').value = state.ogDesc;
+      document.getElementById('input-og-image').value = state.ogImage;
+      updateWaPreview();
+
+      document.getElementById('input-gas-url').value = state.gasUrl || '';
+      document.getElementById('input-drive-folder').value = state.driveFolderId || '';
+      document.getElementById('input-slide-interval').value = state.slideInterval || 5;
+
+      renderAdminHighlights();
+      renderAdminTestimonials();
+    }
+
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 100 * 1024) {
+        e.target.value = '';
+        return showToast('Logo harus PNG/JPG/WebP dan maks. 100 KB.');
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        state.logoDataUrl = evt.target.result;
+        renderAll();
+        showToast('Logo berhasil dimuat');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetLogo() {
+      state.logoDataUrl = '';
+      renderAll();
+      showToast('Logo dikembalikan ke default');
+    }
+
+    function renderAdminHighlights() {
+      const wrap = document.getElementById('admin-highlights-list');
+      wrap.innerHTML = state.highlights.map((h, i) => `
+        <div class="form-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <span class="form-label" style="margin:0;">Poin Highlight #${i + 1}</span>
+            <button type="button" class="btn-danger-sm" onclick="removeHighlightItem(${i})">Hapus</button>
+          </div>
+          <select class="form-select" id="hl-icon-${i}">
+            ${Object.keys(ICON_LIBRARY).map(k => `<option value="${k}" ${h.icon === k ? 'selected' : ''}>${ICON_LIBRARY[k].label}</option>`).join('')}
+          </select>
+          <input type="text" class="form-input" id="hl-text-${i}" value="${escapeHtml(h.text)}" />
+        </div>
+      `).join('');
+    }
+
+    function addHighlightItem() {
+      state.highlights.push({ icon: 'heart', text: 'Poin Keunggulan Baru' });
+      renderAdminHighlights();
+    }
+
+    function removeHighlightItem(idx) {
+      state.highlights.splice(idx, 1);
+      renderAdminHighlights();
+    }
+
+    function renderAdminTestimonials() {
+      const wrap = document.getElementById('admin-testimonials-list');
+      wrap.innerHTML = state.testimonials.map((t, i) => `
+        <div class="form-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <span class="form-label" style="margin:0;">Testimoni #${i + 1}</span>
+            <button type="button" class="btn-danger-sm" onclick="removeTestimonialItem(${i})">Hapus</button>
+          </div>
+          <label class="form-label">Nama Keluarga</label>
+          <input type="text" class="form-input" id="testi-family-${i}" value="${escapeHtml(t.family)}" />
+          <label class="form-label">Keterangan Sesi / Lokasi</label>
+          <input type="text" class="form-input" id="testi-session-${i}" value="${escapeHtml(t.session)}" />
+          <label class="form-label">Foto Keluarga (tempel link Google Drive atau URL gambar https)</label>
+          <input type="text" class="form-input" id="testi-photo-${i}" value="${escapeHtml(t.photo)}" />
+          <label class="form-label">Isi Kutipan Testimoni</label>
+          <textarea class="form-textarea" id="testi-quote-${i}">${escapeHtml(t.quote)}</textarea>
+        </div>
+      `).join('');
+    }
+
+    function addTestimonialItem() {
+      state.testimonials.push({
+        family: 'Keluarga Baru',
+        session: 'Sesi di Rumah • Yogyakarta',
+        photo: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80',
+        quote: '"Tuliskan cerita hangat dari keluarga di sini."'
+      });
+      renderAdminTestimonials();
+    }
+
+    function removeTestimonialItem(idx) {
+      state.testimonials.splice(idx, 1);
+      renderAdminTestimonials();
+    }
+
+    function updateWaPreview() {
+      document.getElementById('wa-prev-title').textContent = document.getElementById('input-og-title').value;
+      document.getElementById('wa-prev-desc').textContent = document.getElementById('input-og-desc').value;
+      document.getElementById('wa-prev-img').src = document.getElementById('input-og-image').value;
+    }
+
+    async function saveSection(labelName) {
+      // Collect Tab 1
+      state.brandSub = document.getElementById('input-brand-sub').value;
+      state.heroTitle = document.getElementById('input-hero-title').value;
+      state.heroSubtitle = document.getElementById('input-hero-subtitle').value;
+      state.testiEyebrow = document.getElementById('input-testi-eyebrow').value;
+      state.testiHeading = document.getElementById('input-testi-heading').value;
+      state.footerCopy = document.getElementById('input-footer-copy').value;
+
+      // Collect Tab 2
+      state.highlights = state.highlights.map((_, i) => ({
+        icon: document.getElementById(`hl-icon-${i}`)?.value || 'home',
+        text: document.getElementById(`hl-text-${i}`)?.value || ''
+      }));
+
+      // Collect Tab 3
+      state.bookingLabel = document.getElementById('input-booking-label').value;
+      state.bookingUrl = document.getElementById('input-booking-url').value;
+      state.contactLabel = document.getElementById('input-contact-label').value;
+      state.contactUrl = document.getElementById('input-contact-url').value;
+      state.ogTitle = document.getElementById('input-og-title').value;
+      state.ogDesc = document.getElementById('input-og-desc').value;
+      state.ogImage = document.getElementById('input-og-image').value;
+
+      // Collect Tab 4
+      // alamat backend tidak diubah dari dashboard (hanya lewat DEFAULT_GAS_URL di kode)
+      state.driveFolderId = (document.getElementById('input-drive-folder').value.trim().match(/[A-Za-z0-9_-]{10,100}/) || [''])[0];
+      state.slideInterval = Number(document.getElementById('input-slide-interval').value) || 5;
+      const newPin = document.getElementById('input-new-pin').value.trim();
+
+      // Collect Tab 5
+      state.testimonials = state.testimonials.map((_, i) => ({
+        family: document.getElementById(`testi-family-${i}`)?.value || '',
+        session: document.getElementById(`testi-session-${i}`)?.value || '',
+        photo: document.getElementById(`testi-photo-${i}`)?.value || '',
+        quote: document.getElementById(`testi-quote-${i}`)?.value || ''
+      }));
+
+      state = sanitizeConfig(state, { ...DEFAULT_CONFIG, gasUrl: state.gasUrl });
+      persistLocalConfig();
+      renderAll();
+
+      if (cleanGas(state.gasUrl)) {
+        showToast('Menyimpan ' + labelName + ' ke Google Sheets...');
+        try {
+          const res = await fetch(cleanGas(state.gasUrl), {
+            method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer',
+            body: JSON.stringify({
+              action: 'saveConfig',
+              pin: currentSessionPin,
+              newPin: newPin || undefined,
+              config: state
+            })
+          });
+          const data = await res.json();
+          if (data.status === 'ok') {
+            if (newPin && newPin.length >= 6) currentSessionPin = newPin;
+            document.getElementById('input-new-pin').value = '';
+            showToast(labelName + ' tersimpan permanen!');
+            syncFromBackend();
+            return;
+          } else {
+            showToast('Gagal simpan ke Sheets: ' + (data.message || 'Cek PIN'));
+            return;
+          }
+        } catch (err) {
+          showToast('Gagal menghubungi server. Perubahan hanya ada di browser ini.');
+          return;
+        }
+      }
+
+      showToast(labelName + ' berhasil disimpan!');
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      box.textContent = msg;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 2800);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Tombol admin tersembunyi dari pengunjung. Buka dengan ?akses=ruang-admin atau Ctrl+Shift+K.
+    (function () {
+      const fab = document.getElementById('admin-fab');
+      const reveal = () => { fab.classList.remove('is-hidden'); openAdminModal(); };
+      if (new URLSearchParams(location.search).get('akses') === 'ruang-admin') fab.classList.remove('is-hidden');
+      document.addEventListener('keydown', (e) => { if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'k') reveal(); });
+    })();
+
+    // Initial Boot
+    renderAll();
+    renderSlideshow(state.fallbackSlides);
+    syncFromBackend();
+  </script>
+</body>
+</html>
