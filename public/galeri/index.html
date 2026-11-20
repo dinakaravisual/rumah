@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galeri Klien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;flex-direction:column;background:#fff;color:#111;font-family:'Inter',sans-serif}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
+.studio{font-size:10px;letter-spacing:3.5px;color:#999;margin-bottom:28px}
+h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:44px;line-height:1.15;margin-bottom:12px}
+p{font-size:13px;color:#777;margin-bottom:36px;font-weight:300}
+form{display:flex;width:100%;max-width:380px;border-bottom:1px solid #111}
+input{flex:1;border:0;outline:0;padding:12px 0;font:400 15px 'Inter',sans-serif;letter-spacing:1px;background:transparent}
+button{border:0;background:none;font:500 11px 'Inter',sans-serif;letter-spacing:2px;cursor:pointer;padding:0 0 0 16px}
+button:hover{opacity:.6}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #111;outline-offset:3px}
+footer{padding:24px;text-align:center}
+footer a{font-size:10px;letter-spacing:1.5px;color:#bbb;text-decoration:none}
+footer a:hover{color:#111}
+@media(max-width:600px){h1{font-size:34px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="studio" id="studio"></div>
+  <h1>Galeri momen Anda</h1>
+  <p>Masukkan kode galeri yang dikirim oleh studio kami.</p>
+  <form id="f" autocomplete="off">
+    <input id="code" type="text" placeholder="Kode galeri" aria-label="Kode galeri" required>
+    <button type="submit">BUKA GALERI →</button>
+  </form>
+</main>
+<footer><a href="/galeri/admin">Admin</a></footer>
+<script src="/galeri/config.js"></script>
+<script src="/galeri/brand.js"></script>
+<script>
+var hb=Brands.hostBrand();
+(function(){var a=document.querySelector('footer a');if(a&&CONFIG.ADMIN_URL)a.href=CONFIG.ADMIN_URL})();
+document.getElementById('studio').innerHTML=escapeHTML(hb?Brands.get(hb).name:'GALERI KLIEN');
+if(hb)document.title='Galeri Klien — '+Brands.get(hb).name;
+document.getElementById('f').addEventListener('submit',function(e){
+  e.preventDefault();
+  var v=document.getElementById('code').value.trim();
+  if(v)location.href='/galeri/g/'+encodeURIComponent(v);
+});
+</script>
+</body>
+</html>

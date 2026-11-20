@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berkunjung ke RUMAH — Home & Family Documentary Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --forest-dark: #132A23;
+      --forest-mid: #1F4035;
+      --sage-accent: #5C7C68;
+      --sage-soft: #E5ECE7;
+      --blur-amount: 26px;
+    }
+    * { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    body { margin: 0; background-color: #132A23; color: #162620; overflow-x: hidden; }
+    .bg-wrapper { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: #132A23; }
+    .bg-image {
+      width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);
+      filter: blur(var(--blur-amount)) brightness(0.78) saturate(1.05);
+      transition: filter 0.4s ease, background-image 0.5s ease;
+    }
+    .bg-overlay {
+      position: fixed; inset: 0; z-index: -1;
+      background: linear-gradient(155deg, rgba(19, 42, 35, 0.52) 0%, rgba(44, 74, 62, 0.35) 55%, rgba(19, 42, 35, 0.65) 100%);
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 24px 60px -15px rgba(10, 25, 20, 0.28);
+    }
+    .glass-input {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(19, 42, 35, 0.14);
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      outline: none; background: #ffffff;
+      border-color: #1F4035;
+      box-shadow: 0 0 0 3px rgba(31, 64, 53, 0.14);
+    }
+    .step-pill-active { background: #132A23; color: #ffffff; box-shadow: 0 6px 18px rgba(19, 42, 35, 0.25); }
+    .step-pill-done { background: rgba(92, 124, 104, 0.22); color: #132A23; }
+    .step-pill-idle { background: rgba(255, 255, 255, 0.55); color: #5B6E66; }
+    .cal-day { aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 14px; font-size: 0.875rem; font-weight: 600; transition: all 0.18s ease; }
+    .cal-day-available { background: rgba(255,255,255,0.75); color: #132A23; cursor: pointer; border: 1px solid rgba(19,42,35,0.08); }
+    .cal-day-available:hover { background: #E5ECE7; border-color: #1F4035; }
+    .cal-day-selected { background: #132A23 !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(19,42,35,0.3); }
+    /* Stepper: 2 baris x 2 kolom di HP, 1 baris di layar lebar (tidak bergantung pada Tailwind) */
+    .step-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (min-width: 640px) { .step-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    /* Promo */
+    .promo-banner { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(19, 42, 35, 0.12); box-shadow: 0 8px 24px rgba(19, 42, 35, 0.22); backdrop-filter: blur(10px); }
+    .promo-strip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px; background: linear-gradient(120deg, #F97316, #E11D48); color: #fff; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.25); }
+    .promo-strip-off { background: linear-gradient(120deg, #9CA3AF, #6B7280); box-shadow: none; opacity: 0.85; }
+    .promo-chip { background: #fff; color: #E11D48; font-weight: 900; font-size: 12px; padding: 4px 9px; border-radius: 10px; white-space: nowrap; }
+    .promo-card { border-color: #F97316 !important; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.28); }
+    .promo-ribbon { position: absolute; top: 0; right: 0; background: linear-gradient(90deg, #F97316, #EC4899); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 12px; border-bottom-left-radius: 14px; letter-spacing: 0.06em; }
+    .promo-price { background: linear-gradient(90deg, #F97316, #E11D48); color: #fff; }
+    .promo-save { font-size: 10px; font-weight: 900; color: #9A3412; background: #FFEDD5; border: 1px solid #FDBA74; padding: 2px 8px; border-radius: 8px; }
+    .step-pill-locked { background: rgba(255, 255, 255, 0.35); color: #8A9A92; cursor: not-allowed; }
+    .step-pill-locked::after { content: '🔒'; font-size: 10px; margin-left: 2px; }
+    .drag-handle { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; width: 28px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #E5ECE7; color: #132A23; font-size: 16px; line-height: 1; }
+    .sorting { position: relative; z-index: 20; box-shadow: 0 12px 28px rgba(19, 42, 35, 0.28); opacity: 0.96; }
+    .drop-before { box-shadow: 0 -3px 0 0 #132A23; }
+    .drop-after { box-shadow: 0 3px 0 0 #132A23; }
+    .cal-day-partial { border: 1px solid rgba(217, 119, 6, 0.55); }
+    .cal-day-partial::after { content: ''; display: block; width: 5px; height: 5px; border-radius: 9999px; background: #D97706; margin: 1px auto 0; }
+    .cal-day-booked { background: rgba(220, 38, 38, 0.1); color: #991B1B; cursor: not-allowed; border: 1px dashed rgba(220,38,38,0.3); }
+    .cal-day-past { background: transparent; color: #9CA3AF; text-decoration: line-through; cursor: not-allowed; opacity: 0.48; }
+    .tag-pill { cursor: pointer; transition: all 0.15s ease; user-select: none; }
+    .tag-pill:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: rgba(19,42,35,0.25); border-radius: 99px; }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-[#132A23] selection:text-white">
+
+  <!-- Background Semi Blur -->
+  <div class="bg-wrapper">
+    <img id="coverBgImage" class="bg-image" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1920&q=80" alt="Background" />
+  </div>
+  <div class="bg-overlay"></div>
+
+  <!-- Centered Logo Only -->
+  <header class="w-full pt-8 pb-4 px-4 flex flex-col items-center justify-center relative z-10">
+    <div id="brandLogoContainer" class="flex items-center justify-center transition-all duration-300">
+      <img id="brandLogoImg" src="" alt="Berkunjung ke RUMAH" class="hidden object-contain drop-shadow-md" style="height: 84px;" />
+      <div id="defaultBrandLogo" class="text-center select-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.35)]" style="transform: scale(1);">
+        <div class="text-white font-extrabold tracking-tight leading-none text-3xl sm:text-4xl">Berkunjung</div>
+        <div class="text-white font-extrabold tracking-tight leading-none text-3xl sm:text-4xl mt-0.5 flex items-center justify-center gap-1.5">
+          <span class="text-xl sm:text-2xl font-bold opacity-90">ke</span>
+          <span>RUMAH</span>
+        </div>
+      </div>
+    </div>
+    <p id="heroSubtitleDisplay" class="mt-3 text-xs sm:text-sm text-white/90 font-medium tracking-wide text-center max-w-md drop-shadow">
+      Home &amp; Family Documentary Photography — Merekam hangatnya cerita keluarga di ruang paling nyaman.
+    </p>
+
+    <!-- Active Promo Banner (Visible automatically when Discount Mode is active) -->
+    <div id="publicPromoBanner" class="hidden mt-4 max-w-lg w-full promo-banner rounded-3xl">
+      <div class="px-4 py-3 text-[#132A23] text-center">
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <span class="text-[#B8913A] text-xs">✦</span>
+          <span class="text-[11px] font-extrabold tracking-[0.2em] uppercase">Promo Spesial</span>
+          <span class="text-[#B8913A] text-xs">✦</span>
+        </div>
+        <div id="publicPromoList" class="space-y-1.5"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== CLIENT BOOKING VIEW ==================== -->
+  <main id="clientView" class="max-w-3xl mx-auto px-4 pb-16 pt-2 relative z-10">
+    <input type="text" id="hpWebsiteField" name="_hp_field" autocomplete="off" tabindex="-1" class="hidden" aria-hidden="true" />
+
+    <!-- Stepper Indicator -->
+    <div class="glass-panel rounded-3xl p-2.5 mb-5 step-grid gap-2">
+      <button type="button" onclick="goToStep(1)" id="stepBtn1" class="step-pill-active rounded-2xl py-2.5 px-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition">
+        <span class="shrink-0 w-5 h-5 rounded-full bg-white/20 text-[11px] flex items-center justify-center font-bold">1</span>
+        <span class="sm:truncate">Klien &amp; Jadwal</span>
+      </button>
+      <button type="button" onclick="pillGo(2)" id="stepBtn2" disabled title="Isi langkah sebelumnya dulu" class="step-pill-idle rounded-2xl py-2.5 px-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition">
+        <span class="shrink-0 w-5 h-5 rounded-full bg-black/10 text-[11px] flex items-center justify-center font-bold">2</span>
+        <span class="sm:truncate">Paket &amp; Konsep</span>
+      </button>
+      <button type="button" onclick="pillGo(3)" id="stepBtn3" disabled title="Isi langkah sebelumnya dulu" class="step-pill-idle rounded-2xl py-2.5 px-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition">
+        <span class="shrink-0 w-5 h-5 rounded-full bg-black/10 text-[11px] flex items-center justify-center font-bold">3</span>
+        <span class="sm:truncate">Ringkasan</span>
+      </button>
+      <button type="button" onclick="pillGo(4)" id="stepBtn4" disabled title="Isi langkah sebelumnya dulu" class="step-pill-idle rounded-2xl py-2.5 px-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition">
+        <span class="shrink-0 w-5 h-5 rounded-full bg-black/10 text-[11px] flex items-center justify-center font-bold">4</span>
+        <span class="sm:truncate">Pembayaran</span>
+      </button>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="glass-panel rounded-[28px] p-5 sm:p-8">
+
+      <!-- STEP 1: Informasi Klien & Jadwal -->
+      <section id="step1Section" class="space-y-6">
+        <div class="border-b border-[#132A23]/10 pb-3">
+          <h2 class="text-lg sm:text-xl font-bold text-[#132A23]">Informasi Keluarga &amp; Jadwal Sesi</h2>
+          <p class="text-xs text-[#4C6158] mt-0.5">Lengkapi data keluarga dan pilih tanggal kunjungan sesi foto.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-[#132A23] mb-1.5">Nama Lengkap Pemesan <span class="text-red-500">*</span></label>
+            <input type="text" id="clientName" maxlength="80" placeholder="Contoh: Ibu Laras / Ayah Bima" class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#132A23] mb-1.5">Nomor WhatsApp Aktif <span class="text-red-500">*</span></label>
+            <div class="flex">
+              <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#132A23]/15 bg-[#E5ECE7]/70 text-xs font-bold text-[#132A23]">+62</span>
+              <input type="tel" id="clientWa" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="81234567890" class="glass-input w-full rounded-r-xl px-3.5 py-2.5 text-sm" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-[#132A23] mb-1.5">Tipe Sesi Keluarga <span class="text-red-500">*</span></label>
+            <select id="sessionTypeSelect" class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm font-medium text-[#132A23]"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#132A23] mb-1.5">Instagram (Opsional)</label>
+            <input type="text" id="clientIg" maxlength="40" placeholder="@username" class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm" />
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs font-bold text-[#132A23] mb-1.5">Email (Opsional)</label>
+            <input type="email" id="clientEmail" maxlength="120" placeholder="nama@email.com" autocomplete="email" class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm" />
+            <p class="text-[11px] text-[#5C7C68] mt-1">Dipakai untuk mengirim undangan jadwal ke kalender Anda setelah booking terkonfirmasi.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#132A23] mb-1.5">Alamat Lengkap Rumah / Lokasi Sesi <span class="text-red-500">*</span></label>
+          <textarea id="clientLocation" rows="2" maxlength="250" placeholder="Tuliskan alamat lengkap atau titik lokasi pemotretan..." class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm"></textarea>
+        </div>
+
+        <!-- Jumlah Peserta & Anak Dinamis -->
+        <div class="bg-[#E5ECE7]/55 rounded-2xl p-4 border border-[#132A23]/10 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1.5">Total Orang yang Difoto</label>
+              <input type="number" id="totalPeople" min="1" max="50" value="3" class="glass-input w-full rounded-xl px-3.5 py-2 text-sm font-semibold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1.5">Jumlah Anak</label>
+              <input type="number" id="childrenCount" min="0" max="15" value="1" onchange="renderChildrenInputs()" oninput="renderChildrenInputs()" class="glass-input w-full rounded-xl px-3.5 py-2 text-sm font-semibold" />
+            </div>
+          </div>
+          <div id="childrenDynamicContainer" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Kalender Modern & Custom Jam Sesi -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+          <div class="md:col-span-7 bg-white/75 rounded-2xl p-4 border border-[#132A23]/10">
+            <div class="flex items-center justify-between mb-3">
+              <button type="button" onclick="changeMonth(-1)" class="p-1.5 rounded-xl hover:bg-[#E5ECE7] text-[#132A23] transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <span id="calendarMonthLabel" class="text-sm font-bold text-[#132A23]"></span>
+              <button type="button" onclick="changeMonth(1)" class="p-1.5 rounded-xl hover:bg-[#E5ECE7] text-[#132A23] transition">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-[#5C7C68] mb-1.5">
+              <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+            </div>
+            <div id="calendarGrid" class="grid grid-cols-7 gap-1.5"></div>
+            <div class="flex items-center gap-4 mt-3 pt-2.5 border-t border-[#132A23]/10 text-[11px] text-[#4C6158]">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-[#132A23]"></span> Dipilih</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-400"></span> Penuh</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span> Terlewat</span>
+            </div>
+          </div>
+
+          <div class="md:col-span-5 bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-4">
+            <div>
+              <span class="text-xs font-bold text-[#132A23] block mb-1">Tanggal Terpilih</span>
+              <div id="selectedDateDisplay" class="text-sm font-bold text-[#1F4035] bg-[#E5ECE7]/80 px-3 py-2 rounded-xl border border-[#132A23]/10">
+                Belum dipilih
+              </div>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-[#132A23] block mb-1.5">Jam Sesi Custom <span class="text-red-500">*</span></span>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="text-[11px] text-[#4C6158] block mb-1">Mulai Pukul</label>
+                  <input type="time" id="timeStart" value="09:00" class="glass-input w-full rounded-xl px-3 py-2 text-sm font-semibold" />
+                </div>
+                <div>
+                  <label class="text-[11px] text-[#4C6158] block mb-1">Selesai Pukul</label>
+                  <input type="time" id="timeEnd" value="11:00" class="glass-input w-full rounded-xl px-3 py-2 text-sm font-semibold" />
+                </div>
+              </div>
+              <div id="busyTimesInfo" class="mt-2"></div>
+              <p class="text-[11px] text-[#5C7C68] mt-2 leading-relaxed">
+                Saran cahaya alami terbaik di rumah: pagi 08.00–10.30 atau sore 15.30–17.30.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button type="button" onclick="validateStep1()" class="bg-[#132A23] hover:bg-[#1F4035] text-white font-semibold text-sm px-6 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition">
+            <span>Lanjut Pilih Paket</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Pilih Paket, Add-Ons & Preferensi -->
+      <section id="step2Section" class="hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#132A23]/10 pb-3">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#132A23]">Pilih Paket, Add-Ons &amp; Konsep Foto</h2>
+            <p class="text-xs text-[#4C6158] mt-0.5">Sesuaikan paket pemotretan dan beri tahu kami preferensi keluarga Anda.</p>
+          </div>
+        </div>
+        <div id="step2PromoStrip" class="hidden space-y-2"></div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#132A23] mb-2.5">Pilih Paket Utama <span class="text-red-500">*</span></label>
+          <div id="packagesListContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
+        </div>
+
+        <div id="addonsWrapper">
+          <label class="block text-xs font-bold text-[#132A23] mb-2.5">Layanan Tambahan (Add-Ons Opsional)</label>
+          <div id="addonsListContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+        </div>
+
+        <!-- Live Price Offer Bar inside Step 2 -->
+        <div id="liveOfferCard" class="bg-[#132A23] text-white rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+          <div class="space-y-0.5">
+            <div class="text-[11px] uppercase tracking-wider text-white/70 font-semibold">Penawaran Harga Sesi Anda</div>
+            <div id="liveOfferBreakdown" class="text-xs text-white/85">Paket terpilih + Add-Ons</div>
+            <div id="liveOfferDiscountNote" class="hidden text-[11px] font-semibold text-emerald-300 pt-0.5"></div>
+          </div>
+          <div class="sm:text-right">
+            <div id="liveOfferStrikePrice" class="hidden text-xs text-white/55 line-through">Rp 0</div>
+            <div id="liveOfferFinalPrice" class="text-xl sm:text-2xl font-extrabold text-white">Rp 0</div>
+            <div id="liveOfferDpHint" class="text-[11px] text-emerald-300 font-semibold">DP 50%: Rp 0</div>
+          </div>
+        </div>
+
+        <!-- Quick-Fill Pills: Preferensi & Pantangan -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div class="bg-white/70 rounded-2xl p-4 border border-[#132A23]/10 space-y-2.5">
+            <label class="block text-xs font-bold text-[#132A23]">Momen / Gaya yang Diinginkan</label>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="appendQuickTag('prefNotes', 'Candid & Natural')" class="tag-pill text-[11px] font-semibold bg-[#E5ECE7] hover:bg-[#132A23] hover:text-white text-[#132A23] px-2.5 py-1 rounded-full">+ Candid &amp; Natural</button>
+              <button type="button" onclick="appendQuickTag('prefNotes', 'Warm & Intimate')" class="tag-pill text-[11px] font-semibold bg-[#E5ECE7] hover:bg-[#132A23] hover:text-white text-[#132A23] px-2.5 py-1 rounded-full">+ Warm &amp; Intimate</button>
+              <button type="button" onclick="appendQuickTag('prefNotes', 'Interaksi Anak Bermain')" class="tag-pill text-[11px] font-semibold bg-[#E5ECE7] hover:bg-[#132A23] hover:text-white text-[#132A23] px-2.5 py-1 rounded-full">+ Interaksi Bermain</button>
+              <button type="button" onclick="appendQuickTag('prefNotes', 'Tanpa Pose Kaku')" class="tag-pill text-[11px] font-semibold bg-[#E5ECE7] hover:bg-[#132A23] hover:text-white text-[#132A23] px-2.5 py-1 rounded-full">+ Tanpa Pose Kaku</button>
+            </div>
+            <textarea id="prefNotes" rows="3" maxlength="400" placeholder="Klik tag di atas atau tulis momen khusus yang ingin diabadikan..." class="glass-input w-full rounded-xl p-3 text-xs"></textarea>
+          </div>
+
+          <div class="bg-white/70 rounded-2xl p-4 border border-[#132A23]/10 space-y-2.5">
+            <label class="block text-xs font-bold text-[#132A23]">Hal yang Tidak Boleh / Pantangan</label>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="appendQuickTag('restrictNotes', 'Hindari Flash Langsung ke Bayi')" class="tag-pill text-[11px] font-semibold bg-amber-100/80 hover:bg-amber-800 hover:text-white text-amber-950 px-2.5 py-1 rounded-full">+ Tanpa Flash ke Bayi</button>
+              <button type="button" onclick="appendQuickTag('restrictNotes', 'Anak Butuh Waktu Adaptasi')" class="tag-pill text-[11px] font-semibold bg-amber-100/80 hover:bg-amber-800 hover:text-white text-amber-950 px-2.5 py-1 rounded-full">+ Anak Butuh Adaptasi</button>
+              <button type="button" onclick="appendQuickTag('restrictNotes', 'Tidak Dipublikasikan ke Sosmed')" class="tag-pill text-[11px] font-semibold bg-amber-100/80 hover:bg-amber-800 hover:text-white text-amber-950 px-2.5 py-1 rounded-full">+ Privasi (No Sosmed)</button>
+            </div>
+            <textarea id="restrictNotes" rows="3" maxlength="400" placeholder="Klik tag di atas atau tulis batasan/pantangan saat sesi berlangsung..." class="glass-input w-full rounded-xl p-3 text-xs"></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" onclick="goToStep(1)" class="text-xs sm:text-sm font-semibold text-[#132A23] hover:bg-white/70 px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+          </button>
+          <button type="button" onclick="validateStep2()" class="bg-[#132A23] hover:bg-[#1F4035] text-white font-semibold text-sm px-6 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition">
+            <span>Lihat Ringkasan</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Ringkasan Pesanan -->
+      <section id="step3Section" class="hidden space-y-5">
+        <div class="border-b border-[#132A23]/10 pb-3">
+          <h2 class="text-lg sm:text-xl font-bold text-[#132A23]">Ringkasan Pemesanan Sesi</h2>
+          <p class="text-xs text-[#4C6158] mt-0.5">Periksa kembali detail jadwal dan rincian biaya sebelum melanjutkan ke pembayaran.</p>
+        </div>
+
+        <div id="summaryContent" class="bg-white/80 rounded-2xl p-5 border border-[#132A23]/10 space-y-3 text-sm"></div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" onclick="goToStep(2)" class="text-xs sm:text-sm font-semibold text-[#132A23] hover:bg-white/70 px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Ubah Paket
+          </button>
+          <button type="button" onclick="goToStep(4)" class="bg-[#132A23] hover:bg-[#1F4035] text-white font-semibold text-sm px-6 py-3 rounded-2xl shadow-lg flex items-center gap-2 transition">
+            <span>Lanjut Pembayaran</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 4: Pembayaran Bank BCA & Bank Jago + Konfirmasi -->
+      <section id="step4Section" class="hidden space-y-6">
+        <div id="paymentFormWrapper" class="space-y-6">
+          <div class="border-b border-[#132A23]/10 pb-3">
+            <h2 class="text-lg sm:text-xl font-bold text-[#132A23]">Pembayaran DP &amp; Konfirmasi Jadwal</h2>
+            <p class="text-xs text-[#4C6158] mt-0.5">Pilih rekening tujuan transfer DP (50%) untuk mengunci tanggal sesi Anda.</p>
+          </div>
+
+          <div class="bg-[#132A23] text-white rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="text-xs text-white/75 uppercase tracking-wider font-semibold">Nominal DP (50% dari Total)</span>
+              <div id="dpAmountHighlight" class="text-2xl sm:text-3xl font-extrabold mt-0.5">Rp 0</div>
+              <span id="fullAmountSubtext" class="text-xs text-white/75">Total Paket: Rp 0</span>
+              <div id="paymentDiscountBadge" class="hidden text-[11px] font-semibold text-emerald-300 mt-1"></div>
+            </div>
+            <div class="text-xs bg-white/15 px-3.5 py-2 rounded-xl border border-white/15">
+              Pelunasan dilakukan maksimal H-1 atau setelah sesi selesai.
+            </div>
+          </div>
+
+          <!-- Pilihan Bank BCA & Bank Jago -->
+          <div>
+            <label class="block text-xs font-bold text-[#132A23] mb-2.5">Pilih Rekening Transfer</label>
+            <div id="bankOptionsGrid" class="grid grid-cols-2 gap-3">
+              <button type="button" onclick="selectBank('BCA')" id="btnBankBCA" class="rounded-2xl p-3.5 border-2 border-[#132A23] bg-white flex items-center justify-between transition">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-7 rounded-lg bg-[#00529C] text-white font-extrabold text-xs flex items-center justify-center tracking-tight">BCA</div>
+                  <div class="text-left">
+                    <div class="text-xs font-bold text-[#132A23]">Bank BCA</div>
+                    <div class="text-[10px] text-[#5C7C68]">Transfer Instan</div>
+                  </div>
+                </div>
+                <i data-lucide="check-circle-2" id="checkBCA" class="w-4 h-4 text-[#132A23]"></i>
+              </button>
+
+              <button type="button" onclick="selectBank('Jago')" id="btnBankJago" class="rounded-2xl p-3.5 border border-[#132A23]/15 bg-white/70 flex items-center justify-between transition">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-7 rounded-lg bg-[#F59E0B] text-[#132A23] font-extrabold text-xs flex items-center justify-center tracking-tight">Jago</div>
+                  <div class="text-left">
+                    <div class="text-xs font-bold text-[#132A23]">Bank Jago</div>
+                    <div class="text-[10px] text-[#5C7C68]">BI-FAST / Kantong</div>
+                  </div>
+                </div>
+                <i data-lucide="check-circle-2" id="checkJago" class="w-4 h-4 text-[#132A23] hidden"></i>
+              </button>
+            </div>
+
+            <!-- Detail Nomor Rekening Terpilih -->
+            <div class="mt-3 bg-white/90 rounded-2xl p-4 border border-[#132A23]/15 flex items-center justify-between gap-3">
+              <div>
+                <div id="bankAccountTitle" class="text-xs font-semibold text-[#5C7C68]">Bank BCA — a.n. Berkunjung ke RUMAH</div>
+                <div id="bankAccountNumber" class="text-lg sm:text-xl font-extrabold text-[#132A23] tracking-wide mt-0.5">1234567890</div>
+              </div>
+              <button type="button" onclick="copySelectedAccount()" class="bg-[#E5ECE7] hover:bg-[#132A23] hover:text-white text-[#132A23] text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin No. Rek
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" onclick="goToStep(3)" class="text-xs sm:text-sm font-semibold text-[#132A23] hover:bg-white/70 px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+            </button>
+            <button type="button" id="submitBookingBtn" onclick="submitFinalBooking()" class="bg-[#132A23] hover:bg-[#1F4035] text-white font-bold text-sm px-6 py-3.5 rounded-2xl shadow-xl flex items-center gap-2 transition">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Konfirmasi &amp; Kunci Jadwal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Success Confirmation View -->
+        <div id="bookingSuccessWrapper" class="hidden text-center py-4 space-y-5">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center">
+            <i data-lucide="check" class="w-8 h-8"></i>
+          </div>
+          <div>
+            <span id="confirmedBookingId" class="text-xs font-bold bg-[#E5ECE7] text-[#132A23] px-3 py-1 rounded-full">ID: BKR-000000</span>
+            <h3 class="text-xl font-extrabold text-[#132A23] mt-2">Permintaan Jadwal Terkirim!</h3>
+            <p class="text-xs sm:text-sm text-[#4C6158] max-w-md mx-auto mt-1">
+              Data sesi Anda telah tercatat. Silakan unduh Invoice PDF atau kirim bukti transfer DP melalui WhatsApp Admin.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button type="button" onclick="downloadLatestInvoicePDF()" class="w-full sm:w-auto bg-white hover:bg-[#E5ECE7] text-[#132A23] border border-[#132A23]/20 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl flex items-center justify-center gap-2 transition">
+              <i data-lucide="file-down" class="w-4 h-4"></i> Unduh Invoice PDF
+            </button>
+            <button type="button" onclick="printLatestInvoice()" class="w-full sm:w-auto text-[11px] font-bold text-[#4C6158] underline underline-offset-2 px-2 py-1">Versi cetak (cadangan)</button>
+            <button type="button" onclick="sendClientConfirmationWA()" class="w-full sm:w-auto bg-[#132A23] hover:bg-[#1F4035] text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl flex items-center justify-center gap-2 shadow-lg transition">
+              <i data-lucide="send" class="w-4 h-4"></i> Konfirmasi Bukti DP via WA
+            </button>
+          </div>
+
+          <button type="button" onclick="resetBookingForm()" class="text-xs font-semibold text-[#5C7C68] hover:underline pt-2">
+            + Buat Pemesanan Baru
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ==================== HIDDEN ADMIN LOGIN MODAL ==================== -->
+  <div id="adminLoginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/65 backdrop-blur-md p-4">
+    <div class="glass-panel rounded-3xl max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-[#132A23]">Ruang Kerja Vendor</h3>
+        <button type="button" onclick="closeAdminLoginModal()" class="p-1.5 rounded-xl hover:bg-black/10 text-[#132A23]">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p class="text-xs text-[#4C6158]">Masukkan kata sandi pengelola <strong>Berkunjung ke RUMAH</strong>.</p>
+      <input type="password" id="adminPasswordInput" onkeydown="if(event.key==='Enter') verifyAdminLogin()" placeholder="••••••••••••" class="glass-input w-full rounded-xl px-3.5 py-2.5 text-sm" />
+      <button type="button" onclick="verifyAdminLogin()" class="w-full bg-[#132A23] hover:bg-[#1F4035] text-white font-bold text-sm py-2.5 rounded-xl transition">
+        Masuk Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== VENDOR ADMIN DASHBOARD VIEW ==================== -->
+  <section id="adminView" class="hidden max-w-6xl mx-auto px-4 pb-28 pt-2 relative z-10">
+    <div class="glass-panel rounded-[28px] p-5 sm:p-7 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#132A23]/10 pb-4">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#5C7C68]">Dashboard Pengelola</span>
+          <h2 class="text-xl font-extrabold text-[#132A23]">Berkunjung ke RUMAH</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="exitAdminDashboard()" class="bg-white hover:bg-red-50 text-[#132A23] border border-[#132A23]/15 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Kembali ke Form Publik
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Sub-Tabs -->
+      <div class="flex flex-wrap gap-2">
+        <button type="button" onclick="switchAdminTab('bookings')" id="tabBtn_bookings" class="admin-tab bg-[#132A23] text-white text-xs font-bold px-4 py-2 rounded-xl">Booking &amp; Invoice</button>
+        <button type="button" onclick="switchAdminTab('packages')" id="tabBtn_packages" class="admin-tab bg-white/75 text-[#132A23] text-xs font-bold px-4 py-2 rounded-xl">Paket &amp; Tipe Sesi</button>
+        <button type="button" onclick="switchAdminTab('blocks')" id="tabBtn_blocks" class="admin-tab bg-white/75 text-[#132A23] text-xs font-bold px-4 py-2 rounded-xl">Jadwal Terisi</button>
+        <button type="button" onclick="switchAdminTab('addons')" id="tabBtn_addons" class="admin-tab bg-white/75 text-[#132A23] text-xs font-bold px-4 py-2 rounded-xl">Add-Ons</button>
+        <button type="button" onclick="switchAdminTab('discounts')" id="tabBtn_discounts" class="admin-tab bg-white/75 text-[#132A23] text-xs font-bold px-4 py-2 rounded-xl">Mode Diskon &amp; Promo</button>
+        <button type="button" onclick="switchAdminTab('branding')" id="tabBtn_branding" class="admin-tab bg-white/75 text-[#132A23] text-xs font-bold px-4 py-2 rounded-xl">Logo, Sampul &amp; Rekening</button>
+      </div>
+
+      <!-- TAB 1: BOOKINGS & INVOICE -->
+      <div id="adminTab_bookings" class="space-y-4">
+        <div id="bookingStats" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div id="bookingFilterBar" class="flex flex-wrap gap-2"></div>
+          <input type="text" id="bookingSearch" oninput="renderAdminBookings()" placeholder="Cari nama klien / ID..." class="glass-input rounded-xl px-3 py-2 text-xs md:w-64" />
+        </div>
+        <div id="adminBookingsList" class="space-y-3"></div>
+      </div>
+
+      <div id="adminTab_blocks" class="space-y-4 hidden">
+        <div class="bg-white/85 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
+          <div>
+            <h3 class="text-sm font-extrabold text-[#132A23]">Jadwal Terisi (pekerjaan lain)</h3>
+            <p class="text-[11px] text-[#5C7C68] mt-1">Tanggal di sini tampil sebagai "Penuh" di kalender booking klien dan tidak bisa dipesan. Catatan hanya terlihat olehmu.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
+            <label class="md:col-span-3 text-[10px] font-bold text-[#5C7C68]">Mulai<input type="date" id="blockStart" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="md:col-span-3 text-[10px] font-bold text-[#5C7C68]">Selesai (kosongkan jika 1 hari)<input type="date" id="blockEnd" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="md:col-span-4 text-[10px] font-bold text-[#5C7C68]">Catatan<input type="text" id="blockNote" maxlength="80" placeholder="mis. Wedding klien lain" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <div class="md:col-span-2"><button type="button" onclick="addBlock()" class="w-full bg-[#132A23] text-white text-xs font-bold px-3 py-2 rounded-xl">Tambah</button></div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-end">
+            <label class="md:col-span-3 text-[10px] font-bold text-[#5C7C68]">Jam mulai (opsional)<input type="time" id="blockTimeStart" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="md:col-span-3 text-[10px] font-bold text-[#5C7C68]">Jam selesai (opsional)<input type="time" id="blockTimeEnd" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <p class="col-span-2 md:col-span-6 text-[11px] text-[#5C7C68]">Kosongkan jam untuk memblokir seharian. Jam hanya untuk satu tanggal; jam lain di hari itu tetap bisa dipesan.</p>
+          </div>
+        </div>
+        <div class="bg-white/85 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
+          <div>
+            <h3 class="text-sm font-extrabold text-[#132A23]">Aturan Sesi per Hari</h3>
+            <p class="text-[11px] text-[#5C7C68] mt-1">Sebuah tanggal baru "Penuh" setelah kuota sesinya tercapai. Sebelum itu klien hanya bisa memilih jam yang tidak bentrok.</p>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-end">
+            <label class="md:col-span-4 text-[10px] font-bold text-[#5C7C68]">Maksimal sesi per hari<input type="number" id="ruleMaxSessions" min="1" max="10" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="md:col-span-4 text-[10px] font-bold text-[#5C7C68]">Jeda antar sesi (menit)<input type="number" id="ruleBuffer" min="0" max="240" step="15" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <div class="col-span-2 md:col-span-4"><button type="button" onclick="saveSessionRules()" class="w-full bg-[#132A23] text-white text-xs font-bold px-3 py-2 rounded-xl">Simpan Aturan</button></div>
+          </div>
+        </div>
+        <div id="blocksList" class="space-y-2"></div>
+        <p class="text-[11px] text-[#5C7C68]">Ingin otomatis dari Google Calendar pekerjaan lain? Lihat SETUP.md bagian 8 (Script Property <code>BLOCK_CALENDAR_IDS</code>).</p>
+      </div>
+
+      <!-- TAB 2: PACKAGES & SESSION TYPES -->
+      <div id="adminTab_packages" class="hidden space-y-6">
+        <datalist id="featureLabels">
+          <option value="Durasi"></option><option value="Semua file asli"></option><option value="Foto edit"></option>
+          <option value="Foto cetak"></option><option value="Photobook / Album"></option><option value="Video"></option>
+          <option value="Jumlah orang"></option><option value="Lokasi"></option>
+        </datalist>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-[#132A23]">Paket Fotografi</h3>
+              <p class="text-[11px] text-[#5C7C68] mt-0.5">Tahan ikon ⠿ lalu geser untuk mengubah urutan (atau pakai tombol ▲▼). Perubahan baru tampil ke klien setelah menekan <strong>Simpan Semua Perubahan</strong>.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <input type="text" id="newPkgName" placeholder="Nama paket baru" class="sm:col-span-6 glass-input rounded-xl px-3 py-2 text-xs" />
+              <input type="number" id="newPkgPrice" placeholder="Harga (Rp)" class="sm:col-span-4 glass-input rounded-xl px-3 py-2 text-xs" />
+              <button type="button" onclick="addPackageItem()" class="sm:col-span-2 bg-[#132A23] text-white text-xs font-bold px-3 py-2 rounded-xl">+ Tambah</button>
+            </div>
+            <div id="adminPackagesList" class="space-y-3 pt-1"></div>
+          </div>
+
+          <div class="bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3 self-start">
+            <div>
+              <h3 class="text-sm font-extrabold text-[#132A23]">Tipe Sesi Keluarga</h3>
+              <p class="text-[11px] text-[#5C7C68] mt-0.5">Nama bisa diedit langsung dan diurutkan dengan geser.</p>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="newSessionTypeInput" placeholder="Contoh: Newborn Lifestyle" class="glass-input flex-1 min-w-0 rounded-xl px-3 py-2 text-xs" />
+              <button type="button" onclick="addSessionType()" class="bg-[#132A23] text-white text-xs font-bold px-4 py-2 rounded-xl">Tambah</button>
+            </div>
+            <div id="adminSessionTypesList" class="space-y-2 pt-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: ADD-ONS -->
+      <div id="adminTab_addons" class="hidden space-y-4">
+        <div class="bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3 max-w-2xl">
+          <div>
+            <h3 class="text-sm font-extrabold text-[#132A23]">Layanan Tambahan (Add-Ons)</h3>
+            <p class="text-[11px] text-[#5C7C68] mt-0.5">Edit nama dan harga langsung, geser ⠿ untuk mengurutkan, lalu tekan <strong>Simpan Semua Perubahan</strong>.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <input type="text" id="newAddonName" placeholder="Nama add-on baru (mis: Album Cetak)" class="sm:col-span-6 glass-input rounded-xl px-3 py-2 text-xs" />
+            <input type="number" id="newAddonPrice" placeholder="Harga tambahan (Rp)" class="sm:col-span-4 glass-input rounded-xl px-3 py-2 text-xs" />
+            <button type="button" onclick="addAddonItem()" class="sm:col-span-2 bg-[#132A23] text-white text-xs font-bold px-3 py-2 rounded-xl">+ Tambah</button>
+          </div>
+          <div id="adminAddonsList" class="space-y-2 pt-1"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PROMO & DISKON -->
+      <div id="adminTab_discounts" class="hidden space-y-4">
+        <div class="bg-white/80 rounded-2xl p-4 border border-[#132A23]/10 max-w-3xl space-y-3">
+          <div>
+            <h3 class="text-sm font-extrabold text-[#132A23]">Promo &amp; Diskon</h3>
+            <p class="text-[11px] text-[#5C7C68] mt-0.5">Buat beberapa promo sekaligus. Masing-masing punya potongan, paket sasaran, periode, dan hari berlaku sendiri. Tekan <strong>Simpan Semua Perubahan</strong> setelah selesai.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-end gap-2 justify-between">
+            <label class="text-[10px] font-bold text-[#5C7C68] sm:w-80">Jika beberapa promo cocok untuk satu booking
+              <select id="discountModeSelect" onchange="setDiscountMode(this.value)" class="glass-input w-full rounded-xl px-3 py-2 text-xs font-semibold mt-0.5">
+                <option value="best">Pakai potongan terbesar saja</option>
+                <option value="stack">Gabungkan semua potongan</option>
+              </select></label>
+            <button type="button" onclick="addPromo()" class="bg-[#132A23] text-white text-xs font-bold px-4 py-2 rounded-xl">+ Tambah Promo</button>
+          </div>
+          <div id="adminPromosList" class="space-y-3 pt-1"></div>
+        </div>
+      </div>
+
+      <!-- TAB 5: BRANDING, GOOGLE DRIVE COVER & REKENING -->
+      <div id="adminTab_branding" class="hidden space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
+            <h3 class="text-sm font-extrabold text-[#132A23]">Tampilan Logo &amp; Sampul Google Drive</h3>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Link Foto Sampul (Google Drive / URL Gambar)</label>
+              <input type="text" id="settingCoverUrl" placeholder="Tempel link share Google Drive..." class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Tingkat Blur Sampul (<span id="blurValLabel">26</span>px)</label>
+              <input type="range" id="settingBlurRange" min="8" max="45" value="26" oninput="document.getElementById('blurValLabel').textContent=this.value" class="w-full accent-[#132A23]" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Upload Logo PNG Transparan (Opsional)</label>
+              <input type="file" accept="image/png,image/webp" onchange="handleLogoUpload(event)" class="text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Ukuran Logo (<span id="logoSizeLabel">84</span>px)</label>
+              <input type="range" id="settingLogoSize" min="50" max="160" value="84" oninput="document.getElementById('logoSizeLabel').textContent=this.value" class="w-full accent-[#132A23]" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Deskripsi Singkat di Bawah Logo</label>
+              <input type="text" id="settingHeroDesc" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+            </div>
+          </div>
+
+          <div class="bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
+            <h3 class="text-sm font-extrabold text-[#132A23]">Rekening Pembayaran &amp; Kontak WA</h3>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Nomor WhatsApp Admin (Format 628xxx)</label>
+              <input type="text" id="settingAdminWa" placeholder="6281234567890" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#132A23] mb-1">Nama Pemilik Rekening</label>
+              <input type="text" id="settingAccountHolder" placeholder="Berkunjung ke RUMAH" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div class="bg-white/70 rounded-xl p-3 border border-[#132A23]/10">
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-bold text-[#132A23]">No. Rekening BCA</label>
+                  <label class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-[#132A23] cursor-pointer"><input type="checkbox" id="settingBcaActive" class="accent-[#132A23] w-4 h-4" /> Aktif</label>
+                </div>
+                <input type="text" id="settingBcaNo" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+              </div>
+              <div class="bg-white/70 rounded-xl p-3 border border-[#132A23]/10">
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-bold text-[#132A23]">No. Rekening Bank Jago</label>
+                  <label class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-[#132A23] cursor-pointer"><input type="checkbox" id="settingJagoActive" class="accent-[#132A23] w-4 h-4" /> Aktif</label>
+                </div>
+                <input type="text" id="settingJagoNo" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+              </div>
+            </div>
+            <p class="text-[11px] text-[#5C7C68]">Rekening yang dimatikan tidak tampil di form klien, invoice, maupun template chat. Minimal satu rekening harus aktif agar booking bisa dilakukan.</p>
+            <button type="button" onclick="saveBrandingSettings()" class="bg-[#132A23] text-white text-xs font-bold px-5 py-2.5 rounded-xl mt-2">
+              Simpan Semua Pengaturan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup detail booking -->
+  <div id="bookingDetailModal" class="fixed inset-0 z-[45] hidden items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onclick="if (event.target === this) closeBookingDetail()">
+    <div class="bg-[#F6F8F6] w-full sm:max-w-2xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-5 pt-4 pb-3 bg-white border-b border-[#132A23]/10 flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div id="bdTitle" class="font-extrabold text-base text-[#132A23] truncate"></div>
+          <div id="bdSub" class="text-[11px] text-[#5C7C68]"></div>
+        </div>
+        <button type="button" onclick="closeBookingDetail()" class="shrink-0 w-8 h-8 rounded-full bg-[#E5ECE7] text-[#132A23] font-bold" title="Tutup">×</button>
+      </div>
+      <div id="bdBody" class="p-4 sm:p-5 overflow-y-auto space-y-3"></div>
+      <div id="bdFooter" class="px-4 sm:px-5 py-3 bg-white border-t border-[#132A23]/10 flex flex-wrap gap-2 justify-end"></div>
+    </div>
+  </div>
+
+  <!-- Bar simpan pengaturan admin -->
+  <div id="adminSaveBar" class="hidden fixed bottom-3 inset-x-3 z-40">
+    <div class="glass-panel rounded-2xl max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3 shadow-xl">
+      <span id="saveBarText" class="text-xs font-bold text-emerald-800">✓ Semua perubahan sudah tersimpan</span>
+      <button type="button" id="saveBarBtn" onclick="saveAllChanges()" disabled class="text-xs font-bold px-5 py-2.5 rounded-xl bg-[#132A23]/30 text-white cursor-not-allowed whitespace-nowrap">Simpan Semua Perubahan</button>
+    </div>
+  </div>
+
+  <!-- ==================== WHATSAPP DELIVERY & INVOICE MODAL ==================== -->
+  <div id="waTemplateModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/65 backdrop-blur-md p-4">
+    <div class="glass-panel rounded-3xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-[#132A23]">Kirim Pesan WhatsApp ke Klien</h3>
+        <button type="button" onclick="closeWaModal()" class="p-1.5 rounded-xl hover:bg-black/10"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" onclick="switchWaTemplateMode('invoice')" id="waModeInvoiceBtn" class="flex-1 bg-[#132A23] text-white text-xs font-bold py-2 rounded-xl">1. Template Invoice DP</button>
+        <button type="button" onclick="switchWaTemplateMode('delivery')" id="waModeDeliveryBtn" class="flex-1 bg-white text-[#132A23] text-xs font-bold py-2 rounded-xl border border-[#132A23]/15">2. Link GDrive &amp; Pilih Foto</button>
+      </div>
+      <div class="flex items-center justify-between gap-2">
+        <span id="waEditHint" class="text-[11px] text-[#5C7C68]">Pesan terisi otomatis. Boleh diedit sebelum dikirim.</span>
+        <button type="button" id="waEditToggleBtn" onclick="setWaEdit(true)" class="text-[11px] font-bold text-[#132A23] bg-[#E5ECE7] px-3 py-1.5 rounded-lg whitespace-nowrap">✏️ Edit Template</button>
+      </div>
+      <div id="waPlaceholderChips" class="hidden flex-wrap gap-1.5"></div>
+      <div id="deliveryLinksInputs" class="hidden grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <input type="text" id="inputGdriveAllLink" oninput="refreshWaPreviewText()" placeholder="Link Google Drive All File..." class="glass-input rounded-xl px-3 py-2 text-xs" />
+        <input type="text" id="inputPhotoSelectLink" oninput="refreshWaPreviewText()" placeholder="Link Galeri Pilih Foto..." class="glass-input rounded-xl px-3 py-2 text-xs" />
+      </div>
+      <textarea id="waPreviewTextarea" rows="8" class="glass-input w-full rounded-2xl p-3.5 text-xs leading-relaxed"></textarea>
+      <div id="waEditActions" class="hidden justify-end gap-2 flex-wrap">
+        <button type="button" onclick="resetWaTemplate()" class="bg-white text-[#132A23] border border-[#132A23]/20 text-xs font-bold px-4 py-2.5 rounded-xl">Reset Bawaan</button>
+        <button type="button" onclick="cancelWaEdit()" class="bg-white text-[#132A23] border border-[#132A23]/20 text-xs font-bold px-4 py-2.5 rounded-xl">Batal</button>
+        <button type="button" onclick="saveWaTemplate()" class="bg-[#132A23] text-white text-xs font-bold px-5 py-2.5 rounded-xl">Simpan Template</button>
+      </div>
+      <div id="waSendActions" class="flex justify-end gap-2">
+        <button type="button" onclick="copyWaText()" class="bg-white text-[#132A23] border border-[#132A23]/20 text-xs font-bold px-4 py-2.5 rounded-xl">Salin Teks</button>
+        <button type="button" onclick="openWhatsAppDirect()" class="bg-[#132A23] text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center gap-1.5">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i> Buka WhatsApp Klien
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Printable Invoice Container -->
+
+  <script>
+    const FORM_OPENED_AT = Date.now();
+
+    function escapeHTML(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function convertGDriveLink(url) {
+      if (!url) return '';
+      const match = url.match(/\/(?:d|file\/d)\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      return match ? `https://lh3.googleusercontent.com/d/${match[1]}` : url;
+    }
+
+    // Semua data (paket, harga, promo, rekening, tanggal terisi, booking) berasal dari server. Tidak ada localStorage.
+    const defaultState = {
+      settings: { coverUrl: '', blurPx: 26, logoDataUrl: '', logoSize: 84, heroDesc: '', adminWa: '', accountHolder: '', bcaNo: '', jagoNo: '', maxSessionsPerDay: 4, bufferMinutes: 60, discountMode: 'best', bcaActive: true, jagoActive: true },
+      discounts: [],
+      sessionTypes: [], packages: [], addons: [], bookings: [], blocks: [], waTemplates: { invoice: '', delivery: '' }
+    };
+    let state = JSON.parse(JSON.stringify(defaultState));
+    let waTemplateDefaults = { invoice: '', delivery: '' };
+    let bookedDates = new Set();
+    let busyTimes = {};
+    let appReady = false;
+    let appConfigured = false;
+
+    function isActiveBooking(b) { return !b.archived && b.status !== 'Dibatalkan'; }
+
+    function showAppError(msg) {
+      let el = document.getElementById('appErrorBanner');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'appErrorBanner';
+        el.className = 'fixed top-0 inset-x-0 z-50 bg-red-700 text-white text-xs font-semibold text-center px-4 py-2.5';
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+    }
+
+    async function loadPublicData() {
+      try {
+        const res = await fetch('/api/public');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const json = await res.json();
+        const c = json.config;
+        state.settings = c.settings; state.discounts = c.discounts || [];
+        state.sessionTypes = c.sessionTypes; state.packages = c.packages; state.addons = c.addons;
+        state.waTemplates = c.waTemplates || state.waTemplates;
+        waTemplateDefaults = json.waTemplateDefaults || waTemplateDefaults;
+        bookedDates = new Set(json.bookedDates || []);
+        busyTimes = json.busyTimes || {};
+        appConfigured = Boolean(json.configured);
+        appReady = true;
+        const banner = document.getElementById('appErrorBanner');
+        if (banner) banner.remove();
+        if (!appConfigured) showAppError('Booking online belum aktif: pengaturan rekening/WhatsApp belum diisi admin.');
+      } catch (e) {
+        appReady = false;
+        showAppError('Data belum bisa dimuat. Periksa koneksi lalu muat ulang halaman.');
+      }
+    }
+
+    // Simpan konfigurasi ke server (hanya admin, dicek di server). Mengembalikan true/false.
+    let saveChain = Promise.resolve(true);
+    function saveState() {
+      const p = saveChain.then(async () => {
+        try {
+          const { settings, discounts, sessionTypes, packages, addons, waTemplates } = state;
+          const r = await adminApi('saveConfig', { config: { settings, discounts, sessionTypes, packages, addons, waTemplates } });
+          if (r.config) Object.assign(state, r.config); // samakan dengan hasil rapi dari server
+          adminDirty = false; updateSaveBar();
+          rerenderAdminLists();
+          return true;
+        } catch (e) {
+          alert('Gagal menyimpan ke server: ' + e.message);
+          return false;
+        }
+      });
+      saveChain = p;
+      return p;
+    }
+
+    let adminDirty = false, brandingTouched = false, rulesTouched = false;
+    let currentAdminTab = 'bookings';
+
+    async function adminApi(action, body = {}) {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...body })
+      });
+      let json = {};
+      try { json = await res.json(); } catch (e) {}
+      if (res.status === 401) { exitAdminDashboard(true); throw new Error('Sesi admin berakhir, silakan login ulang.'); }
+      if (!res.ok) { const err = new Error(json.error || ('HTTP ' + res.status)); err.code = json.code; throw err; }
+      return json;
+    }
+
+    function normalizeWaInput(v) {
+      let d = String(v || '').replace(/[^0-9]/g, '');
+      if (d.startsWith('62')) d = d.slice(2);
+      return d.replace(/^0+/, '');
+    }
+
+    let currentStep = 1;
+    let calDate = new Date();
+    let selectedDateStr = '';
+    let selectedPkgId = '';
+    let selectedAddonIds = [];
+    let selectedBank = 'BCA';
+    let latestConfirmedBooking = null;
+    let bookingFilter = 'all';
+    let activeWaBooking = null;
+    let waTemplateMode = 'invoice';
+
+    function formatRp(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+
+    /* ==================== PROMO / DISKON (banyak promo) ==================== */
+    const DOW_LABELS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    function todayWIB() { return new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10); }
+    function promoValueText(d) { return d.type === 'percent' ? `${d.value}%` : formatRp(d.value); }
+    // Promo tampil/aktif hanya bila masih bisa dipesan hari ini dan belum kedaluwarsa.
+    function promoIsLive(d) {
+      if (!d || !d.enabled || !(Number(d.value) > 0)) return false;
+      const t = todayWIB();
+      if (d.bookStartDate && d.bookStartDate > t) return false;
+      if (d.bookEndDate && d.bookEndDate < t) return false;
+      if (d.endDate && d.endDate < t) return false;
+      if (d.sessionDates && d.sessionDates.length && d.sessionDates.every(x => x < t)) return false;
+      return true;
+    }
+    function promoAppliesToPkg(d, pkgId) { return !d.targetPkgId || d.targetPkgId === 'ALL' || !pkgId || d.targetPkgId === pkgId; }
+    function promoDateOk(d, dateIso) {
+      const t = todayWIB();
+      if (d.bookStartDate && t < d.bookStartDate) return false;
+      if (d.bookEndDate && t > d.bookEndDate) return false;
+      if (!dateIso) return true;
+      if (d.startDate && dateIso < d.startDate) return false;
+      if (d.endDate && dateIso > d.endDate) return false;
+      if (Array.isArray(d.sessionDates) && d.sessionDates.length && !d.sessionDates.includes(dateIso)) return false;
+      if (Array.isArray(d.allowedDays) && d.allowedDays.length) {
+        const [y, m, day] = dateIso.split('-').map(Number);
+        if (!d.allowedDays.includes(new Date(y, m - 1, day).getDay())) return false;
+      }
+      return true;
+    }
+    function promoAmount(d, price) {
+      const raw = d.type === 'percent' ? Math.round(Number(price) * (Number(d.value) / 100)) : Number(d.value);
+      return Math.max(0, Math.min(Number(price), raw));
+    }
+
+    // Sama dengan perhitungan di server: "best" = potongan terbesar, "stack" = gabungan (maks. harga paket).
+    function getPackageDiscountedPrice(pkgPrice, pkgId, dateIso) {
+      const price = Number(pkgPrice);
+      const cands = (state.discounts || [])
+        .filter(d => promoIsLive(d) && promoAppliesToPkg(d, pkgId) && promoDateOk(d, dateIso))
+        .map(d => ({ d, amount: promoAmount(d, price) })).filter(x => x.amount > 0);
+      if (!cands.length) return { finalPkgPrice: price, discountAmount: 0, applied: false, promos: [] };
+      let used, amount;
+      if (state.settings.discountMode === 'stack') {
+        used = cands; amount = Math.min(price, cands.reduce((sum, x) => sum + x.amount, 0));
+      } else {
+        const best = cands.reduce((a, b) => (b.amount > a.amount ? b : a));
+        used = [best]; amount = best.amount;
+      }
+      return { finalPkgPrice: price - amount, discountAmount: amount, applied: true, promos: used.map(x => x.d) };
+    }
+
+    function renderPromoBanner() {
+      const banner = document.getElementById('publicPromoBanner');
+      const live = (state.discounts || []).filter(promoIsLive);
+      if (!live.length) { banner.classList.add('hidden'); return; }
+      const rows = live.slice(0, 3).map(d => `
+        <div class="flex items-center gap-2.5 bg-[#132A23]/[0.06] rounded-xl px-2.5 py-1.5 text-left">
+          <span class="shrink-0 bg-[#132A23] text-[#F4E9C9] font-extrabold text-xs rounded-lg px-2 py-1 whitespace-nowrap">−${escapeHTML(promoValueText(d))}</span>
+          <div class="min-w-0">
+            <div class="text-xs font-extrabold leading-tight truncate text-[#132A23]">${escapeHTML(d.title)}</div>
+            <div class="text-[10px] leading-tight text-[#5C7C68]">${escapeHTML(d.periodText || 'Penawaran terbatas')}</div>
+          </div>
+        </div>`).join('');
+      const more = live.length > 3 ? `<div class="text-[10px] font-bold text-[#5C7C68]">+${live.length - 3} promo lain di langkah Paket</div>` : '';
+      document.getElementById('publicPromoList').innerHTML = rows + more;
+      banner.classList.remove('hidden');
+    }
+
+    function renderStep2Promos() {
+      const strip = document.getElementById('step2PromoStrip');
+      const live = (state.discounts || []).filter(promoIsLive);
+      if (!live.length) { strip.classList.add('hidden'); strip.innerHTML = ''; return; }
+      strip.innerHTML = live.map(d => {
+        const ok = promoDateOk(d, selectedDateStr);
+        const pkgName = d.targetPkgId && d.targetPkgId !== 'ALL' ? state.packages.find(p => p.id === d.targetPkgId)?.name : '';
+        const target = d.targetPkgId && d.targetPkgId !== 'ALL' ? ` • khusus ${escapeHTML(pkgName || 'paket tertentu')}` : '';
+        const days = d.allowedDays?.length ? ` • hari ${d.allowedDays.map(x => DOW_LABELS[x]).join(', ')}` : '';
+        return `
+          <div class="promo-strip ${ok ? '' : 'promo-strip-off'}">
+            <span class="promo-chip">−${escapeHTML(promoValueText(d))}</span>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-extrabold leading-tight">${escapeHTML(d.title)}</div>
+              <div class="text-[10px] opacity-95 leading-tight">${escapeHTML(d.periodText || 'Penawaran terbatas')}${target}${days}</div>
+            </div>
+            <span class="text-[10px] font-extrabold text-right leading-tight">${ok ? '✓ Aktif di<br>tanggalmu' : 'Tidak berlaku<br>di tanggal ini'}</span>
+          </div>`;
+      }).join('');
+      strip.classList.remove('hidden');
+    }
+
+    function applyBranding() {
+      const s = state.settings;
+      document.documentElement.style.setProperty('--blur-amount', (s.blurPx || 26) + 'px');
+      document.getElementById('coverBgImage').src = convertGDriveLink(s.coverUrl);
+      document.getElementById('heroSubtitleDisplay').textContent = s.heroDesc;
+
+      const logoImg = document.getElementById('brandLogoImg');
+      const defLogo = document.getElementById('defaultBrandLogo');
+      if (s.logoDataUrl) {
+        logoImg.src = s.logoDataUrl;
+        logoImg.style.height = (s.logoSize || 84) + 'px';
+        logoImg.classList.remove('hidden');
+        defLogo.classList.add('hidden');
+      } else {
+        logoImg.classList.add('hidden');
+        defLogo.classList.remove('hidden');
+        defLogo.style.transform = `scale(${(s.logoSize || 84) / 84})`;
+      }
+
+      renderPromoBanner();
+
+      renderBankOptions();
+    }
+
+    function renderSessionTypesDropdown() {
+      const sel = document.getElementById('sessionTypeSelect');
+      sel.innerHTML = state.sessionTypes.map(t => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join('');
+    }
+
+    function renderChildrenInputs() {
+      const count = Math.max(0, Math.min(15, parseInt(document.getElementById('childrenCount').value || '0', 10)));
+      const container = document.getElementById('childrenDynamicContainer');
+      if (count === 0) { container.innerHTML = ''; return; }
+      let html = '';
+      for (let i = 1; i <= count; i++) {
+        const prevName = document.getElementById(`childName_${i}`)?.value || '';
+        const prevAge = document.getElementById(`childAge_${i}`)?.value || '';
+        html += `
+          <div class="grid grid-cols-12 gap-2 items-center">
+            <span class="col-span-2 sm:col-span-1 text-[11px] font-bold text-[#132A23]">Anak ${i}</span>
+            <input type="text" id="childName_${i}" value="${escapeHTML(prevName)}" maxlength="40" placeholder="Nama panggilan" class="col-span-6 sm:col-span-7 glass-input rounded-xl px-3 py-1.5 text-xs" />
+            <input type="text" id="childAge_${i}" value="${escapeHTML(prevAge)}" maxlength="20" placeholder="Usia (mis: 3 thn)" class="col-span-4 glass-input rounded-xl px-3 py-1.5 text-xs" />
+          </div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function renderCalendar() {
+      const year = calDate.getFullYear();
+      const month = calDate.getMonth();
+      const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      document.getElementById('calendarMonthLabel').textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let cells = '';
+      for (let i = 0; i < firstDay; i++) cells += `<div></div>`;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cellDate = new Date(year, month, d);
+        const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isPast = cellDate < today;
+        const isBooked = bookedDates.has(iso);
+        const isSelected = selectedDateStr === iso;
+
+        if (isPast) {
+          cells += `<button type="button" disabled class="cal-day cal-day-past">${d}</button>`;
+        } else if (isBooked) {
+          cells += `<button type="button" disabled title="Tanggal sudah terisi" class="cal-day cal-day-booked">${d}<span class="text-[8px] leading-none">Penuh</span></button>`;
+        } else {
+          const partial = (busyTimes[iso] || []).length > 0;
+          cells += `<button type="button" onclick="pickDate('${iso}')" ${partial ? 'title="Sudah ada sesi, masih ada jam kosong"' : ''} class="cal-day cal-day-available ${partial ? 'cal-day-partial' : ''} ${isSelected ? 'cal-day-selected' : ''}">${d}</button>`;
+        }
+      }
+      document.getElementById('calendarGrid').innerHTML = cells;
+    }
+
+    function changeMonth(delta) { calDate.setMonth(calDate.getMonth() + delta); renderCalendar(); }
+
+    function pickDate(iso) {
+      selectedDateStr = iso;
+      const [y, m, d] = iso.split('-');
+      document.getElementById('selectedDateDisplay').textContent = `${d}/${m}/${y}`;
+      renderCalendar();
+      renderBusyInfo();
+      renderPackagesAndAddons();
+    }
+
+    function timeConflictMessage(date, ts, te) {
+      if (!date || !ts || !te) return '';
+      if (ts >= te) return 'Jam selesai harus setelah jam mulai.';
+      const buf = Number(state.settings.bufferMinutes ?? 60) || 0;
+      const m = t => { const [h, mi] = t.split(':').map(Number); return h * 60 + mi; };
+      const s = m(ts), e = m(te);
+      for (const [bs, be, kind] of (busyTimes[date] || [])) {
+        const pad = kind === 'b' ? buf : 0;
+        if (s < m(be) + pad && e + pad > m(bs)) {
+          return `Jam ${ts}–${te} bentrok dengan jam terisi ${bs}–${be}${kind === 'b' && buf ? ` (ada jeda ${buf} menit antar sesi)` : ''}. Pilih jam lain.`;
+        }
+      }
+      return '';
+    }
+
+    function renderBusyInfo() {
+      const box = document.getElementById('busyTimesInfo');
+      if (!box) return;
+      if (!selectedDateStr) { box.innerHTML = ''; return; }
+      const list = busyTimes[selectedDateStr] || [];
+      const buf = Number(state.settings.bufferMinutes ?? 60) || 0;
+      let html = list.length
+        ? `<div class="text-[11px] text-[#4C6158]">Jam sudah terisi: <strong>${list.map(([s, e]) => `${escapeHTML(s)}–${escapeHTML(e)}`).join(', ')}</strong>${buf ? ` • jeda antar sesi ${buf} menit` : ''}</div>`
+        : '<div class="text-[11px] text-[#5C7C68]">Belum ada sesi di tanggal ini, semua jam tersedia.</div>';
+      const conflict = timeConflictMessage(selectedDateStr, document.getElementById('timeStart').value, document.getElementById('timeEnd').value);
+      if (conflict) html += `<div class="text-[11px] font-bold text-red-700 mt-1">${escapeHTML(conflict)}</div>`;
+      box.innerHTML = html;
+    }
+
+    function renderPkgFeatures(p, dark) {
+      const rows = (p.features || []).filter(f => f.label && f.value);
+      const list = rows.length
+        ? `<ul class="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-0.5">${rows.map(f => `<li class="text-xs ${dark ? 'text-white/80 border-white/15' : 'text-[#4C6158] border-[#132A23]/8'} flex justify-between gap-3 border-b py-1"><span>${escapeHTML(f.label)}</span><strong class="${dark ? 'text-white' : 'text-[#132A23]'} text-right">${escapeHTML(f.value)}</strong></li>`).join('')}</ul>`
+        : '';
+      const note = p.desc ? `<p class="text-xs ${dark ? 'text-white/80' : 'text-[#4C6158]'} mt-2 leading-relaxed">${escapeHTML(p.desc)}</p>` : '';
+      return list + note;
+    }
+
+    function renderPackagesAndAddons() {
+      const activePkgs = state.packages.filter(p => !p.archived);
+      if (!activePkgs.some(p => p.id === selectedPkgId) && activePkgs.length) selectedPkgId = activePkgs[0].id;
+
+      renderStep2Promos();
+
+      document.getElementById('packagesListContainer').innerHTML = activePkgs.map(p => {
+        const active = p.id === selectedPkgId;
+        const pricing = getPackageDiscountedPrice(p.price, p.id, selectedDateStr);
+        const pct = pricing.applied && Number(p.price) > 0 ? Math.round(pricing.discountAmount / Number(p.price) * 100) : 0;
+        const promoNames = pricing.promos.map(x => escapeHTML(x.title)).join(' + ');
+        const priceHtml = pricing.applied
+          ? `<div class="text-right">
+               <div class="text-[11px] ${active ? 'text-white/65' : 'text-[#5C7C68]'} line-through">${formatRp(p.price)}</div>
+               <span class="promo-price text-sm font-black px-3 py-1 rounded-xl whitespace-nowrap inline-block">${formatRp(pricing.finalPkgPrice)}</span>
+             </div>`
+          : `<span class="text-xs font-extrabold ${active ? 'text-[#132A23] bg-white' : 'text-[#1F4035] bg-[#E5ECE7]'} px-2.5 py-1 rounded-lg whitespace-nowrap">${formatRp(p.price)}</span>`;
+
+        return `
+          <div onclick="selectedPkgId='${p.id}'; renderPackagesAndAddons();" class="relative overflow-hidden cursor-pointer rounded-2xl p-4 ${pricing.applied ? 'pt-8' : ''} border-2 transition ${active ? 'bg-[#1F4035] border-[#132A23] shadow-lg' : 'bg-white border-[#132A23]/10 hover:border-[#132A23]/30'}">
+            ${pricing.applied ? `<div class="promo-ribbon">🔥 PROMO${pct ? ` −${pct}%` : ''}</div>` : ''}
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="font-bold text-sm ${active ? 'text-white' : 'text-[#132A23]'}">${escapeHTML(p.name)}</div>
+                ${pricing.applied ? `<div class="mt-1.5 flex flex-wrap gap-1"><span class="promo-save">Hemat ${formatRp(pricing.discountAmount)}</span><span class="text-[10px] font-bold ${active ? 'text-white bg-white/15 border-white/30' : 'text-rose-700 bg-rose-50 border-rose-200'} border px-2 py-0.5 rounded-md">🏷️ ${promoNames}</span></div>` : ''}
+              </div>
+              ${priceHtml}
+            </div>
+            ${renderPkgFeatures(p, active)}
+          </div>`;
+      }).join('');
+
+      const activeAddons = state.addons.filter(a => a.active);
+      document.getElementById('addonsWrapper').classList.toggle('hidden', activeAddons.length === 0);
+      document.getElementById('addonsListContainer').innerHTML = activeAddons.map(a => {
+        const checked = selectedAddonIds.includes(a.id);
+        return `
+          <label class="cursor-pointer rounded-xl p-3 border flex items-center justify-between gap-2 transition ${checked ? 'border-[#132A23] bg-white' : 'border-[#132A23]/12 bg-white/65'}">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleAddon('${a.id}')" class="accent-[#132A23] w-4 h-4" />
+              <span class="text-xs font-semibold text-[#132A23]">${escapeHTML(a.name)}</span>
+            </div>
+            <span class="text-xs font-bold text-[#5C7C68]">+${formatRp(a.price)}</span>
+          </label>`;
+      }).join('');
+
+      updateLiveOfferCard();
+    }
+
+    function updateLiveOfferCard() {
+      const { pkg, chosenAddons, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
+      document.getElementById('liveOfferBreakdown').textContent = chosenAddons.length
+        ? `${pkg.name} + ${chosenAddons.length} Add-On`
+        : `${pkg.name}`;
+      document.getElementById('liveOfferFinalPrice').textContent = formatRp(total);
+      document.getElementById('liveOfferDpHint').textContent = `DP 50%: ${formatRp(dp)}`;
+
+      const strikeEl = document.getElementById('liveOfferStrikePrice');
+      const noteEl = document.getElementById('liveOfferDiscountNote');
+      if (discountAmount > 0) {
+        strikeEl.textContent = formatRp(subtotal);
+        strikeEl.classList.remove('hidden');
+        noteEl.textContent = `🔥 ${discountLabel || 'Promo'} (−${formatRp(discountAmount)})`;
+        noteEl.classList.remove('hidden');
+      } else {
+        strikeEl.classList.add('hidden');
+        noteEl.classList.add('hidden');
+      }
+    }
+
+    function toggleAddon(id) {
+      selectedAddonIds = selectedAddonIds.includes(id) ? selectedAddonIds.filter(x => x !== id) : [...selectedAddonIds, id];
+      renderPackagesAndAddons();
+    }
+
+    function appendQuickTag(textareaId, text) {
+      const el = document.getElementById(textareaId);
+      const current = el.value.trim();
+      if (!current.includes(text)) {
+        el.value = current ? `${current}, ${text}` : text;
+      }
+    }
+
+    let maxUnlocked = 1;
+
+    // Pesan masalah untuk sebuah langkah (kosong = lengkap). Langkah berikutnya baru terbuka bila langkah sebelumnya lengkap.
+    function stepProblem(step) {
+      if (step === 1) {
+        if (!appReady || !appConfigured) return 'Booking online belum siap. Muat ulang halaman atau hubungi admin.';
+        const name = document.getElementById('clientName').value.trim();
+        const wa = document.getElementById('clientWa').value.trim();
+        const loc = document.getElementById('clientLocation').value.trim();
+        if (!name || normalizeWaInput(wa).length < 8 || !loc || !selectedDateStr) {
+          return 'Mohon lengkapi Nama, Nomor WhatsApp, Alamat Lokasi, dan pilih Tanggal Sesi pada kalender.';
+        }
+        const emailVal = document.getElementById('clientEmail').value.trim();
+        if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal)) return 'Format email belum benar.';
+        return timeConflictMessage(selectedDateStr, document.getElementById('timeStart').value, document.getElementById('timeEnd').value);
+      }
+      if (step === 2) return selectedPkgId ? '' : 'Silakan pilih salah satu paket fotografi.';
+      return '';
+    }
+
+    function updateStepPills() {
+      [1, 2, 3, 4].forEach(s => {
+        const btn = document.getElementById(`stepBtn${s}`);
+        const locked = s > maxUnlocked;
+        btn.disabled = locked;
+        btn.className = `rounded-2xl py-2.5 px-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition ${s === currentStep ? 'step-pill-active' : (locked ? 'step-pill-locked' : (s < currentStep ? 'step-pill-done' : 'step-pill-idle'))}`;
+      });
+    }
+
+    function showStep(step) {
+      currentStep = step;
+      [1, 2, 3, 4].forEach(s => document.getElementById(`step${s}Section`).classList.toggle('hidden', s !== step));
+      updateStepPills();
+      if (step === 2) renderPackagesAndAddons();
+      if (step === 3) buildSummary();
+      if (step === 4) updatePaymentStepTotals();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToStep(step) {
+      for (let k = 1; k < step; k++) {
+        const problem = stepProblem(k);
+        if (problem) {
+          alert(problem);
+          maxUnlocked = Math.min(maxUnlocked, k);
+          if (k !== currentStep) showStep(k); else updateStepPills();
+          return;
+        }
+      }
+      maxUnlocked = Math.max(maxUnlocked, step);
+      showStep(step);
+    }
+
+    // Menu langkah di atas: hanya bisa dibuka bila langkah sebelumnya sudah terisi.
+    function pillGo(step) { if (step <= maxUnlocked) goToStep(step); }
+
+    function validateStep1() {
+      const problem = stepProblem(1);
+      if (problem) { alert(problem); return; }
+      goToStep(2);
+    }
+
+    function validateStep2() {
+      const problem = stepProblem(2);
+      if (problem) { alert(problem); return; }
+      goToStep(3);
+    }
+
+    function calculateTotals() {
+      const pkg = state.packages.find(p => p.id === selectedPkgId) || { id: '', name: '-', price: 0 };
+      const chosenAddons = state.addons.filter(a => selectedAddonIds.includes(a.id));
+      const addonsTotal = chosenAddons.reduce((sum, a) => sum + Number(a.price || 0), 0);
+      const subtotal = Number(pkg.price || 0) + addonsTotal;
+      const pricing = getPackageDiscountedPrice(pkg.price, pkg.id, selectedDateStr);
+      const discountAmount = pricing.discountAmount;
+      const total = Math.max(0, subtotal - discountAmount);
+      return {
+        pkg,
+        chosenAddons,
+        subtotal,
+        discountAmount,
+        discountLabel: discountAmount > 0 ? pricing.promos.map(x => x.title).join(' + ') : '',
+        total,
+        dp: Math.round(total * 0.5)
+      };
+    }
+
+    function collectChildrenText() {
+      const count = parseInt(document.getElementById('childrenCount').value || '0', 10);
+      if (count <= 0) return '-';
+      const list = [];
+      for (let i = 1; i <= count; i++) {
+        const n = document.getElementById(`childName_${i}`)?.value.trim() || `Anak ${i}`;
+        const a = document.getElementById(`childAge_${i}`)?.value.trim() || '-';
+        list.push(`${i}. ${n} (${a})`);
+      }
+      return list.join(', ');
+    }
+
+    function buildSummary() {
+      const { pkg, chosenAddons, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
+      const name = escapeHTML(document.getElementById('clientName').value);
+      const wa = escapeHTML(normalizeWaInput(document.getElementById('clientWa').value));
+      const type = escapeHTML(document.getElementById('sessionTypeSelect').value);
+      const loc = escapeHTML(document.getElementById('clientLocation').value);
+      const tStart = escapeHTML(document.getElementById('timeStart').value);
+      const tEnd = escapeHTML(document.getElementById('timeEnd').value);
+      const childrenText = escapeHTML(collectChildrenText());
+      const pref = escapeHTML(document.getElementById('prefNotes').value || '-');
+      const rest = escapeHTML(document.getElementById('restrictNotes').value || '-');
+
+      document.getElementById('summaryContent').innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-3 border-b border-[#132A23]/10">
+          <div><span class="text-xs text-[#5C7C68] block">Pemesan</span><strong>${name}</strong> (+62${wa})</div>
+          <div><span class="text-xs text-[#5C7C68] block">Tipe &amp; Jadwal Sesi</span><strong>${type}</strong> • ${selectedDateStr} (${tStart} - ${tEnd})</div>
+          <div class="sm:col-span-2"><span class="text-xs text-[#5C7C68] block">Lokasi Pemotretan</span>${loc}</div>
+          <div class="sm:col-span-2"><span class="text-xs text-[#5C7C68] block">Detail Anak</span>${childrenText}</div>
+          <div><span class="text-xs text-[#5C7C68] block">Preferensi Gaya</span>${pref}</div>
+          <div><span class="text-xs text-[#5C7C68] block">Hal yang Dihindari</span>${rest}</div>
+        </div>
+        <div class="space-y-1.5 pt-1">
+          <div class="flex justify-between"><span>Paket: <strong>${escapeHTML(pkg.name)}</strong></span><strong>${formatRp(pkg.price)}</strong></div>
+          ${chosenAddons.map(a => `<div class="flex justify-between text-xs text-[#4C6158]"><span>+ ${escapeHTML(a.name)}</span><span>${formatRp(a.price)}</span></div>`).join('')}
+          ${discountAmount > 0 ? `
+            <div class="flex justify-between text-xs text-[#5C7C68] pt-1 border-t border-dashed border-[#132A23]/15">
+              <span>Subtotal</span><span>${formatRp(subtotal)}</span>
+            </div>
+            <div class="flex justify-between text-xs font-bold text-emerald-800">
+              <span>🏷️ ${escapeHTML(discountLabel)}</span><span>-${formatRp(discountAmount)}</span>
+            </div>` : ''}
+          <div class="flex justify-between text-base font-extrabold text-[#132A23] pt-2 border-t border-[#132A23]/10">
+            <span>Total Biaya Akhir</span><span>${formatRp(total)}</span>
+          </div>
+          <div class="flex justify-between text-xs font-bold text-[#1F4035]">
+            <span>DP Kunci Jadwal (50%)</span><span>${formatRp(dp)}</span>
+          </div>
+        </div>`;
+    }
+
+    function updatePaymentStepTotals() {
+      const { subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
+      document.getElementById('dpAmountHighlight').textContent = formatRp(dp);
+      document.getElementById('fullAmountSubtext').textContent = discountAmount > 0
+        ? `Total Akhir: ${formatRp(total)} (Hemat ${formatRp(discountAmount)} dari ${formatRp(subtotal)})`
+        : `Total Paket: ${formatRp(total)}`;
+
+      const badge = document.getElementById('paymentDiscountBadge');
+      if (discountAmount > 0) {
+        badge.textContent = `🏷️ ${discountLabel}`;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function activeBanks() {
+      const s = state.settings;
+      return [s.bcaActive !== false && s.bcaNo ? 'BCA' : null, s.jagoActive !== false && s.jagoNo ? 'Jago' : null].filter(Boolean);
+    }
+
+    // Hanya rekening yang aktif (dan terisi nomornya) yang ditampilkan ke klien.
+    function renderBankOptions() {
+      const banks = activeBanks();
+      document.getElementById('btnBankBCA').classList.toggle('hidden', !banks.includes('BCA'));
+      document.getElementById('btnBankJago').classList.toggle('hidden', !banks.includes('Jago'));
+      document.getElementById('bankOptionsGrid').className = banks.length === 1 ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3';
+      if (!banks.includes(selectedBank)) selectedBank = banks[0] || 'BCA';
+      selectBank(selectedBank);
+    }
+
+    function selectBank(bank) {
+      selectedBank = bank;
+      const isBca = bank === 'BCA';
+      const banks = activeBanks();
+      const hid = (b) => (banks.includes(b) ? '' : ' hidden'); // rekening nonaktif/kosong tetap tersembunyi
+      document.getElementById('btnBankBCA').className = `rounded-2xl p-3.5 flex items-center justify-between transition ${isBca ? 'border-2 border-[#132A23] bg-white' : 'border border-[#132A23]/15 bg-white/70'}${hid('BCA')}`;
+      document.getElementById('btnBankJago').className = `rounded-2xl p-3.5 flex items-center justify-between transition ${!isBca ? 'border-2 border-[#132A23] bg-white' : 'border border-[#132A23]/15 bg-white/70'}${hid('Jago')}`;
+      document.getElementById('checkBCA').classList.toggle('hidden', !isBca);
+      document.getElementById('checkJago').classList.toggle('hidden', isBca);
+
+      const s = state.settings;
+      document.getElementById('bankAccountTitle').textContent = `Bank ${bank} — a.n. ${s.accountHolder}`;
+      document.getElementById('bankAccountNumber').textContent = isBca ? s.bcaNo : s.jagoNo;
+    }
+
+    function copySelectedAccount() {
+      const num = document.getElementById('bankAccountNumber').textContent;
+      navigator.clipboard?.writeText(num);
+      alert(`Nomor rekening ${selectedBank} (${num}) berhasil disalin.`);
+    }
+
+    async function submitFinalBooking() {
+      const btn = document.getElementById('submitBookingBtn');
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.innerHTML = '<span>Memproses Jadwal...</span>';
+      const restoreBtn = () => {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i><span>Konfirmasi &amp; Kunci Jadwal</span>';
+        lucide.createIcons();
+      };
+
+      const { pkg, chosenAddons } = calculateTotals();
+      const payload = {
+        _hp_field: document.getElementById('hpWebsiteField').value,
+        _opened_at: FORM_OPENED_AT,
+        clientName: document.getElementById('clientName').value.trim(),
+        whatsapp: normalizeWaInput(document.getElementById('clientWa').value),
+        instagram: document.getElementById('clientIg').value.trim(),
+        email: document.getElementById('clientEmail').value.trim(),
+        sessionType: document.getElementById('sessionTypeSelect').value,
+        sessionDate: selectedDateStr,
+        timeStart: document.getElementById('timeStart').value,
+        timeEnd: document.getElementById('timeEnd').value,
+        location: document.getElementById('clientLocation').value.trim(),
+        totalPeople: document.getElementById('totalPeople').value,
+        childrenCount: document.getElementById('childrenCount').value,
+        childrenDetails: collectChildrenText(),
+        packageId: pkg.id,
+        addonIds: chosenAddons.map(a => a.id),
+        preferences: document.getElementById('prefNotes').value.trim() || '-',
+        restrictions: document.getElementById('restrictNotes').value.trim() || '-',
+        paymentBank: selectedBank
+      };
+
+      let json = null, errMsg = '', status = 0;
+      try {
+        const res = await fetch('/api/booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        status = res.status;
+        try { json = await res.json(); } catch (e) {}
+        if (!res.ok || !json?.success) errMsg = json?.error || 'Terjadi gangguan. Silakan coba lagi.';
+      } catch (e) {
+        errMsg = 'Koneksi bermasalah. Booking belum tersimpan, silakan coba lagi.';
+      }
+
+      if (errMsg) {
+        alert(errMsg);
+        if (status === 409) {
+          await loadPublicData();
+          if (!String(json?.code || '').startsWith('time_')) {
+            selectedDateStr = '';
+            document.getElementById('selectedDateDisplay').textContent = '-';
+          }
+          renderCalendar();
+          renderBusyInfo();
+          goToStep(1);
+        }
+        restoreBtn();
+        return;
+      }
+
+      const srv = json.booking || {};
+      const record = {
+        ...payload, ...srv, id: json.bookingId, whatsapp: srv.whatsapp || payload.whatsapp,
+        createdAt: new Date().toLocaleDateString('id-ID'), status: 'Menunggu DP', archived: false
+      };
+      latestConfirmedBooking = record;
+      bookedDates.add(selectedDateStr);
+
+      document.getElementById('confirmedBookingId').textContent = `ID: ${json.bookingId}`;
+      document.getElementById('paymentFormWrapper').classList.add('hidden');
+      document.getElementById('bookingSuccessWrapper').classList.remove('hidden');
+      restoreBtn();
+      renderCalendar();
+    }
+
+    function resetBookingForm() {
+      document.getElementById('paymentFormWrapper').classList.remove('hidden');
+      document.getElementById('bookingSuccessWrapper').classList.add('hidden');
+      selectedDateStr = '';
+      renderCalendar();
+      maxUnlocked = 1;
+      goToStep(1);
+    }
+
+    function sendClientConfirmationWA() {
+      if (!latestConfirmedBooking) return;
+      const b = latestConfirmedBooking;
+      const text = [
+        `Halo Admin *Berkunjung ke RUMAH* 👋`,
+        `Saya telah mengisi form booking dengan rincian:`,
+        `• ID Booking: *${b.id}*`,
+        `• Nama: *${b.clientName}*`,
+        `• Jadwal: *${b.sessionDate}* (${b.timeStart} - ${b.timeEnd})`,
+        `• Paket: *${b.packageName}*`,
+        b.discountAmount > 0 ? `• Diskon: *-${formatRp(b.discountAmount)}* (${b.discountLabel})` : null,
+        `• Transfer DP (50%): *${formatRp(b.dpAmount)}* ke *Bank ${b.paymentBank}*`,
+        ``,
+        `Berikut saya lampirkan bukti transfer DP-nya. Terima kasih!`
+      ].filter(Boolean).join('\n');
+      window.open(`https://wa.me/${state.settings.adminWa}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Isi invoice (gaya inline). Dipakai oleh Unduh PDF dan versi cetak.
+    function invoiceInnerHTML(booking) {
+      const s = state.settings;
+      const subtotal = booking.subtotalPrice || (booking.totalPrice + (booking.discountAmount || 0));
+      return `
+        <div style="padding:36px; font-family:Helvetica,Arial,sans-serif; color:#132A23; background:#fff;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #132A23; padding-bottom:18px;">
+            <div>
+              <div style="font-size:24px; font-weight:800;">Berkunjung ke RUMAH</div>
+              <div style="font-size:11px; color:#5C7C68; margin-top:4px;">Home &amp; Family Documentary Photography</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:18px; font-weight:800;">INVOICE</div>
+              <div style="font-size:12px; margin-top:4px;">No: <strong>${escapeHTML(booking.id)}</strong></div>
+              <div style="font-size:11px; color:#5C7C68;">Tanggal: ${escapeHTML(booking.createdAt)}</div>
+            </div>
+          </div>
+          <div style="margin-top:20px; font-size:12px; line-height:1.6;">
+            <div><strong>Ditagihkan Kepada:</strong> ${escapeHTML(booking.clientName)} (+${escapeHTML(booking.whatsapp)})</div>
+            <div><strong>Jadwal Sesi:</strong> ${escapeHTML(booking.sessionDate)} | Pukul ${escapeHTML(booking.timeStart)} - ${escapeHTML(booking.timeEnd)}</div>
+            <div><strong>Lokasi:</strong> ${escapeHTML(booking.location)}</div>
+          </div>
+          <table style="width:100%; border-collapse:collapse; margin-top:22px; font-size:12px;">
+            <thead>
+              <tr style="background:#E5ECE7; text-align:left;">
+                <th style="padding:10px; border-bottom:1px solid #132A23;">Deskripsi Layanan</th>
+                <th style="padding:10px; border-bottom:1px solid #132A23; text-align:right;">Nominal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:10px; border-bottom:1px solid #ddd;"><strong>${escapeHTML(booking.packageName)}</strong> (${escapeHTML(booking.sessionType)})</td>
+                <td style="padding:10px; border-bottom:1px solid #ddd; text-align:right;">${formatRp(subtotal)}</td>
+              </tr>
+              ${booking.addons && booking.addons !== '-' ? `<tr><td colspan="2" style="padding:8px 10px; font-size:11px; color:#4C6158;">Add-Ons: ${escapeHTML(booking.addons)}</td></tr>` : ''}
+              ${booking.discountAmount > 0 ? `<tr><td style="padding:8px 10px; color:#065F46; font-weight:bold;">Diskon: ${escapeHTML(booking.discountLabel || 'Promo')}</td><td style="padding:8px 10px; text-align:right; color:#065F46; font-weight:bold;">-${formatRp(booking.discountAmount)}</td></tr>` : ''}
+            </tbody>
+          </table>
+          <div style="margin-top:18px; text-align:right; font-size:13px; line-height:1.8;">
+            <div>Total Tagihan Akhir: <strong>${formatRp(booking.totalPrice)}</strong></div>
+            <div style="color:#1F4035;">Wajib DP (50%): <strong>${formatRp(booking.dpAmount)}</strong></div>
+            <div>Sisa Pelunasan: <strong>${formatRp(booking.totalPrice - booking.dpAmount)}</strong></div>
+          </div>
+          <div style="margin-top:26px; padding:14px; background:#F4F7F5; border-radius:10px; font-size:11px; line-height:1.6;">
+            <strong>Metode Pembayaran Resmi (a.n. ${escapeHTML(s.accountHolder)}):</strong><br/>
+            ${s.bcaActive !== false && s.bcaNo ? `• Bank BCA: <strong>${escapeHTML(s.bcaNo)}</strong><br/>` : ''}
+            ${s.jagoActive !== false && s.jagoNo ? `• Bank Jago: <strong>${escapeHTML(s.jagoNo)}</strong>` : ''}
+          </div>
+        </div>`;
+    }
+
+    /* ==================== INVOICE PDF (teks asli, digambar langsung, tanpa pustaka) ==================== */
+    // Lebar huruf Helvetica / Helvetica-Bold (kode WinAnsi 32..255, per 1000 unit).
+    const PDF_W = { reg: [278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584, 350, 556, 350, 222, 556, 333, 1000, 556, 556, 333, 1000, 667, 333, 1000, 350, 611, 350, 350, 222, 222, 333, 333, 350, 556, 1000, 333, 1000, 500, 333, 944, 350, 500, 667, 278, 333, 556, 556, 556, 556, 260, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 556, 537, 278, 333, 333, 365, 556, 834, 834, 834, 611, 667, 667, 667, 667, 667, 667, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 500, 556, 556, 556, 556, 278, 278, 278, 278, 556, 556, 556, 556, 556, 556, 556, 584, 611, 556, 556, 556, 556, 500, 556, 500], bold: [278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611, 975, 722, 722, 722, 722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 333, 278, 333, 584, 556, 333, 556, 611, 556, 611, 556, 333, 611, 611, 278, 278, 556, 278, 889, 611, 611, 611, 611, 389, 556, 333, 611, 556, 778, 556, 556, 500, 389, 280, 389, 584, 350, 556, 350, 278, 556, 500, 1000, 556, 556, 333, 1000, 667, 333, 1000, 350, 611, 350, 350, 278, 278, 500, 500, 350, 556, 1000, 333, 1000, 556, 333, 944, 350, 500, 667, 278, 333, 556, 556, 556, 556, 280, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 611, 556, 278, 333, 333, 365, 556, 834, 834, 834, 611, 722, 722, 722, 722, 722, 722, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 556, 556, 556, 556, 556, 278, 278, 278, 278, 611, 611, 611, 611, 611, 611, 611, 584, 611, 611, 611, 611, 611, 556, 611, 556] };
+
+    // Karakter -> kode WinAnsi (Helvetica standar). Di luar jangkauan (emoji, huruf non-Latin) menjadi "?".
+    function pdfCode(ch) {
+      const c = ch.codePointAt(0);
+      const map = { 0x20AC: 0x80, 0x2026: 0x85, 0x2022: 0x95, 0x2018: 0x91, 0x2019: 0x92, 0x201C: 0x93, 0x201D: 0x94, 0x2013: 0x96, 0x2014: 0x97 };
+      if (map[c]) return map[c];
+      if (c === 9 || c === 10 || c === 13) return 32;
+      if (c >= 32 && c <= 126) return c;
+      if (c >= 160 && c <= 255) return c;
+      return 63;
+    }
+    function pdfClean(s) { return Array.from(String(s ?? '').normalize('NFC')).map(ch => String.fromCharCode(pdfCode(ch))).join(''); }
+    function pdfStr(clean) {
+      let out = '(';
+      for (const ch of clean) {
+        const c = ch.charCodeAt(0);
+        if (ch === '\\' || ch === '(' || ch === ')') out += '\\' + ch;
+        else if (c < 32 || c > 126) out += '\\' + c.toString(8).padStart(3, '0');
+        else out += ch;
+      }
+      return out + ')';
+    }
+    function pdfW(clean, bold, size) {
+      const t = bold ? PDF_W.bold : PDF_W.reg;
+      let w = 0;
+      for (const ch of clean) w += t[ch.charCodeAt(0) - 32] || 0;
+      return w * size / 1000;
+    }
+    function pdfWrap(text, maxW, bold, size) {
+      const words = pdfClean(text).split(/\s+/).filter(Boolean), lines = [];
+      let cur = '';
+      const push = () => { if (cur) { lines.push(cur); cur = ''; } };
+      for (let word of words) {
+        while (pdfW(word, bold, size) > maxW) {            // kata yang lebih panjang dari satu baris dipotong
+          let n = word.length;
+          while (n > 1 && pdfW(word.slice(0, n), bold, size) > maxW) n--;
+          push(); lines.push(word.slice(0, n)); word = word.slice(n);
+        }
+        const test = cur ? cur + ' ' + word : word;
+        if (cur && pdfW(test, bold, size) > maxW) { push(); cur = word; } else cur = test;
+      }
+      push();
+      return lines.length ? lines : [''];
+    }
+    const pdfRgb = (hex) => [1, 3, 5].map(i => (parseInt(hex.slice(i, i + 2), 16) / 255).toFixed(3)).join(' ');
+    const pdfN = (n) => Number(n).toFixed(2);
+
+    // Perakit halaman: koordinat y dihitung dari atas halaman (satuan pt, A4).
+    function pdfBuilder() {
+      const W = 595.28, H = 841.89, M = 42, pages = [[]];
+      const api = {
+        W, H, M, y: M,
+        ops: () => pages[pages.length - 1],
+        newPage() { pages.push([]); api.y = M; },
+        ensure(h) { if (api.y + h > H - M) api.newPage(); },
+        text(x, y, str, o = {}) {
+          const clean = pdfClean(str), size = o.size || 10, bold = !!o.bold;
+          const w = pdfW(clean, bold, size);
+          const px = o.align === 'right' ? x - w : x;
+          api.ops().push(`BT /${bold ? 'F2' : 'F1'} ${size} Tf ${pdfRgb(o.color || '#132A23')} rg ${pdfN(px)} ${pdfN(H - y)} Td ${pdfStr(clean)} Tj ET`);
+          return w;
+        },
+        rect(x, y, w, h, hex) { api.ops().push(`${pdfRgb(hex)} rg ${pdfN(x)} ${pdfN(H - y - h)} ${pdfN(w)} ${pdfN(h)} re f`); },
+        line(x1, y, x2, width, hex) { api.ops().push(`${pdfN(width)} w ${pdfRgb(hex)} RG ${pdfN(x1)} ${pdfN(H - y)} m ${pdfN(x2)} ${pdfN(H - y)} l S`); },
+        build(title) {
+          const n = pages.length, objs = [];
+          objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+          objs[2] = `<< /Type /Pages /Kids [${pages.map((_, i) => `${5 + 2 * i} 0 R`).join(' ')}] /Count ${n} >>`;
+          objs[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+          objs[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+          pages.forEach((ops, i) => {
+            const c = ops.join('\n');
+            objs[5 + 2 * i] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${6 + 2 * i} 0 R >>`;
+            objs[6 + 2 * i] = `<< /Length ${c.length} >>\nstream\n${c}\nendstream`;
+          });
+          objs[5 + 2 * n] = `<< /Title ${pdfStr(pdfClean(title))} /Producer (Berkunjung ke RUMAH) >>`;
+          let out = '%PDF-1.4\n';
+          const offs = [];
+          for (let i = 1; i < objs.length; i++) { offs[i] = out.length; out += `${i} 0 obj\n${objs[i]}\nendobj\n`; }
+          const xref = out.length;
+          out += `xref\n0 ${objs.length}\n0000000000 65535 f \n` + offs.slice(1).map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('');
+          out += `trailer\n<< /Size ${objs.length} /Root 1 0 R /Info ${5 + 2 * n} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+          return new TextEncoder().encode(out);   // seluruhnya ASCII: jumlah karakter = jumlah byte
+        }
+      };
+      return api;
+    }
+
+    function buildInvoicePdf(booking) {
+      const s = state.settings, d = pdfBuilder(), L = d.M, R = d.W - d.M, CW = R - L;
+      const GREEN = '#132A23', SOFT = '#5C7C68', DEEP = '#1F4035', MUTED = '#4C6158';
+      const subtotal = booking.subtotalPrice || (booking.totalPrice + (booking.discountAmount || 0));
+      const rp = (n) => formatRp(n);
+
+      // Kepala
+      d.text(L, d.y + 24, 'Berkunjung ke RUMAH', { size: 22, bold: true, color: GREEN });
+      d.text(L, d.y + 40, 'Home & Family Documentary Photography', { size: 9, color: SOFT });
+      d.text(R, d.y + 20, 'INVOICE', { size: 17, bold: true, align: 'right', color: GREEN });
+      const idW = d.text(R, d.y + 36, booking.id, { size: 10, bold: true, align: 'right', color: GREEN });
+      d.text(R - idW - 2, d.y + 36, 'No:', { size: 10, align: 'right', color: GREEN });
+      d.text(R, d.y + 50, 'Tanggal: ' + (booking.createdAt || '-'), { size: 9, align: 'right', color: SOFT });
+      d.line(L, d.y + 62, R, 1.6, GREEN);
+      d.y += 86;
+
+      // Data klien (label tebal + nilai yang dibungkus dengan indentasi gantung)
+      const info = (label, value) => {
+        const lw = pdfW(pdfClean(label + ' '), true, 10.5), lines = pdfWrap(value, CW - lw, false, 10.5);
+        d.ensure(lines.length * 15 + 2);
+        d.text(L, d.y, label, { size: 10.5, bold: true });
+        lines.forEach((ln, i) => d.text(L + lw, d.y + i * 15, ln, { size: 10.5 }));
+        d.y += lines.length * 15;
+      };
+      info('Ditagihkan Kepada:', `${booking.clientName} (+${booking.whatsapp})`);
+      info('Jadwal Sesi:', `${booking.sessionDate} | Pukul ${booking.timeStart} - ${booking.timeEnd}`);
+      info('Lokasi:', booking.location);
+      d.y += 14;
+
+      // Tabel layanan
+      d.ensure(70);
+      d.rect(L, d.y, CW, 24, '#E5ECE7');
+      d.text(L + 8, d.y + 16, 'Deskripsi Layanan', { size: 10.5, bold: true });
+      d.text(R - 8, d.y + 16, 'Nominal', { size: 10.5, bold: true, align: 'right' });
+      d.line(L, d.y + 24, R, 1, GREEN);
+      d.y += 24;
+
+      const colW = CW - 16 - 100;                       // lebar kolom deskripsi (sisakan ruang untuk nominal)
+      const name = pdfClean(booking.packageName), type = pdfClean(' (' + (booking.sessionType || '') + ')');
+      d.ensure(34);
+      let y1 = d.y + 18;
+      if (pdfW(name, true, 10.5) + pdfW(type, false, 10.5) <= colW) {
+        const nw = d.text(L + 8, y1, name, { size: 10.5, bold: true });
+        d.text(L + 8 + nw, y1, type, { size: 10.5 });
+        d.text(R - 8, y1, rp(subtotal), { size: 10.5, align: 'right' });
+        d.y = y1 + 10;
+      } else {
+        const nl = pdfWrap(name, colW, true, 10.5), tl = pdfWrap(type.trim(), colW, false, 10.5);
+        d.text(R - 8, y1, rp(subtotal), { size: 10.5, align: 'right' });
+        nl.forEach((ln, i) => d.text(L + 8, y1 + i * 14, ln, { size: 10.5, bold: true }));
+        tl.forEach((ln, i) => d.text(L + 8, y1 + (nl.length + i) * 14, ln, { size: 10.5 }));
+        d.y = y1 + (nl.length + tl.length - 1) * 14 + 10;
+      }
+      d.line(L, d.y, R, 0.5, '#DDDDDD');
+
+      if (booking.addons && booking.addons !== '-') {
+        const al = pdfWrap('Add-Ons: ' + booking.addons, CW - 16, false, 9.5);
+        d.ensure(al.length * 13 + 16);
+        al.forEach((ln, i) => d.text(L + 8, d.y + 16 + i * 13, ln, { size: 9.5, color: MUTED }));
+        d.y += al.length * 13 + 14;
+      }
+      if (booking.discountAmount > 0) {
+        d.ensure(30);
+        const dl = pdfWrap('Diskon: ' + (booking.discountLabel || 'Promo'), colW, true, 10.5);
+        dl.forEach((ln, i) => d.text(L + 8, d.y + 18 + i * 14, ln, { size: 10.5, bold: true, color: '#065F46' }));
+        d.text(R - 8, d.y + 18, '-' + rp(booking.discountAmount), { size: 10.5, bold: true, align: 'right', color: '#065F46' });
+        d.y += 18 + (dl.length - 1) * 14 + 10;
+      }
+      d.y += 14;
+
+      // Total
+      d.ensure(70);
+      const total = (label, value, color, y) => {
+        const vw = d.text(R, y, value, { size: 12, bold: true, align: 'right', color });
+        d.text(R - vw - 4, y, label, { size: 12, align: 'right', color });
+      };
+      total('Total Tagihan Akhir:', rp(booking.totalPrice), GREEN, d.y + 12);
+      total('Wajib DP (50%):', rp(booking.dpAmount), DEEP, d.y + 32);
+      total('Sisa Pelunasan:', rp(booking.totalPrice - booking.dpAmount), GREEN, d.y + 52);
+      d.y += 78;
+
+      // Metode pembayaran (hanya rekening aktif)
+      const banks = [];
+      if (s.bcaActive !== false && s.bcaNo) banks.push(['Bank BCA', s.bcaNo]);
+      if (s.jagoActive !== false && s.jagoNo) banks.push(['Bank Jago', s.jagoNo]);
+      const head = pdfWrap(`Metode Pembayaran Resmi (a.n. ${s.accountHolder || '-'}):`, CW - 28, true, 10);
+      const boxH = 22 + head.length * 14 + banks.length * 14;
+      d.ensure(boxH + 4);
+      d.rect(L, d.y, CW, boxH, '#F4F7F5');
+      head.forEach((ln, i) => d.text(L + 14, d.y + 20 + i * 14, ln, { size: 10, bold: true }));
+      banks.forEach(([nm, no], i) => {
+        const y = d.y + 20 + head.length * 14 + i * 14;
+        const lw = d.text(L + 14, y, `\u2022 ${nm}: `, { size: 10 });
+        d.text(L + 14 + lw, y, no, { size: 10, bold: true });
+      });
+      return d.build(`Invoice ${booking.id}`);
+    }
+
+    function downloadInvoiceBytes(bytes, filename) {
+      const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    // Unduh PDF teks sungguhan: ukuran kecil, bisa diseleksi/disalin, dan tampil sama di semua perangkat.
+    function generateInvoicePDF(booking) {
+      try {
+        downloadInvoiceBytes(buildInvoicePdf(booking), `Invoice-${booking.id}-${pdfClean(booking.clientName).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'klien'}.pdf`);
+      } catch (e) {
+        alert('Invoice PDF gagal dibuat di perangkat ini. Gunakan tombol "Versi cetak" sebagai cadangan.');
+      }
+    }
+
+    // Cadangan tanpa pustaka PDF: buka invoice di tab baru lalu cetak/simpan sebagai PDF lewat bawaan browser.
+    function printInvoice(booking) {
+      const w = window.open('', '_blank');
+      if (!w) { alert('Izinkan pop-up untuk membuka versi cetak invoice.'); return; }
+      w.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invoice ${escapeHTML(booking.id)}</title><style>@page{size:A4;margin:12mm}body{margin:0;background:#fff;font-family:Helvetica,Arial,sans-serif}.wrap{max-width:720px;margin:0 auto}</style></head><body><div class="wrap">${invoiceInnerHTML(booking)}</div><script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script></body></html>`);
+      w.document.close();
+    }
+
+    function printLatestInvoice() { if (latestConfirmedBooking) printInvoice(latestConfirmedBooking); }
+    function printInvoiceById(id) { const b = state.bookings.find(x => x.id === id); if (b) printInvoice(b); }
+
+    function downloadLatestInvoicePDF() { if (latestConfirmedBooking) generateInvoicePDF(latestConfirmedBooking); }
+
+    /* ==================== STEALTH ADMIN ACCESS & DASHBOARD ==================== */
+    function openAdminLoginModal() {
+      const modal = document.getElementById('adminLoginModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('adminPasswordInput').focus();
+    }
+
+    function closeAdminLoginModal() {
+      const modal = document.getElementById('adminLoginModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function verifyAdminLogin() {
+      const pw = document.getElementById('adminPasswordInput').value;
+      try {
+        const res = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw })
+        });
+        if (res.ok) {
+          const data = await adminApi('bookings');
+          state.bookings = data.bookings || [];
+          document.getElementById('adminPasswordInput').value = '';
+          closeAdminLoginModal();
+          showAdminDashboard();
+          return;
+        }
+        if (res.status === 429) { alert('Terlalu banyak percobaan. Coba lagi 15 menit lagi.'); return; }
+        if (res.status === 500) { alert('Server admin belum dikonfigurasi (ADMIN_PASSWORD / SESSION_SECRET).'); return; }
+      } catch (e) {
+        alert('Gagal terhubung ke server: ' + e.message);
+        return;
+      }
+      alert('Kata sandi tidak valid.');
+    }
+
+    function showAdminDashboard() {
+      document.getElementById('clientView').classList.add('hidden');
+      document.getElementById('adminView').classList.remove('hidden');
+      switchAdminTab('bookings');
+      renderAdminBookings();
+      renderAdminPackagesAndTypes();
+      renderAdminAddons();
+      renderAdminPromos();
+      loadBrandingInputs();
+      lucide.createIcons();
+    }
+
+    function exitAdminDashboard(force) {
+      if (!force && adminDirty && !confirm('Ada perubahan yang belum disimpan. Keluar tanpa menyimpan?')) return;
+      adminDirty = false; brandingTouched = rulesTouched = false; currentAdminTab = 'bookings';
+      closeBookingDetail(true);
+      fetch('/api/auth', { method: 'DELETE' }).catch(() => {});
+      state.bookings = [];
+      document.getElementById('adminView').classList.add('hidden');
+      document.getElementById('clientView').classList.remove('hidden');
+      updateSaveBar();
+      loadPublicData().then(() => { applyBranding(); renderSessionTypesDropdown(); renderCalendar(); renderPackagesAndAddons(); });
+    }
+
+    function switchAdminTab(tab) {
+      ['bookings', 'packages', 'blocks', 'addons', 'discounts', 'branding'].forEach(t => {
+        document.getElementById(`adminTab_${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tabBtn_${t}`).className = `admin-tab text-xs font-bold px-4 py-2 rounded-xl ${t === tab ? 'bg-[#132A23] text-white' : 'bg-white/75 text-[#132A23]'}`;
+      });
+      currentAdminTab = tab;
+      if (tab === 'discounts') renderAdminPromos();
+      if (tab === 'blocks') loadBlocks();
+      updateSaveBar();
+    }
+
+    function setDiscountMode(v) { state.settings.discountMode = v === 'stack' ? 'stack' : 'best'; markDirty(); }
+
+    function renderAdminPromos() {
+      const list = document.getElementById('adminPromosList');
+      if (!list) return;
+      document.getElementById('discountModeSelect').value = state.settings.discountMode === 'stack' ? 'stack' : 'best';
+      const pkgOptions = (sel) => `<option value="ALL" ${sel === 'ALL' ? 'selected' : ''}>Semua paket</option>` +
+        state.packages.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === sel ? 'selected' : ''}>${escapeHTML(p.name)}</option>`).join('');
+      list.innerHTML = state.discounts.length ? state.discounts.map((d, i) => `
+        <div data-sort-item data-idx="${i}" class="bg-white p-3 rounded-2xl border-2 ${d.enabled ? 'border-orange-300' : 'border-[#132A23]/10 opacity-75'} text-xs space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span data-drag-handle class="drag-handle" title="Tahan lalu geser">⠿</span>
+            <input type="text" value="${escapeHTML(d.title)}" oninput="updatePromo(${i}, 'title', this.value)" placeholder="Nama promo (mis: Promo Akhir Tahun)" class="glass-input flex-1 min-w-0 rounded-xl px-3 py-2 text-xs font-bold" />
+            ${moveBtns('discounts', i)}
+          </div>
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <label class="inline-flex items-center gap-2 bg-[#E5ECE7] px-3 py-1.5 rounded-xl cursor-pointer">
+              <input type="checkbox" ${d.enabled ? 'checked' : ''} onchange="updatePromo(${i}, 'enabled', this.checked)" class="accent-[#132A23] w-4 h-4" />
+              <span class="text-[11px] font-extrabold text-[#132A23]">Aktif (tampil &amp; berlaku)</span>
+            </label>
+            <button type="button" onclick="deletePromo(${i})" class="text-red-600 font-bold">Hapus Promo</button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <label class="text-[10px] font-bold text-[#5C7C68]">Jenis potongan
+              <select onchange="updatePromo(${i}, 'type', this.value)" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">
+                <option value="percent" ${d.type === 'percent' ? 'selected' : ''}>Persen (%)</option>
+                <option value="nominal" ${d.type === 'nominal' ? 'selected' : ''}>Nominal (Rp)</option>
+              </select></label>
+            <label class="text-[10px] font-bold text-[#5C7C68]">Besar potongan
+              <input type="number" min="0" value="${Number(d.value) || 0}" oninput="updatePromo(${i}, 'value', this.value)" placeholder="${d.type === 'percent' ? 'mis: 15' : 'mis: 250000'}" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="col-span-2 text-[10px] font-bold text-[#5C7C68]">Berlaku untuk
+              <select onchange="updatePromo(${i}, 'targetPkgId', this.value)" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">${pkgOptions(d.targetPkgId || 'ALL')}</select></label>
+          </div>
+          <label class="block text-[10px] font-bold text-[#5C7C68]">Keterangan periode (tampil ke klien)
+            <input type="text" value="${escapeHTML(d.periodText || '')}" oninput="updatePromo(${i}, 'periodText', this.value)" placeholder="Contoh: Berlaku 1–31 Des 2026 / Khusus Senin–Kamis" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+          <div class="rounded-xl bg-orange-50 border border-orange-200 p-2.5 space-y-2">
+            <div class="text-[10px] font-extrabold text-orange-900">📅 Kapan klien memesan (tanggal pemesanan)</div>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="text-[10px] font-bold text-[#5C7C68]">Mulai (opsional)
+                <input type="date" value="${escapeHTML(d.bookStartDate || '')}" onchange="updatePromo(${i}, 'bookStartDate', this.value)" class="glass-input w-full rounded-xl px-2.5 py-1.5 text-xs mt-0.5" /></label>
+              <label class="text-[10px] font-bold text-[#5C7C68]">Sampai (opsional)
+                <input type="date" value="${escapeHTML(d.bookEndDate || '')}" onchange="updatePromo(${i}, 'bookEndDate', this.value)" class="glass-input w-full rounded-xl px-2.5 py-1.5 text-xs mt-0.5" /></label>
+            </div>
+          </div>
+          <div class="rounded-xl bg-[#E5ECE7]/60 border border-[#132A23]/10 p-2.5 space-y-2">
+            <div class="text-[10px] font-extrabold text-[#132A23]">📸 Tanggal sesi foto yang dipilih klien</div>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="text-[10px] font-bold text-[#5C7C68]">Rentang mulai (opsional)
+                <input type="date" value="${escapeHTML(d.startDate || '')}" onchange="updatePromo(${i}, 'startDate', this.value)" class="glass-input w-full rounded-xl px-2.5 py-1.5 text-xs mt-0.5" /></label>
+              <label class="text-[10px] font-bold text-[#5C7C68]">Rentang sampai (opsional)
+                <input type="date" value="${escapeHTML(d.endDate || '')}" onchange="updatePromo(${i}, 'endDate', this.value)" class="glass-input w-full rounded-xl px-2.5 py-1.5 text-xs mt-0.5" /></label>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-[#5C7C68] mb-1">Hari sesi yang berlaku (kosongkan = semua hari)</div>
+              <div class="flex flex-wrap gap-1.5">
+                ${DOW_LABELS.map((lbl, dow) => `
+                  <label class="inline-flex items-center gap-1 bg-white px-2 py-1 rounded-lg text-[11px] font-bold text-[#132A23] cursor-pointer">
+                    <input type="checkbox" ${(d.allowedDays || []).includes(dow) ? 'checked' : ''} onchange="togglePromoDay(${i}, ${dow}, this.checked)" class="accent-[#132A23]" />${lbl}
+                  </label>`).join('')}
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-[#5C7C68] mb-1">Tanggal sesi pilihan admin (khusus tanggal ini saja, kosongkan = tidak dipakai)</div>
+              <div class="flex gap-2">
+                <input type="date" id="promoDate_${i}" class="glass-input flex-1 min-w-0 rounded-xl px-2.5 py-1.5 text-xs" />
+                <button type="button" onclick="addPromoDate(${i})" class="bg-[#132A23] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl whitespace-nowrap">+ Tambah</button>
+              </div>
+              <div class="flex flex-wrap gap-1.5 mt-1.5">
+                ${(d.sessionDates || []).map(dt => `<span class="inline-flex items-center gap-1 bg-white border border-[#132A23]/15 rounded-lg pl-2 pr-1 py-0.5 text-[11px] font-bold text-[#132A23]">${escapeHTML(dt)}<button type="button" onclick="removePromoDate(${i}, '${escapeHTML(dt)}')" class="w-5 h-5 rounded text-red-600" title="Hapus tanggal">×</button></span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <p class="text-[10px] text-[#5C7C68]">Kosongkan yang tidak dipakai. Semua syarat yang kamu isi harus terpenuhi bersamaan agar promo berlaku.</p>
+        </div>`).join('') : '<div class="text-xs text-[#5C7C68] p-4 text-center bg-white/60 rounded-2xl">Belum ada promo. Tekan "+ Tambah Promo".</div>';
+      sortableList(list, order => reorderState('discounts', order));
+    }
+
+    function updatePromo(i, key, val) {
+      const d = state.discounts[i];
+      if (!d) return;
+      d[key] = key === 'value' ? Math.max(0, Number(val) || 0) : key === 'enabled' ? Boolean(val) : String(val);
+      markDirty();
+      if (key === 'enabled' || key === 'type') renderAdminPromos();
+      renderPromoBanner();
+    }
+
+    function togglePromoDay(i, dow, on) {
+      const d = state.discounts[i];
+      if (!d) return;
+      const set = new Set(d.allowedDays || []);
+      if (on) set.add(dow); else set.delete(dow);
+      d.allowedDays = [...set].sort();
+      markDirty();
+    }
+
+    function addPromoDate(i) {
+      const d = state.discounts[i];
+      const val = document.getElementById(`promoDate_${i}`).value;
+      if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(val)) { alert('Pilih tanggalnya dulu.'); return; }
+      d.sessionDates = [...new Set([...(d.sessionDates || []), val])].sort();
+      if (d.sessionDates.length > 60) { d.sessionDates.length = 60; alert('Maksimal 60 tanggal.'); }
+      markDirty(); renderAdminPromos();
+    }
+
+    function removePromoDate(i, date) {
+      const d = state.discounts[i];
+      if (!d) return;
+      d.sessionDates = (d.sessionDates || []).filter(x => x !== date);
+      markDirty(); renderAdminPromos();
+    }
+
+    function addPromo() {
+      if (state.discounts.length >= 20) { alert('Maksimal 20 promo.'); return; }
+      state.discounts.push({ id: 'promo_' + Date.now().toString(36), enabled: true, title: 'Promo Baru', periodText: '', type: 'percent', value: 10, targetPkgId: 'ALL', bookStartDate: '', bookEndDate: '', startDate: '', endDate: '', sessionDates: [], allowedDays: [] });
+      markDirty(); renderAdminPromos();
+    }
+
+    function deletePromo(i) {
+      const d = state.discounts[i];
+      if (!d || !confirm(`Hapus promo "${d.title}"?`)) return;
+      state.discounts.splice(i, 1);
+      markDirty(); renderAdminPromos(); renderPromoBanner();
+    }
+
+    const BOOKING_STATUSES = ['Menunggu DP', 'Terjadwal', 'Selesai', 'Dibatalkan'];
+    const PAYMENT_STATUSES = ['Belum bayar', 'DP', 'Lunas'];
+    const FILTERS = [['all', 'Semua'], ['Menunggu DP', 'Menunggu DP'], ['Terjadwal', 'Terjadwal'], ['Selesai', 'Selesai'], ['archived', 'Arsip']];
+
+    function setBookingFilter(f) { bookingFilter = f; renderAdminBookings(); }
+
+    function bookingMatchesFilter(b) {
+      if (bookingFilter === 'archived') return b.archived;
+      if (b.archived) return false;
+      return bookingFilter === 'all' || b.status === bookingFilter;
+    }
+
+    function renderBookingStats() {
+      const live = state.bookings.filter(b => !b.archived && b.status !== 'Selesai' && b.status !== 'Dibatalkan');
+      const card = (label, val) => `<div class="bg-white/85 rounded-2xl p-4 border border-[#132A23]/10"><div class="text-[11px] text-[#5C7C68]">${label}</div><div class="text-lg font-extrabold text-[#132A23] mt-1">${val}</div></div>`;
+      document.getElementById('bookingStats').innerHTML =
+        card('Booking Aktif', live.length) +
+        card('Terjadwal', live.filter(b => b.status === 'Terjadwal' || b.status === 'DP Diterima').length) +
+        card('Selesai & Arsip', state.bookings.filter(b => b.archived || b.status === 'Selesai').length) +
+        card('Estimasi Omzet Aktif', formatRp(live.reduce((s, b) => s + Number(b.totalPrice || 0), 0)));
+    }
+
+    const STATUS_BADGE = {
+      'Menunggu DP': 'bg-amber-100 text-amber-900', 'Terjadwal': 'bg-sky-100 text-sky-900', 'DP Diterima': 'bg-sky-100 text-sky-900',
+      'Selesai': 'bg-emerald-100 text-emerald-900', 'Dibatalkan': 'bg-red-100 text-red-800'
+    };
+    const PAY_BADGE = { 'Belum bayar': 'bg-amber-50 text-amber-800', 'DP': 'bg-sky-50 text-sky-800', 'Lunas': 'bg-emerald-50 text-emerald-800' };
+    const cleanNote = v => (v && String(v).trim() && String(v).trim() !== '-') ? String(v).trim() : '';
+
+    // Daftar ringkas: satu baris per klien, klik untuk membuka popup detail.
+    function renderAdminBookings() {
+      renderBookingStats();
+      document.getElementById('bookingFilterBar').innerHTML = FILTERS.map(([key, label]) =>
+        `<button type="button" onclick="setBookingFilter('${key}')" class="text-xs font-bold px-3 py-1.5 rounded-lg ${bookingFilter === key ? 'bg-[#132A23] text-white' : 'bg-white/70 text-[#132A23]'}">${label}</button>`).join('');
+
+      const q = (document.getElementById('bookingSearch')?.value || '').trim().toLowerCase();
+      const list = state.bookings.filter(bookingMatchesFilter)
+        .filter(b => !q || `${b.clientName} ${b.id}`.toLowerCase().includes(q));
+      const box = document.getElementById('adminBookingsList');
+      if (!list.length) {
+        box.innerHTML = `<div class="text-xs text-[#5C7C68] bg-white/60 p-6 rounded-2xl text-center">Belum ada data pada kategori ini.</div>`;
+        return;
+      }
+      box.innerHTML = list.map(b => {
+        const pay = b.payment || 'Belum bayar';
+        return `
+        <button type="button" onclick="openBookingDetail('${escapeHTML(b.id)}')" class="w-full text-left bg-white/85 hover:bg-white transition rounded-2xl px-4 py-3 border border-[#132A23]/10 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-extrabold text-sm text-[#132A23] truncate">${escapeHTML(b.clientName)}</span>
+              <span class="text-[10px] font-bold bg-[#E5ECE7] text-[#132A23] px-2 py-0.5 rounded-md">${escapeHTML(b.id)}</span>
+            </div>
+            <div class="text-[11px] text-[#4C6158] mt-0.5 truncate">📅 ${escapeHTML(b.sessionDate)} • ${escapeHTML(b.timeStart)}–${escapeHTML(b.timeEnd)} • 📦 ${escapeHTML(b.packageName)}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="hidden sm:inline text-[10px] font-bold px-2 py-0.5 rounded-md ${PAY_BADGE[pay] || 'bg-gray-100 text-gray-700'}">${escapeHTML(pay)}</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${STATUS_BADGE[b.status] || 'bg-gray-100 text-gray-700'}">${escapeHTML(b.status || 'Menunggu DP')}</span>
+            <span class="text-[#5C7C68] text-lg leading-none">›</span>
+          </div>
+        </button>`;
+      }).join('');
+    }
+
+    /* ---------- Popup detail booking ---------- */
+    let activeDetailId = null, detailEditMode = false;
+
+    function detailBooking() { return state.bookings.find(x => x.id === activeDetailId); }
+
+    function openBookingDetail(id) {
+      activeDetailId = id; detailEditMode = false;
+      const m = document.getElementById('bookingDetailModal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+      renderBookingDetail();
+    }
+
+    function closeBookingDetail(force) {
+      if (!force && detailEditMode && !confirm('Tutup tanpa menyimpan perubahan?')) return;
+      const m = document.getElementById('bookingDetailModal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+      activeDetailId = null; detailEditMode = false;
+    }
+
+    function renderBookingDetail() {
+      const m = document.getElementById('bookingDetailModal');
+      if (!m || m.classList.contains('hidden')) return;
+      const b = detailBooking();
+      if (!b) { closeBookingDetail(true); return; }
+      document.getElementById('bdTitle').textContent = b.clientName;
+      document.getElementById('bdSub').textContent = `${b.id} • dibuat ${b.createdAt || '-'}${b.inCalendar ? ' • 📅 di kalender' : ''}`;
+      if (detailEditMode) renderBookingEditForm(b); else renderBookingView(b);
+    }
+
+    function renderBookingView(b) {
+      const id = escapeHTML(b.id), pay = b.payment || 'Belum bayar';
+      const keepDrive = document.getElementById(`drive_${b.id}`)?.value, keepGallery = document.getElementById(`gallery_${b.id}`)?.value;
+      const row = (label, value) => `<div class="flex justify-between gap-3 py-1.5 border-b border-[#132A23]/8 last:border-0 text-xs"><span class="text-[#5C7C68] shrink-0">${label}</span><span class="font-semibold text-[#132A23] text-right break-words min-w-0">${value}</span></div>`;
+      const card = (title, inner, extra = '') => `<div class="bg-white rounded-2xl p-3.5 border ${extra || 'border-[#132A23]/10'}"><div class="text-[11px] font-extrabold text-[#132A23] mb-1.5 uppercase tracking-wide">${title}</div>${inner}</div>`;
+      const note = (text) => `<p class="text-xs leading-relaxed whitespace-pre-wrap text-[#2F4A3F]">${text ? escapeHTML(text) : '<span class="text-[#8A9A92]">—</span>'}</p>`;
+      const opts = (arr, cur) => (arr.includes(cur) ? arr : [cur, ...arr]).map(o => `<option value="${escapeHTML(o)}" ${o === cur ? 'selected' : ''}>${escapeHTML(o)}</option>`).join('');
+      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.location)}`;
+
+      document.getElementById('bdBody').innerHTML = `
+        <div class="grid grid-cols-2 gap-2.5">
+          <label class="text-[10px] font-bold text-[#5C7C68]">Status Booking
+            <select onchange="changeBookingStatus('${id}', this.value)" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">${opts(BOOKING_STATUSES, b.status || 'Menunggu DP')}</select></label>
+          <label class="text-[10px] font-bold text-[#5C7C68]">Pembayaran
+            <select onchange="changeBookingPayment('${id}', this.value)" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">${opts(PAYMENT_STATUSES, pay)}</select></label>
+        </div>
+        ${card('Kontak',
+          row('Nama', escapeHTML(b.clientName)) +
+          row('WhatsApp', `<a href="https://wa.me/${escapeHTML(b.whatsapp)}" target="_blank" rel="noopener noreferrer" class="underline">+${escapeHTML(b.whatsapp)}</a>`) +
+          (b.instagram ? row('Instagram', `@${escapeHTML(b.instagram)}`) : '') +
+          (b.email ? row('Email', escapeHTML(b.email)) : ''))}
+        ${card('Jadwal &amp; Lokasi',
+          row('Tanggal', escapeHTML(b.sessionDate)) + row('Jam', `${escapeHTML(b.timeStart)} – ${escapeHTML(b.timeEnd)}`) +
+          row('Tipe sesi', escapeHTML(b.sessionType)) +
+          row('Lokasi', `${escapeHTML(b.location)} <a href="${maps}" target="_blank" rel="noopener noreferrer" class="underline text-[#1F4035]">Maps ↗</a>`))}
+        ${card('Peserta', row('Jumlah orang', b.totalPeople) + row('Jumlah anak', b.childrenCount) + (cleanNote(b.childrenDetails) ? row('Detail anak', escapeHTML(cleanNote(b.childrenDetails))) : ''))}
+        ${card('💭 Momen yang diinginkan', note(cleanNote(b.preferences)))}
+        ${card('⛔ Hal yang tidak boleh', note(cleanNote(b.restrictions)), cleanNote(b.restrictions) ? 'border-red-200' : '')}
+        ${card('Paket &amp; Biaya',
+          row('Paket', escapeHTML(b.packageName)) + row('Add-on', escapeHTML(cleanNote(b.addons) || '—')) +
+          row('Subtotal', formatRp(b.subtotalPrice)) +
+          (b.discountAmount > 0 ? row('Diskon', `−${formatRp(b.discountAmount)} (${escapeHTML(b.discountLabel || 'Promo')})`) : '') +
+          row('Total', `<strong>${formatRp(b.totalPrice)}</strong>`) + row('DP (50%)', formatRp(b.dpAmount)) +
+          row('Sisa pelunasan', formatRp(Math.max(0, b.totalPrice - b.dpAmount))) + row('Rekening DP', escapeHTML(b.paymentBank)))}
+        ${card('Link hasil foto', `
+          <div class="space-y-2">
+            <label class="block text-[10px] font-bold text-[#5C7C68]">Google Drive (semua file)
+              <input type="url" id="drive_${id}" value="${escapeHTML(keepDrive ?? b.driveLink ?? '')}" placeholder="https://drive.google.com/..." class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="block text-[10px] font-bold text-[#5C7C68]">Web galeri (pilih foto)
+              <input type="url" id="gallery_${id}" value="${escapeHTML(keepGallery ?? b.galleryLink ?? '')}" placeholder="https://galeri-kamu.vercel.app/..." class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="saveBookingLinks('${id}')" class="bg-[#132A23] text-white text-[11px] font-bold px-3 py-2 rounded-xl">Simpan Link</button>
+              ${safeHttps(b.driveLink) ? `<a href="${escapeHTML(b.driveLink)}" target="_blank" rel="noopener noreferrer" class="bg-white border border-[#132A23]/20 text-[#132A23] text-[11px] font-bold px-3 py-2 rounded-xl">Buka Drive</a>` : ''}
+              ${safeHttps(b.galleryLink) ? `<a href="${escapeHTML(b.galleryLink)}" target="_blank" rel="noopener noreferrer" class="bg-white border border-[#132A23]/20 text-[#132A23] text-[11px] font-bold px-3 py-2 rounded-xl">Buka Galeri</a>` : ''}
+            </div>
+          </div>`)}`;
+
+      document.getElementById('bdFooter').innerHTML = `
+        <button type="button" onclick="deleteBookingPermanently('${id}')" class="mr-auto bg-white border border-red-300 text-red-700 text-xs font-bold px-4 py-2.5 rounded-xl" title="Hapus permanen">🗑️ Hapus</button>
+        <button type="button" onclick="toggleArchiveBooking('${id}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">${b.archived ? 'Pulihkan' : 'Arsipkan'}</button>
+        <button type="button" onclick="startBookingEdit()" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">✏️ Edit Data</button>
+        <button type="button" onclick="downloadBookingInvoice('${id}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">Invoice PDF</button>
+        <button type="button" onclick="printInvoiceById('${id}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl" title="Versi cetak (cadangan)">Cetak</button>
+        <button type="button" onclick="openWaModal('${id}')" class="bg-[#132A23] text-white text-xs font-bold px-4 py-2.5 rounded-xl">Template WA &amp; Link</button>`;
+    }
+
+    // Hapus permanen (mis. data percobaan). Butuh ketikan "HAPUS" agar tidak terhapus tanpa sengaja.
+    async function deleteBookingPermanently(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+      const typed = prompt(`Hapus PERMANEN booking ${b.clientName} (${b.id})?\n\nData di Google Sheet dan event kalendernya ikut terhapus dan tidak bisa dikembalikan. Kalau hanya ingin menyembunyikan, gunakan "Arsipkan".\n\nKetik HAPUS untuk melanjutkan:`);
+      if (typed === null) return;
+      if (typed.trim().toUpperCase() !== 'HAPUS') { alert('Dibatalkan: kata konfirmasi tidak cocok.'); return; }
+      try {
+        await adminApi('deleteBooking', { id });
+        state.bookings = state.bookings.filter(x => x.id !== id);
+        closeBookingDetail(true);
+        renderAdminBookings();
+        await refreshBookedDates();
+        alert('Booking dihapus.');
+      } catch (e) { alert('Gagal menghapus: ' + e.message); }
+    }
+
+    /* ---------- Edit data booking ---------- */
+    function startBookingEdit() { detailEditMode = true; renderBookingDetail(); }
+    function cancelBookingEdit() {
+      if (!confirm('Buang perubahan?')) return;
+      detailEditMode = false; renderBookingDetail();
+    }
+
+    function renderBookingEditForm(b) {
+      const inp = (id, label, value, extra = '') => `<label class="block text-[10px] font-bold text-[#5C7C68]">${label}<input id="${id}" value="${escapeHTML(value ?? '')}" ${extra} class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>`;
+      const area = (id, label, value) => `<label class="block text-[10px] font-bold text-[#5C7C68]">${label}<textarea id="${id}" rows="2" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">${escapeHTML(value ?? '')}</textarea></label>`;
+      const types = state.sessionTypes.includes(b.sessionType) ? state.sessionTypes : [b.sessionType, ...state.sessionTypes];
+      const curPkgId = b.packageId || state.packages.find(p => p.name === b.packageName)?.id || '';
+      const pkgs = state.packages.filter(p => !p.archived || p.id === curPkgId);
+      const curAddonIds = (b.addonIds && b.addonIds.length) ? b.addonIds
+        : String(b.addons || '').split(', ').map(n => state.addons.find(a => a.name === n)?.id).filter(Boolean);
+      const addons = state.addons.filter(a => a.active || curAddonIds.includes(a.id));
+
+      document.getElementById('bdBody').innerHTML = `
+        <div class="bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold rounded-xl px-3 py-2">Mode edit: perbaiki data yang salah diisi klien. Harga dihitung ulang otomatis bila paket, add-on, atau tanggal diubah.</div>
+        <div class="bg-white rounded-2xl p-3.5 border border-[#132A23]/10 space-y-2.5">
+          <div class="text-[11px] font-extrabold text-[#132A23] uppercase tracking-wide">Kontak</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            ${inp('ed_name', 'Nama', b.clientName)}
+            ${inp('ed_wa', 'WhatsApp (mis. 0812… atau 62812…)', b.whatsapp, 'inputmode="tel"')}
+            ${inp('ed_ig', 'Instagram', b.instagram)}
+            ${inp('ed_email', 'Email', b.email, 'type="email"')}
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-[#132A23]/10 space-y-2.5">
+          <div class="text-[11px] font-extrabold text-[#132A23] uppercase tracking-wide">Jadwal &amp; Lokasi</div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            ${inp('ed_date', 'Tanggal sesi', b.sessionDate, 'type="date"')}
+            ${inp('ed_ts', 'Jam mulai', b.timeStart, 'type="time"')}
+            ${inp('ed_te', 'Jam selesai', b.timeEnd, 'type="time"')}
+          </div>
+          <label class="block text-[10px] font-bold text-[#5C7C68]">Tipe sesi
+            <select id="ed_type" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">${types.map(t => `<option value="${escapeHTML(t)}" ${t === b.sessionType ? 'selected' : ''}>${escapeHTML(t)}</option>`).join('')}</select></label>
+          ${area('ed_loc', 'Alamat lokasi', b.location)}
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-[#132A23]/10 space-y-2.5">
+          <div class="text-[11px] font-extrabold text-[#132A23] uppercase tracking-wide">Peserta &amp; Catatan</div>
+          <div class="grid grid-cols-2 gap-2.5">
+            ${inp('ed_people', 'Jumlah orang', b.totalPeople, 'type="number" min="1" max="50"')}
+            ${inp('ed_kids', 'Jumlah anak', b.childrenCount, 'type="number" min="0" max="20"')}
+          </div>
+          ${area('ed_kidsInfo', 'Detail anak', cleanNote(b.childrenDetails))}
+          ${area('ed_pref', '💭 Momen yang diinginkan', cleanNote(b.preferences))}
+          ${area('ed_restr', '⛔ Hal yang tidak boleh', cleanNote(b.restrictions))}
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-[#132A23]/10 space-y-2.5">
+          <div class="text-[11px] font-extrabold text-[#132A23] uppercase tracking-wide">Paket &amp; Pembayaran</div>
+          <label class="block text-[10px] font-bold text-[#5C7C68]">Paket
+            <select id="ed_pkg" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">
+              ${curPkgId ? '' : `<option value="" selected>(Paket lama) ${escapeHTML(b.packageName)}</option>`}
+              ${pkgs.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === curPkgId ? 'selected' : ''}>${escapeHTML(p.name)} — ${formatRp(p.price)}${p.archived ? ' (disembunyikan)' : ''}</option>`).join('')}
+            </select></label>
+          <div>
+            <div class="text-[10px] font-bold text-[#5C7C68] mb-1">Add-on</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${addons.length ? addons.map(a => `<label class="inline-flex items-center gap-1.5 bg-[#E5ECE7] px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-[#132A23] cursor-pointer"><input type="checkbox" class="ed-addon accent-[#132A23]" value="${escapeHTML(a.id)}" ${curAddonIds.includes(a.id) ? 'checked' : ''} />${escapeHTML(a.name)} (+${formatRp(a.price)})</label>`).join('') : '<span class="text-xs text-[#8A9A92]">Belum ada add-on.</span>'}
+            </div>
+          </div>
+          <label class="block text-[10px] font-bold text-[#5C7C68]">Rekening DP
+            <select id="ed_bank" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5">
+              <option value="BCA" ${b.paymentBank !== 'Jago' ? 'selected' : ''}>BCA</option><option value="Jago" ${b.paymentBank === 'Jago' ? 'selected' : ''}>Jago</option></select></label>
+          <label class="inline-flex items-center gap-2 text-[11px] font-bold text-[#132A23] cursor-pointer">
+            <input type="checkbox" id="ed_keepPrice" class="accent-[#132A23] w-4 h-4" /> Pertahankan harga lama (jangan hitung ulang)</label>
+          <div class="text-[11px] text-[#5C7C68]">Saat ini: total ${formatRp(b.totalPrice)} • DP ${formatRp(b.dpAmount)}</div>
+        </div>`;
+      document.getElementById('bdFooter').innerHTML = `
+        <button type="button" onclick="cancelBookingEdit()" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">Batal</button>
+        <button type="button" id="edSaveBtn" onclick="saveBookingEdit(false)" class="bg-[#132A23] text-white text-xs font-bold px-5 py-2.5 rounded-xl">Simpan Perubahan</button>`;
+    }
+
+    async function saveBookingEdit(force) {
+      const b = detailBooking();
+      if (!b) return;
+      const v = id => document.getElementById(id).value;
+      const fields = {
+        clientName: v('ed_name'), whatsapp: v('ed_wa'), instagram: v('ed_ig'), email: v('ed_email'),
+        sessionType: v('ed_type'), sessionDate: v('ed_date'), timeStart: v('ed_ts'), timeEnd: v('ed_te'), location: v('ed_loc'),
+        totalPeople: v('ed_people'), childrenCount: v('ed_kids'), childrenDetails: v('ed_kidsInfo'),
+        preferences: v('ed_pref'), restrictions: v('ed_restr'), paymentBank: v('ed_bank'),
+        addonIds: [...document.querySelectorAll('.ed-addon:checked')].map(x => x.value)
+      };
+      if (v('ed_pkg')) fields.packageId = v('ed_pkg');
+      const btn = document.getElementById('edSaveBtn');
+      btn.disabled = true; btn.textContent = 'Menyimpan...';
+      try {
+        const r = await adminApi('editBooking', { id: b.id, fields, keepPrice: document.getElementById('ed_keepPrice').checked, force: force === true });
+        Object.assign(b, r.booking);
+        detailEditMode = false;
+        renderAdminBookings(); renderBookingDetail();
+        await refreshBookedDates();
+        alert('Data booking diperbarui.');
+      } catch (e) {
+        if (['date_taken', 'date_blocked', 'time_taken', 'time_blocked'].includes(e.code)) {
+          btn.disabled = false; btn.textContent = 'Simpan Perubahan';
+          if (confirm(`${e.message}\n\nTetap simpan perubahan ini?`)) return saveBookingEdit(true);
+          return;
+        }
+        btn.disabled = false; btn.textContent = 'Simpan Perubahan';
+        alert('Gagal menyimpan: ' + e.message);
+      }
+    }
+
+    async function patchBooking(id, patch) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return false;
+      try {
+        await adminApi('updateBooking', { id, ...patch });
+        Object.assign(b, patch);
+        renderAdminBookings(); renderBookingDetail();
+        await refreshBookedDates();
+        return true;
+      } catch (e) {
+        alert('Gagal memperbarui booking: ' + e.message);
+        renderAdminBookings(); renderBookingDetail();
+        return false;
+      }
+    }
+
+    function changeBookingStatus(id, status) {
+      if (status === 'Dibatalkan' && !confirm('Batalkan booking ini? Tanggalnya akan terbuka lagi untuk klien lain.')) { renderAdminBookings(); return; }
+      patchBooking(id, { status });
+    }
+
+    function changeBookingPayment(id, payment) {
+      const b = state.bookings.find(x => x.id === id);
+      const patch = { payment };
+      // DP/Lunas diterima otomatis mengunci jadwal.
+      if (b && b.status === 'Menunggu DP' && payment !== 'Belum bayar') patch.status = 'Terjadwal';
+      patchBooking(id, patch);
+    }
+
+    function safeHttps(u) { return typeof u === 'string' && /^https:\/\//.test(u); }
+
+    function saveBookingLinks(id) {
+      const drive = document.getElementById(`drive_${id}`).value.trim();
+      const gallery = document.getElementById(`gallery_${id}`).value.trim();
+      if (drive && !/^https:\/\/(drive|docs)\.google\.com\//.test(drive)) {
+        alert('Link Drive harus berupa https://drive.google.com/... atau https://docs.google.com/...');
+        return;
+      }
+      if (gallery && !safeHttps(gallery)) { alert('Link galeri harus diawali https://'); return; }
+      patchBooking(id, { driveLink: drive, galleryLink: gallery })
+        .then(ok => { if (ok) alert('Link tersimpan. Buka "Template WA & Link" untuk mengirim ke klien.'); });
+    }
+
+    // ---- Jadwal terisi (pekerjaan lain) ----
+    async function loadBlocks() {
+      try {
+        state.blocks = (await adminApi('blocks')).blocks || [];
+      } catch (e) { alert('Gagal memuat jadwal terisi: ' + e.message); return; }
+      if (!rulesTouched) {
+        document.getElementById('ruleMaxSessions').value = state.settings.maxSessionsPerDay ?? 4;
+        document.getElementById('ruleBuffer').value = state.settings.bufferMinutes ?? 60;
+      }
+      renderBlocks();
+    }
+
+    function renderBlocks() {
+      const box = document.getElementById('blocksList');
+      const list = state.blocks || [];
+      if (!list.length) { box.innerHTML = '<div class="text-xs text-[#5C7C68] bg-white/60 p-5 rounded-2xl text-center">Belum ada jadwal terisi.</div>'; return; }
+      box.innerHTML = list.map(b => `
+        <div class="bg-white/85 rounded-2xl px-4 py-3 border border-[#132A23]/10 flex items-center justify-between gap-3">
+          <div class="text-xs"><strong class="text-[#132A23]">${escapeHTML(b.start)}${b.end !== b.start ? ' → ' + escapeHTML(b.end) : ''}${b.timeStart ? ' • ' + escapeHTML(b.timeStart) + '–' + escapeHTML(b.timeEnd) : ' • seharian'}</strong>
+            <span class="text-[#5C7C68]"> ${b.note ? '• ' + escapeHTML(b.note) : ''}</span></div>
+          <button type="button" onclick="removeBlock('${escapeHTML(b.id)}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-[11px] font-bold px-3 py-1.5 rounded-xl">Hapus</button>
+        </div>`).join('');
+    }
+
+    async function addBlock() {
+      const start = document.getElementById('blockStart').value;
+      const end = document.getElementById('blockEnd').value || start;
+      if (!start) { alert('Pilih tanggal mulai.'); return; }
+      try {
+        await adminApi('addBlock', {
+          start, end, note: document.getElementById('blockNote').value,
+          timeStart: document.getElementById('blockTimeStart').value, timeEnd: document.getElementById('blockTimeEnd').value
+        });
+        document.getElementById('blockTimeStart').value = '';
+        document.getElementById('blockTimeEnd').value = '';
+        document.getElementById('blockStart').value = '';
+        document.getElementById('blockEnd').value = '';
+        document.getElementById('blockNote').value = '';
+        await loadBlocks();
+        await refreshBookedDates();
+      } catch (e) { alert('Gagal menambah: ' + e.message); }
+    }
+
+    function readRuleInputs() {
+      const max = Math.round(Number(document.getElementById('ruleMaxSessions').value));
+      const buf = Math.round(Number(document.getElementById('ruleBuffer').value));
+      if (!(max >= 1 && max <= 10) || !(buf >= 0 && buf <= 240)) { alert('Maksimal sesi 1-10 dan jeda 0-240 menit.'); return false; }
+      state.settings.maxSessionsPerDay = max;
+      state.settings.bufferMinutes = buf;
+      return true;
+    }
+
+    async function saveSessionRules() {
+      if (!readRuleInputs()) return;
+      if (!(await saveState())) return;
+      rulesTouched = false;
+      await refreshBookedDates();
+      alert('Aturan sesi per hari tersimpan.');
+    }
+
+    async function removeBlock(id) {
+      if (!confirm('Hapus jadwal terisi ini? Tanggalnya terbuka lagi untuk klien.')) return;
+      try {
+        await adminApi('deleteBlock', { id });
+        await loadBlocks();
+        await refreshBookedDates();
+      } catch (e) { alert('Gagal menghapus: ' + e.message); }
+    }
+
+    // Ambil ulang tanggal terisi dari server (admin melewati cache).
+    async function refreshBookedDates() {
+      try {
+        const res = await fetch('/api/public?fresh=1');
+        if (res.ok) { const j = await res.json(); bookedDates = new Set(j.bookedDates || []); busyTimes = j.busyTimes || {}; renderCalendar(); renderBusyInfo(); }
+      } catch (e) {}
+    }
+
+    function downloadBookingInvoice(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (b) generateInvoicePDF(b);
+    }
+
+    function toggleArchiveBooking(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+      const next = !b.archived;
+      adminApi('updateBooking', { id, archived: next }).then(() => {
+        b.archived = next;
+        renderAdminBookings(); renderBookingDetail();
+        refreshBookedDates();
+      }).catch(e => alert('Gagal memperbarui booking: ' + e.message));
+    }
+
+    /* ==================== EDITOR ADMIN: PAKET, TIPE SESI, ADD-ON ==================== */
+    function markDirty() { adminDirty = true; updateSaveBar(); }
+
+    function updateSaveBar() {
+      const bar = document.getElementById('adminSaveBar');
+      if (!bar) return;
+      const open = !document.getElementById('adminView').classList.contains('hidden');
+      bar.classList.toggle('hidden', !open || currentAdminTab === 'bookings');
+      const txt = document.getElementById('saveBarText'), btn = document.getElementById('saveBarBtn');
+      txt.textContent = adminDirty ? '⚠️ Ada perubahan yang belum disimpan' : '✓ Semua perubahan sudah tersimpan';
+      txt.className = `text-xs font-bold ${adminDirty ? 'text-amber-800' : 'text-emerald-800'}`;
+      btn.disabled = !adminDirty;
+      btn.className = `text-xs font-bold px-5 py-2.5 rounded-xl whitespace-nowrap ${adminDirty ? 'bg-[#132A23] text-white' : 'bg-[#132A23]/30 text-white cursor-not-allowed'}`;
+    }
+
+    async function saveAllChanges() {
+      if (brandingTouched) readBrandingInputs();
+      if (rulesTouched && !readRuleInputs()) return;
+      if (state.packages.some(p => !String(p.name).trim()) || state.addons.some(a => !String(a.name).trim())) {
+        alert('Nama paket dan nama add-on tidak boleh kosong.');
+        return;
+      }
+      const btn = document.getElementById('saveBarBtn');
+      btn.disabled = true; btn.textContent = 'Menyimpan...';
+      const ok = await saveState();
+      btn.textContent = 'Simpan Semua Perubahan';
+      if (!ok) { updateSaveBar(); return; }
+      brandingTouched = rulesTouched = false;
+      applyBranding(); renderPackagesAndAddons(); renderSessionTypesDropdown();
+      await refreshBookedDates();
+      updateSaveBar();
+      alert('Semua perubahan tersimpan dan langsung aktif di form klien.');
+    }
+
+    // Geser untuk mengurutkan: bekerja dengan mouse maupun sentuhan lewat ikon ⠿ (item tidak dipindah saat menggeser, urutan baru dihitung saat dilepas).
+    function sortableList(container, onReorder) {
+      container.querySelectorAll('[data-drag-handle]').forEach(handle => {
+        handle.addEventListener('pointerdown', e => {
+          const item = handle.closest('[data-sort-item]');
+          if (!item) return;
+          e.preventDefault();
+          if (handle.setPointerCapture) handle.setPointerCapture(e.pointerId);
+          const items = [...container.querySelectorAll('[data-sort-item]')];
+          const from = items.indexOf(item);
+          const others = items.filter(x => x !== item);
+          const startY = e.clientY, startScroll = window.scrollY;
+          let target = from;
+          item.classList.add('sorting');
+          const clear = () => items.forEach(x => x.classList.remove('drop-before', 'drop-after'));
+          const move = ev => {
+            item.style.transform = `translateY(${(ev.clientY - startY) + (window.scrollY - startScroll)}px)`;
+            if (ev.clientY < 90) window.scrollBy(0, -14); else if (ev.clientY > window.innerHeight - 90) window.scrollBy(0, 14);
+            let idx = 0;
+            others.forEach(x => { const r = x.getBoundingClientRect(); if (ev.clientY > r.top + r.height / 2) idx++; });
+            target = idx;
+            clear();
+            if (target < others.length) others[target].classList.add('drop-before');
+            else if (others.length) others[others.length - 1].classList.add('drop-after');
+          };
+          const end = () => {
+            handle.removeEventListener('pointermove', move);
+            handle.removeEventListener('pointerup', end);
+            handle.removeEventListener('pointercancel', end);
+            item.style.transform = '';
+            item.classList.remove('sorting');
+            clear();
+            if (target !== from) {
+              const order = items.map((_, k) => k);
+              order.splice(from, 1);
+              order.splice(target, 0, from);
+              onReorder(order);
+            }
+          };
+          handle.addEventListener('pointermove', move);
+          handle.addEventListener('pointerup', end);
+          handle.addEventListener('pointercancel', end);
+        });
+      });
+    }
+
+    function rerenderAdminLists() {
+      renderAdminPackagesAndTypes(); renderAdminAddons(); renderAdminPromos();
+      renderSessionTypesDropdown(); renderPackagesAndAddons(); renderPromoBanner();
+    }
+
+    function reorderState(key, order) {
+      const arr = state[key];
+      if (order.length !== arr.length || new Set(order).size !== arr.length) return;
+      state[key] = order.map(i => arr[i]);
+      markDirty(); rerenderAdminLists();
+    }
+
+    function moveItem(key, i, dir) {
+      const arr = state[key], j = i + dir;
+      if (j < 0 || j >= arr.length) return;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      markDirty(); rerenderAdminLists();
+    }
+
+    const moveBtns = (key, i) => `
+      <div class="flex flex-col gap-0.5 shrink-0">
+        <button type="button" onclick="moveItem('${key}', ${i}, -1)" class="w-7 h-[15px] rounded bg-[#E5ECE7] text-[8px] leading-none" title="Naikkan">▲</button>
+        <button type="button" onclick="moveItem('${key}', ${i}, 1)" class="w-7 h-[15px] rounded bg-[#E5ECE7] text-[8px] leading-none" title="Turunkan">▼</button>
+      </div>`;
+
+    function renderAdminPackagesAndTypes() {
+      const list = document.getElementById('adminPackagesList');
+      list.innerHTML = state.packages.length ? state.packages.map((p, i) => `
+        <div data-sort-item data-idx="${i}" class="bg-white p-3 rounded-2xl border border-[#132A23]/10 text-xs space-y-2.5 ${p.archived ? 'opacity-70' : ''}">
+          <div class="flex items-center gap-2">
+            <span data-drag-handle class="drag-handle" title="Tahan lalu geser">⠿</span>
+            <input type="text" value="${escapeHTML(p.name)}" oninput="updatePkg(${i}, 'name', this.value)" placeholder="Nama paket" class="glass-input flex-1 min-w-0 rounded-xl px-3 py-2 text-xs font-bold" />
+            ${moveBtns('packages', i)}
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-end">
+            <label class="text-[10px] font-bold text-[#5C7C68]">Harga (Rp)
+              <input type="number" min="0" value="${Number(p.price) || 0}" oninput="updatePkg(${i}, 'price', this.value)" class="glass-input w-full rounded-xl px-3 py-2 text-xs mt-0.5" /></label>
+            <label class="flex items-center gap-2 text-[11px] font-bold text-[#132A23] pb-2">
+              <input type="checkbox" ${p.archived ? 'checked' : ''} onchange="updatePkg(${i}, 'archived', this.checked)" class="accent-[#132A23] w-4 h-4" /> Sembunyikan dari form booking</label>
+          </div>
+          <div class="space-y-1.5">
+            <div class="text-[10px] font-bold text-[#5C7C68]">Isi paket (kolom bebas yang tampil ke klien)</div>
+            ${(p.features || []).map((f, fi) => `
+              <div class="flex items-center gap-1.5">
+                <input type="text" list="featureLabels" value="${escapeHTML(f.label)}" oninput="updatePkgFeature(${i}, ${fi}, 'label', this.value)" placeholder="Nama kolom" class="glass-input w-5/12 min-w-0 rounded-lg px-2.5 py-1.5 text-xs" />
+                <input type="text" value="${escapeHTML(f.value)}" oninput="updatePkgFeature(${i}, ${fi}, 'value', this.value)" placeholder="Isi, mis: 40 foto" class="glass-input flex-1 min-w-0 rounded-lg px-2.5 py-1.5 text-xs" />
+                <button type="button" onclick="removePkgFeature(${i}, ${fi})" class="w-7 h-7 shrink-0 rounded-lg bg-red-50 text-red-600 font-bold" title="Hapus kolom">×</button>
+              </div>`).join('')}
+            <button type="button" onclick="addPkgFeature(${i})" class="text-[11px] font-bold text-[#132A23] bg-[#E5ECE7] px-3 py-1.5 rounded-lg">+ Tambah Kolom</button>
+          </div>
+          <input type="text" value="${escapeHTML(p.desc || '')}" oninput="updatePkg(${i}, 'desc', this.value)" placeholder="Catatan tambahan (opsional)" class="glass-input w-full rounded-xl px-3 py-2 text-xs" />
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-[#5C7C68]">${escapeHTML(p.id)}</span>
+            <button type="button" onclick="deletePackage(${i})" class="text-red-600 font-bold">Hapus Paket</button>
+          </div>
+        </div>`).join('') : '<div class="text-xs text-[#5C7C68] p-4 text-center">Belum ada paket.</div>';
+      sortableList(list, order => reorderState('packages', order));
+
+      const st = document.getElementById('adminSessionTypesList');
+      st.innerHTML = state.sessionTypes.map((t, i) => `
+        <div data-sort-item data-idx="${i}" class="flex items-center gap-2 bg-white p-2 rounded-xl border border-[#132A23]/10 text-xs">
+          <span data-drag-handle class="drag-handle" title="Tahan lalu geser">⠿</span>
+          <input type="text" value="${escapeHTML(t)}" oninput="updateSessionType(${i}, this.value)" class="glass-input flex-1 min-w-0 rounded-lg px-2.5 py-1.5 text-xs" />
+          ${moveBtns('sessionTypes', i)}
+          <button type="button" onclick="deleteSessionType(${i})" class="text-red-600 font-bold px-1">Hapus</button>
+        </div>`).join('');
+      sortableList(st, order => reorderState('sessionTypes', order));
+    }
+
+    function updatePkg(i, key, val) {
+      const p = state.packages[i];
+      if (!p) return;
+      p[key] = key === 'price' ? Math.max(0, Number(val) || 0) : key === 'archived' ? Boolean(val) : String(val);
+      markDirty();
+      if (key === 'archived') renderAdminPackagesAndTypes();
+    }
+    function updatePkgFeature(i, fi, key, val) {
+      const f = state.packages[i]?.features?.[fi];
+      if (!f) return;
+      f[key] = String(val);
+      markDirty();
+    }
+    function addPkgFeature(i) {
+      const p = state.packages[i];
+      if (!p) return;
+      p.features = p.features || [];
+      if (p.features.length >= 12) { alert('Maksimal 12 kolom per paket.'); return; }
+      p.features.push({ label: '', value: '' });
+      markDirty(); renderAdminPackagesAndTypes();
+    }
+    function removePkgFeature(i, fi) {
+      state.packages[i]?.features?.splice(fi, 1);
+      markDirty(); renderAdminPackagesAndTypes();
+    }
+
+    function addPackageItem() {
+      const name = document.getElementById('newPkgName').value.trim();
+      const price = Number(document.getElementById('newPkgPrice').value || 0);
+      if (!name || !price) { alert('Isi nama paket dan harga dulu.'); return; }
+      state.packages.push({
+        id: 'pkg_' + Date.now(), name, price, desc: '', archived: false,
+        features: [{ label: 'Durasi', value: '' }, { label: 'Foto edit', value: '' }, { label: 'Semua file asli', value: '' }]
+      });
+      document.getElementById('newPkgName').value = '';
+      document.getElementById('newPkgPrice').value = '';
+      markDirty(); renderAdminPackagesAndTypes();
+    }
+
+    function deletePackage(i) {
+      const p = state.packages[i];
+      if (!p || !confirm(`Hapus paket "${p.name}"? Booking yang sudah ada tidak terpengaruh.`)) return;
+      state.packages.splice(i, 1);
+      markDirty(); rerenderAdminLists();
+    }
+
+    function addSessionType() {
+      const val = document.getElementById('newSessionTypeInput').value.trim();
+      if (!val) return;
+      state.sessionTypes.push(val);
+      document.getElementById('newSessionTypeInput').value = '';
+      markDirty(); rerenderAdminLists();
+    }
+    function updateSessionType(i, val) { state.sessionTypes[i] = String(val); markDirty(); }
+    function deleteSessionType(i) {
+      state.sessionTypes.splice(i, 1);
+      markDirty(); rerenderAdminLists();
+    }
+
+    function renderAdminAddons() {
+      const list = document.getElementById('adminAddonsList');
+      list.innerHTML = state.addons.length ? state.addons.map((a, i) => `
+        <div data-sort-item data-idx="${i}" class="bg-white p-2.5 rounded-xl border border-[#132A23]/10 text-xs space-y-2 ${a.active ? '' : 'opacity-70'}">
+          <div class="flex items-center gap-2">
+            <span data-drag-handle class="drag-handle" title="Tahan lalu geser">⠿</span>
+            <input type="text" value="${escapeHTML(a.name)}" oninput="updateAddon(${i}, 'name', this.value)" placeholder="Nama add-on" class="glass-input flex-1 min-w-0 rounded-lg px-2.5 py-1.5 text-xs font-bold" />
+            ${moveBtns('addons', i)}
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <label class="text-[10px] font-bold text-[#5C7C68] flex items-center gap-1.5">Harga +Rp
+              <input type="number" min="0" value="${Number(a.price) || 0}" oninput="updateAddon(${i}, 'price', this.value)" class="glass-input w-32 rounded-lg px-2.5 py-1.5 text-xs" /></label>
+            <label class="flex items-center gap-1.5 text-[11px] font-bold text-[#132A23]">
+              <input type="checkbox" ${a.active ? 'checked' : ''} onchange="updateAddon(${i}, 'active', this.checked)" class="accent-[#132A23] w-4 h-4" /> Tampilkan di form</label>
+            <button type="button" onclick="deleteAddon(${i})" class="text-red-600 font-bold ml-auto">Hapus</button>
+          </div>
+        </div>`).join('') : '<div class="text-xs text-[#5C7C68] p-4 text-center">Belum ada add-on.</div>';
+      sortableList(list, order => reorderState('addons', order));
+    }
+
+    function updateAddon(i, key, val) {
+      const a = state.addons[i];
+      if (!a) return;
+      a[key] = key === 'price' ? Math.max(0, Number(val) || 0) : key === 'active' ? Boolean(val) : String(val);
+      markDirty();
+      if (key === 'active') renderAdminAddons();
+    }
+
+    function addAddonItem() {
+      const name = document.getElementById('newAddonName').value.trim();
+      const price = Number(document.getElementById('newAddonPrice').value || 0);
+      if (!name || !price) { alert('Isi nama add-on dan harga dulu.'); return; }
+      state.addons.push({ id: 'add_' + Date.now(), name, price, active: true });
+      document.getElementById('newAddonName').value = '';
+      document.getElementById('newAddonPrice').value = '';
+      markDirty(); rerenderAdminLists();
+    }
+
+    function deleteAddon(i) {
+      const a = state.addons[i];
+      if (!a || !confirm(`Hapus add-on "${a.name}"?`)) return;
+      state.addons.splice(i, 1);
+      markDirty(); rerenderAdminLists();
+    }
+
+    function loadBrandingInputs() {
+      const s = state.settings;
+      document.getElementById('settingCoverUrl').value = s.coverUrl;
+      document.getElementById('settingBlurRange').value = s.blurPx;
+      document.getElementById('blurValLabel').textContent = s.blurPx;
+      document.getElementById('settingLogoSize').value = s.logoSize;
+      document.getElementById('logoSizeLabel').textContent = s.logoSize;
+      document.getElementById('settingHeroDesc').value = s.heroDesc;
+      document.getElementById('settingAdminWa').value = s.adminWa;
+      document.getElementById('settingAccountHolder').value = s.accountHolder;
+      document.getElementById('settingBcaNo').value = s.bcaNo;
+      document.getElementById('settingJagoNo').value = s.jagoNo;
+      document.getElementById('settingBcaActive').checked = s.bcaActive !== false;
+      document.getElementById('settingJagoActive').checked = s.jagoActive !== false;
+    }
+
+    function handleLogoUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, 360 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(img.width * scale));
+        c.height = Math.max(1, Math.round(img.height * scale));
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        const data = c.toDataURL('image/png');
+        if (data.length > 150000) { alert('Logo terlalu detail/besar. Gunakan gambar yang lebih sederhana.'); return; }
+        state.settings.logoDataUrl = data;
+        applyBranding();
+        markDirty();
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); alert('File logo tidak bisa dibaca.'); };
+      img.src = url;
+    }
+
+    function readBrandingInputs() {
+      state.settings.coverUrl = document.getElementById('settingCoverUrl').value.trim() || state.settings.coverUrl;
+      state.settings.blurPx = Number(document.getElementById('settingBlurRange').value || 26);
+      state.settings.logoSize = Number(document.getElementById('settingLogoSize').value || 84);
+      state.settings.heroDesc = document.getElementById('settingHeroDesc').value.trim();
+      state.settings.adminWa = document.getElementById('settingAdminWa').value.trim();
+      state.settings.accountHolder = document.getElementById('settingAccountHolder').value.trim();
+      state.settings.bcaNo = document.getElementById('settingBcaNo').value.trim();
+      state.settings.jagoNo = document.getElementById('settingJagoNo').value.trim();
+      state.settings.bcaActive = document.getElementById('settingBcaActive').checked;
+      state.settings.jagoActive = document.getElementById('settingJagoActive').checked;
+    }
+
+    async function saveBrandingSettings() {
+      readBrandingInputs();
+      if (!(await saveState())) return;
+      brandingTouched = false;
+      applyBranding();
+      alert('Pengaturan berhasil disimpan.');
+    }
+
+    /* ==================== WA TEMPLATE MODAL ==================== */
+    function openWaModal(bookingId) {
+      activeWaBooking = state.bookings.find(b => b.id === bookingId);
+      if (!activeWaBooking) return;
+      document.getElementById('inputGdriveAllLink').value = activeWaBooking.driveLink || '';
+      document.getElementById('inputPhotoSelectLink').value = activeWaBooking.galleryLink || '';
+      const modal = document.getElementById('waTemplateModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      waEditMode = true; setWaEdit(false);
+      switchWaTemplateMode('invoice');
+    }
+
+    function closeWaModal() {
+      if (waEditChanged() && !confirm('Tutup tanpa menyimpan perubahan template?')) return;
+      waEditMode = false;
+      const modal = document.getElementById('waTemplateModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    let waEditMode = false;
+    const WA_PLACEHOLDERS = ['nama', 'id', 'tanggal', 'jam_mulai', 'jam_selesai', 'lokasi', 'paket', 'addon', 'diskon', 'total', 'dp', 'sisa', 'atas_nama', 'bca', 'jago', 'link_drive', 'link_galeri'];
+
+    function getWaTemplate(mode) { return (state.waTemplates && state.waTemplates[mode]) || waTemplateDefaults[mode] || ''; }
+
+    // Baris yang semua placeholdernya kosong dihapus (mis. baris diskon saat tidak ada diskon).
+    function fillTemplate(tpl, vars) {
+      return String(tpl).split('\n').map(line => {
+        const keys = [...line.matchAll(/\{(\w+)\}/g)].map(m => m[1]);
+        if (keys.length && keys.every(k => k in vars && vars[k] === '')) return null;
+        return line.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+      }).filter(l => l !== null).join('\n');
+    }
+
+    function waVars() {
+      const b = activeWaBooking, s = state.settings;
+      const val = id => document.getElementById(id).value.trim();
+      return {
+        nama: b.clientName, id: b.id, tanggal: b.sessionDate, jam_mulai: b.timeStart, jam_selesai: b.timeEnd, lokasi: b.location,
+        paket: b.packageName, addon: b.addons && b.addons !== '-' ? b.addons : '',
+        diskon: b.discountAmount > 0 ? `• Diskon Promo: *-${formatRp(b.discountAmount)}* (${b.discountLabel})` : '',
+        total: formatRp(b.totalPrice), dp: formatRp(b.dpAmount), sisa: formatRp(Math.max(0, b.totalPrice - b.dpAmount)),
+        atas_nama: s.accountHolder, bca: s.bcaActive !== false ? s.bcaNo : '', jago: s.jagoActive !== false ? s.jagoNo : '',
+        link_drive: val('inputGdriveAllLink') || '[Tempel Link Google Drive All File]',
+        link_galeri: val('inputPhotoSelectLink') || '[Tempel Link Galeri Pilih Foto]'
+      };
+    }
+
+    function waEditChanged() {
+      return waEditMode && document.getElementById('waPreviewTextarea').value.trim() !== getWaTemplate(waTemplateMode).trim();
+    }
+
+    function setWaEdit(on) {
+      waEditMode = on;
+      const ta = document.getElementById('waPreviewTextarea');
+      const show = (id, flexClass, visible) => { const el = document.getElementById(id); el.classList.toggle('hidden', !visible); if (flexClass) el.classList.toggle(flexClass, visible); };
+      show('waPlaceholderChips', 'flex', on);
+      show('waEditActions', 'flex', on);
+      show('waSendActions', null, !on);
+      show('waEditToggleBtn', null, !on);
+      show('deliveryLinksInputs', 'grid', !on && waTemplateMode === 'delivery');
+      document.getElementById('waEditHint').textContent = on
+        ? 'Mode edit: ketik pesan, sisipkan placeholder dengan menekan tombolnya. Berlaku untuk semua klien setelah disimpan.'
+        : 'Pesan terisi otomatis. Boleh diedit sebelum dikirim.';
+      if (on) {
+        ta.value = getWaTemplate(waTemplateMode);
+        document.getElementById('waPlaceholderChips').innerHTML = WA_PLACEHOLDERS.map(k =>
+          `<button type="button" onclick="insertWaPlaceholder('${k}')" class="text-[10px] font-bold bg-[#E5ECE7] text-[#132A23] px-2 py-1 rounded-md">{${k}}</button>`).join('');
+      } else {
+        refreshWaPreviewText();
+      }
+    }
+
+    function insertWaPlaceholder(key) {
+      const ta = document.getElementById('waPreviewTextarea');
+      const a = ta.selectionStart ?? ta.value.length, b = ta.selectionEnd ?? ta.value.length;
+      ta.value = ta.value.slice(0, a) + `{${key}}` + ta.value.slice(b);
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = a + key.length + 2;
+    }
+
+    function cancelWaEdit() {
+      if (waEditChanged() && !confirm('Buang perubahan template yang belum disimpan?')) return;
+      setWaEdit(false);
+    }
+
+    function resetWaTemplate() {
+      if (!confirm('Kembalikan template ini ke teks bawaan? (belum tersimpan sampai kamu menekan Simpan Template)')) return;
+      document.getElementById('waPreviewTextarea').value = waTemplateDefaults[waTemplateMode] || '';
+    }
+
+    async function saveWaTemplate() {
+      const text = document.getElementById('waPreviewTextarea').value.trim();
+      if (!text) { alert('Template tidak boleh kosong.'); return; }
+      state.waTemplates = { ...state.waTemplates, [waTemplateMode]: text };
+      if (!(await saveState())) return;
+      setWaEdit(false);
+      alert('Template tersimpan.');
+    }
+
+    function switchWaTemplateMode(mode) {
+      if (waEditMode && mode !== waTemplateMode && waEditChanged() && !confirm('Pindah template? Perubahan yang belum disimpan akan hilang.')) return;
+      waTemplateMode = mode;
+      document.getElementById('waModeInvoiceBtn').className = `flex-1 text-xs font-bold py-2 rounded-xl ${mode === 'invoice' ? 'bg-[#132A23] text-white' : 'bg-white text-[#132A23] border border-[#132A23]/15'}`;
+      document.getElementById('waModeDeliveryBtn').className = `flex-1 text-xs font-bold py-2 rounded-xl ${mode === 'delivery' ? 'bg-[#132A23] text-white' : 'bg-white text-[#132A23] border border-[#132A23]/15'}`;
+      if (waEditMode) { setWaEdit(true); return; }
+      document.getElementById('deliveryLinksInputs').classList.toggle('hidden', mode !== 'delivery');
+      document.getElementById('deliveryLinksInputs').classList.toggle('grid', mode === 'delivery');
+      refreshWaPreviewText();
+    }
+
+    function refreshWaPreviewText() {
+      if (!activeWaBooking || waEditMode) return;
+      document.getElementById('waPreviewTextarea').value = fillTemplate(getWaTemplate(waTemplateMode), waVars());
+    }
+
+    function copyWaText() {
+      navigator.clipboard?.writeText(document.getElementById('waPreviewTextarea').value);
+      alert('Template pesan WhatsApp disalin.');
+    }
+
+    function openWhatsAppDirect() {
+      if (!activeWaBooking) return;
+      const cleanPhone = String(activeWaBooking.whatsapp).replace(/[^0-9]/g, '');
+      const waNum = cleanPhone.startsWith('62') ? cleanPhone : '62' + cleanPhone;
+      const msg = document.getElementById('waPreviewTextarea').value;
+      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openAdminLoginModal();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadPublicData();
+      ['timeStart', 'timeEnd'].forEach(id => document.getElementById(id).addEventListener('input', renderBusyInfo));
+      updateStepPills();
+      const touch = (flag) => () => { if (flag === 'b') brandingTouched = true; else rulesTouched = true; markDirty(); };
+      ['input', 'change'].forEach(ev => {
+        document.getElementById('adminTab_branding').addEventListener(ev, touch('b'));
+        ['ruleMaxSessions', 'ruleBuffer'].forEach(id => document.getElementById(id).addEventListener(ev, touch('r')));
+      });
+      window.addEventListener('beforeunload', (e) => { if (adminDirty) { e.preventDefault(); e.returnValue = ''; } });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && activeDetailId) closeBookingDetail(); });
+      applyBranding();
+      renderSessionTypesDropdown();
+      renderChildrenInputs();
+      renderCalendar();
+      renderPackagesAndAddons();
+      lucide.createIcons();
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('akses') === 'ruang-admin') {
+        openAdminLoginModal();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galeri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#fff;color:#111;font-family:'Inter',sans-serif}
+body.lock{overflow:hidden}
+.hide{display:none!important}
+button{font:inherit;cursor:pointer;background:none;border:0;color:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #111;outline-offset:3px}
+.amp{font-style:italic}
+/* cover */
+#cover{position:fixed;inset:0;z-index:100;background:#F8F7F4;padding:24px;transition:transform 1s cubic-bezier(.77,0,.18,1),opacity 1s ease}
+#cover.out{transform:translateY(-100%);opacity:0}
+.frame{position:relative;width:100%;height:100%;overflow:hidden;background:#222;color:#fff}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:zoom 6s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes zoom{from{transform:scale(1.06)}to{transform:scale(1)}}
+.frame:before,.frame:after{content:"";position:absolute;left:0;right:0;height:38%;z-index:1;pointer-events:none}
+.frame:before{top:0;background:linear-gradient(rgba(0,0,0,.4),transparent)}
+.frame:after{bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.frame>div{position:absolute;z-index:2}
+.c-tl{top:32px;left:32px;font-size:10px;letter-spacing:3.5px;color:rgba(255,255,255,.85);text-transform:uppercase}
+.c-tr{top:32px;right:32px;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.c-tr:before{content:"";width:28px;height:1px;background:#fff}
+.c-bl{bottom:32px;left:32px;padding-left:18px;border-left:1px solid rgba(255,255,255,.7);font-family:'Cormorant Garamond',serif;font-size:48px;line-height:1.05;font-weight:400;max-width:70%}
+.c-br{bottom:32px;right:32px}
+.c-br button{border:1px solid rgba(255,255,255,.6);padding:12px 22px;font-size:11px;letter-spacing:2px;color:#fff;transition:.3s}
+.c-br button:hover{background:#fff;color:#000}
+@media(max-width:700px){#cover{padding:12px}.c-tl{top:20px;left:18px;right:18px;letter-spacing:2.5px;line-height:1.5}.c-tr{top:auto;left:18px;right:auto;top:calc(20px + 3em);font-size:10px;letter-spacing:2px;gap:10px}.c-tr:before{width:20px}.c-bl{left:18px;bottom:76px;font-size:32px;max-width:85%}.c-br{right:18px;bottom:20px}}
+/* header */
+header{position:sticky;top:0;z-index:20;height:68px;background:#fff;border-bottom:1px solid #EFEFEF;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.hl{display:flex;align-items:center;gap:28px;min-width:0}
+.tt{flex:none}
+.tt b{display:block;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:20px;line-height:1.1;white-space:nowrap}
+.tt small{display:block;font-size:9px;letter-spacing:2px;color:#999;margin-top:3px;white-space:nowrap}
+nav{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{font-size:12px;color:#999;white-space:nowrap;padding:6px 0;transition:color .3s}
+nav button.on,nav button:hover{color:#111}
+.hr{display:flex;gap:6px;flex:none}
+.hr a,.hr button{width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#111;opacity:.75;transition:opacity .3s}
+.hr a:hover,.hr button:hover{opacity:1}
+.hr a.all{width:auto;padding:0 8px;gap:8px}
+.hr .lbl{display:none;font-size:10px;letter-spacing:2px;font-weight:500;white-space:nowrap}
+@media(min-width:700px){.hr .lbl{display:inline}}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:700px){header{padding:0 14px}.hl{gap:14px}.tt small{display:none}}
+/* masonry */
+main{padding:6px}
+#grid{transition:opacity .35s ease}
+#grid.fade{opacity:0}
+.cols{display:flex;gap:6px;align-items:flex-start}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.ph{position:relative;overflow:hidden;background:#EDEDEA;cursor:zoom-in;aspect-ratio:3/2}
+.ph.ld{aspect-ratio:auto;background:#F3F3F1}
+.ph:not(.ld):not(.er):after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.7) 50%,transparent 70%);background-size:200% 100%;animation:shim 1.2s linear infinite}
+.ph.er:before{content:"Gagal dimuat. Ketuk untuk mengulangi";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:11px;color:#888}
+.ph img{display:block;width:100%;height:auto;opacity:0;transform:scale(1.02);transition:opacity .6s ease,transform .6s ease}
+.ph.ld img{opacity:1;transform:none}
+@keyframes shim{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slide{0%{left:-40%}100%{left:100%}}
+.ldr .ring{width:46px;height:46px;border:3px solid #E5E5E2;border-top-color:#111;border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 20px}
+.ldr .lt{color:#444;font-size:14px}
+.ldr .bar{width:190px;height:3px;background:#E5E5E2;border-radius:3px;margin:14px auto 12px;overflow:hidden;position:relative}
+.ldr .bar i{position:absolute;top:0;bottom:0;left:0;width:40%;background:#111;border-radius:3px;animation:slide 1.4s ease-in-out infinite}
+.ldr small{display:block;color:#999;font-size:12px;min-height:18px;line-height:1.5}
+.pgbar{position:fixed;top:0;left:0;right:0;height:3px;background:#111;transform-origin:left;transform:scaleX(0);transition:transform .3s ease,opacity .3s;opacity:0;z-index:90}
+.pg{position:fixed;left:50%;bottom:22px;transform:translate(-50%,16px);display:flex;align-items:center;gap:10px;background:rgba(17,17,17,.9);color:#fff;border-radius:999px;padding:9px 16px 9px 11px;font-size:12px;letter-spacing:.3px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:90;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pgon .pg{opacity:1;transform:translate(-50%,0)}.pgon .pgbar{opacity:1}
+.pg svg{width:22px;height:22px;transform:rotate(-90deg);flex:none}
+.pg circle{fill:none;stroke-width:3.4}
+.pg .bg{stroke:rgba(255,255,255,.25)}.pg .fg{stroke:#fff;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100;transition:stroke-dashoffset .3s ease}
+.lbspin{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border:3px solid rgba(0,0,0,.12);border-top-color:#111;border-radius:50%;animation:spin .9s linear infinite;opacity:0;transition:opacity .2s;pointer-events:none;z-index:1}
+#lb.busy .lbspin{opacity:1}
+.cld{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .9s linear infinite;z-index:1}
+.ph:hover img{transform:scale(1.015)}
+.dl{position:absolute;right:10px;bottom:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.92);color:#111;border-radius:50%;opacity:0;transition:opacity .35s}
+.ph:hover .dl,.dl:focus-visible{opacity:1}
+@media(hover:none){.dl{display:none}}
+.msg{padding:120px 24px;text-align:center;color:#777;font-size:14px}
+/* lightbox & slideshow */
+#lb,#ss{position:fixed;inset:0;z-index:200;background:#fff;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s}
+#lb.on,#ss.on{opacity:1;visibility:visible}
+#lb img{position:absolute;inset:0;margin:auto;max-width:92vw;max-height:84vh;object-fit:contain}
+#lb{touch-action:none}
+#lb img{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;will-change:transform}
+#lb img.anim{transition:opacity .4s,transform .3s ease}
+#lb .nm{position:absolute;left:24px;bottom:26px;max-width:calc(100% - 170px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;letter-spacing:1px;color:#777}
+#lb .x,#lb .pv,#lb .nx,#lb .dd{position:absolute;z-index:2;width:46px;height:46px;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(17,17,17,.78);border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,.2);transition:background .3s}
+#lb .x:hover,#lb .pv:hover,#lb .nx:hover,#lb .dd:hover{background:#111}
+#lb svg.i{stroke-width:2}
+#lb .x{top:14px;right:14px}.pv{left:12px;top:50%;margin-top:-23px}.nx{right:12px;top:50%;margin-top:-23px}
+#lb .dd{text-decoration:none;right:14px;bottom:14px;width:auto;padding:0 18px 0 14px;gap:8px;border-radius:23px;font-size:11px;letter-spacing:2px;font-weight:500}
+#ss{background:#000;cursor:pointer}
+#ss img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1.2s ease}
+#ss img.on{opacity:1}
+/* download sheet */
+#dl{position:fixed;inset:0;z-index:250;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s}
+#dl.on{opacity:1;visibility:visible}
+.sheet{width:100%;max-width:460px;max-height:92vh;overflow:auto;background:#fff;padding:22px 20px calc(22px + env(safe-area-inset-bottom));transform:translateY(24px);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+#dl.on .sheet{transform:none}
+@media(min-width:700px){#dl{align-items:center}.sheet{padding:28px}}
+.sh-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sh-h b{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:24px}
+.sh-h button{width:36px;height:36px;display:flex;align-items:center;justify-content:center;margin-right:-8px;opacity:.7}
+.sh-n{font-size:11px;letter-spacing:1px;color:#999;margin-bottom:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt{display:block;width:100%;text-align:left;border:1px solid #E5E5E5;padding:16px;margin-bottom:10px;text-decoration:none;color:#111;transition:border-color .3s,opacity .3s}
+.opt:hover{border-color:#111}
+.opt:disabled{opacity:.55;cursor:default;border-color:#E5E5E5}
+.opt .t{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:2px;font-weight:500}
+.opt .tag{font-size:10px;letter-spacing:1px;color:#777;border:1px solid #DDD;padding:2px 8px;font-weight:400;white-space:nowrap}
+.opt .d{display:block;font-size:12.5px;line-height:1.55;color:#666;margin-top:8px;font-weight:300}
+.opt .d b{font-weight:500;color:#111}
+.opt .st{display:block;font-size:12px;color:#111;margin-top:10px;padding-top:10px;border-top:1px solid #F0F0F0}
+#dlPrev{text-align:center;margin-top:16px}
+#dlPrev img{display:block;max-width:100%;margin:0 auto 10px;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+#dlPrev p{font-size:12px;color:#666;line-height:1.5}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;font-size:12px;letter-spacing:.5px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:300}
+#toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="state" class="msg"><div class="ldr"><div class="ring"></div><div class="lt">Memuat galeri…</div><div class="bar"><i></i></div><small id="ldH">Menghubungi server…</small></div></div>
+<div class="pgbar" id="pgBar"></div>
+<div class="pg" id="pg" role="status" aria-live="polite"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15.9" pathLength="100"/><circle class="fg" id="pgRing" cx="18" cy="18" r="15.9" pathLength="100"/></svg><span id="pgTxt">Memuat foto…</span></div>
+<div id="cover" class="hide"></div>
+<header class="hide" id="hdr">
+  <div class="hl"><div class="tt"><b id="hName"></b><small id="hSub"></small></div><nav id="tabs"></nav></div>
+  <div class="hr">
+    <a id="dlFolder" class="all" target="_blank" rel="noopener" title="Unduh semua di Google Drive" aria-label="Unduh semua di Google Drive"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg><span class="lbl">UNDUH SEMUA</span></a>
+    <button id="share" title="Bagikan" aria-label="Salin link galeri"><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg></button>
+    <button id="play" title="Slideshow" aria-label="Mulai slideshow"><svg class="i" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></button>
+  </div>
+</header>
+<main class="hide" id="main"><div id="grid"></div></main>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Penampil foto">
+  <div class="lbspin" id="lbSpin"></div>
+  <img id="lbImg" alt="">
+  <button class="x" id="lbX" aria-label="Tutup"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="pv" id="lbP" aria-label="Sebelumnya"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="nx" id="lbN" aria-label="Berikutnya"><svg class="i" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  <a class="dd" id="lbD" target="_blank" rel="noopener" aria-label="Unduh foto"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg><span>UNDUH</span></a>
+  <div class="nm" id="lbName"></div>
+</div>
+<div id="ss"><img id="ssA" alt=""><img id="ssB" alt=""></div>
+<div id="dl" role="dialog" aria-modal="true" aria-label="Unduh foto">
+  <div class="sheet">
+    <div class="sh-h"><b>Simpan foto</b><button id="dlX" aria-label="Tutup"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sh-n" id="dlName"></div>
+    <a class="opt" id="optFiles" target="_blank" rel="noopener">
+      <span class="t"><span>SIMPAN KE FILES</span><span class="tag">HD · ASLI</span></span>
+      <span class="d">Kualitas penuh, ukuran file asli dari studio. Cocok untuk cetak dan arsip. Browser akan menampilkan tombol <b>Unduh</b>, lalu file tersimpan di <b>Files › Downloads</b>.</span>
+    </a>
+    <button class="opt" id="optPhotos" disabled>
+      <span class="t"><span>SIMPAN KE FOTO</span><span class="tag" id="phTag"></span></span>
+      <span class="d" id="phDesc"></span>
+      <span class="st" id="phSt">Menyiapkan…</span>
+    </button>
+    <div id="dlPrev" class="hide"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script src="/galeri/config.js"></script>
+<script src="/galeri/brand.js"></script>
+<script>
+function escapeHTML(str){return String(str==null?'':str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function fmtEvent(v){if(!v)return '';var s=String(v);if(/^\d{4}-\d{2}-\d{2}T/.test(s)){var d=new Date(s);if(!isNaN(d))return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'})}return s}
+function fancyName(n){return escapeHTML(n).replace(/&amp;/g,'<span class="amp">&amp;</span>');}
+var $=function(id){return document.getElementById(id)};
+var DL='<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>';
+
+function parseRoute(){
+  var m=location.pathname.match(/\/g\/([^\/?#]+)(?:\/([^\/?#]+))?/);
+  if(m){
+    var a=decodeURIComponent(m[1]),b=m[2]?decodeURIComponent(m[2]):'';
+    if(b&&Brands.get(a))return{brand:a,id:b};   // /g/<brand>/<id>
+    return{brand:'',id:b||a};                    // /g/<id> (link lama)
+  }
+  return{brand:'',id:new URLSearchParams(location.search).get('id')||''};
+}
+var ROUTE=parseRoute(),projectId=ROUTE.id,BK='',BR=null,project=null,tabs=[],active=0,current=[],io=null,colCount=0,lbI=0,ssTimer=null;
+
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('on')},2000)}
+var ldT0=Date.now(),ldTimer=setInterval(function(){
+  var h=$('ldH');if(!h||$('state').classList.contains('hide')){clearInterval(ldTimer);return}
+  var t=(Date.now()-ldT0)/1000;
+  h.textContent=t<3?'Menghubungi server…':t<8?'Membaca folder foto…':t<20?'Galeri besar butuh beberapa detik lagi. Mohon ditunggu…':'Masih memuat. Jika terlalu lama, periksa koneksi internet Anda.';
+},600);
+function fail(m){$('state').textContent=m;$('state').classList.remove('hide')}
+
+async function init(){
+  if(!projectId){fail('Kode galeri tidak ditemukan.');return}
+  try{
+    var d=null,lastErr='',order=ROUTE.brand?[ROUTE.brand]:Brands.order();
+    for(var i=0;i<order.length&&!(d&&d.success);i++){
+      try{
+        var r=await fetch(Brands.get(order[i]).api+'?action=getProject&id='+encodeURIComponent(projectId),{redirect:'follow'});
+        var j=await r.json();
+        if(j.success){d=j;BK=order[i]}else lastErr=j.error||lastErr;
+      }catch(e){lastErr=lastErr||'Gagal terhubung ke server.'}
+    }
+    if(!d||!d.success)throw new Error(lastErr||'Galeri tidak ditemukan.');
+    BR=Brands.get(BK);
+    project=d.project;project.eventDate=fmtEvent(project.eventDate);build(d.gallery||{});
+  }catch(e){fail(e.message||'Gagal memuat galeri.')}
+}
+
+function sortOld(a){return a.slice().sort(function(x,y){var dx=x.date||'',dy=y.date||'';if(dx&&dy){if(dx!==dy)return dx<dy?-1:1}else if(dx||dy){return dx?-1:1}return String(x.name||'').localeCompare(String(y.name||''),undefined,{numeric:true,sensitivity:'base'})})}
+
+/* Pengaman: URL foto dari server hanya boleh https:// (menolak javascript:/data:) */
+function okUrl(u){u=String(u==null?'':u);return /^https:\/\//i.test(u)?u:''}
+function cleanPhotos(a){return (Array.isArray(a)?a:[]).filter(function(p){return p&&typeof p==='object'}).map(function(p){p.downloadUrl=okUrl(p.downloadUrl);p.full=okUrl(p.full);p.thumb=okUrl(p.thumb);return p})}
+function build(g){
+  var root=sortOld(cleanPhotos(g.rootPhotos)),subs=(g.subfolders||[]).map(function(s){s.photos=sortOld(cleanPhotos(s.photos));return s});
+  if(root.length&&subs.length){
+    tabs.push({name:'Highlight',id:project.folderId,photos:root});
+    subs.forEach(function(s){tabs.push({name:s.name,id:s.id,photos:s.photos||[]})});
+  }else if(subs.length){
+    subs.forEach(function(s){tabs.push({name:s.name,id:s.id,photos:s.photos||[]})});
+  }else{
+    tabs.push({name:'',id:project.folderId,photos:root});
+  }
+  document.title=(project.clientName||'Galeri')+' — '+BR.name;
+  $('hName').innerHTML=fancyName(project.clientName);
+  $('hSub').innerHTML=escapeHTML(BR.name)+' · '+escapeHTML(project.eventDate);
+  if(tabs.length>1){
+    $('tabs').innerHTML=tabs.map(function(t,i){return '<button data-i="'+i+'">'+escapeHTML(t.name)+'</button>'}).join('');
+  }
+  $('state').classList.add('hide');$('hdr').classList.remove('hide');$('main').classList.remove('hide');
+  setTab(0,true);
+  if(project.showOpeningGallery===true&&project.coverUrl)openCover();
+}
+
+function openCover(){
+  var c=$('cover');
+  c.innerHTML='<div class="frame"><img src="'+escapeHTML(project.coverUrl)+'" alt="">'+
+   '<div class="c-tl">'+escapeHTML(BR.name)+'</div>'+
+   '<div class="c-tr">'+escapeHTML(project.eventDate)+'</div>'+
+   '<div class="c-bl">'+fancyName(project.clientName)+'</div>'+
+   '<div class="c-br"><button id="enter">BUKA GALERI →</button></div></div>';
+  c.classList.remove('hide');document.body.classList.add('lock');
+  (function(){
+    var fr=c.querySelector('.frame'),ci=fr.querySelector('img'),sp=document.createElement('div');sp.className='cld';fr.appendChild(sp);
+    ci.style.opacity=0;ci.style.transition='opacity .8s ease';
+    function ok(){ci.style.opacity=1;if(sp.parentNode)sp.parentNode.removeChild(sp)}
+    ci.onload=ok;ci.onerror=ok;if(ci.complete&&ci.naturalWidth)ok();
+  })();
+  var done=false,ty=0;
+  function close(){
+    if(done)return;done=true;c.classList.add('out');
+    window.removeEventListener('wheel',onW);window.removeEventListener('keydown',onK);
+    setTimeout(function(){c.classList.add('hide');document.body.classList.remove('lock')},1000);
+  }
+  function onW(e){if(e.deltaY>10)close()}
+  function onK(e){if(e.key==='ArrowDown'||e.key==='Enter'||e.key===' ')close()}
+  $('enter').addEventListener('click',close);
+  window.addEventListener('wheel',onW,{passive:true});window.addEventListener('keydown',onK);
+  c.addEventListener('touchstart',function(e){ty=e.touches[0].clientY},{passive:true});
+  c.addEventListener('touchend',function(e){if(ty-e.changedTouches[0].clientY>40)close()},{passive:true});
+}
+
+function setTab(i,first){
+  active=i;var t=tabs[i];current=t.photos;
+  Array.prototype.forEach.call($('tabs').children,function(b,k){b.classList.toggle('on',k===i)});
+  $('dlFolder').href='https://drive.google.com/drive/folders/'+encodeURIComponent(t.id||project.folderId);
+  var gr=$('grid');
+  if(first){render();return}
+  gr.classList.add('fade');
+  setTimeout(function(){render();window.scrollTo({top:0});gr.classList.remove('fade')},350);
+}
+$('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setTab(+b.dataset.i)});
+
+function cols(){var w=window.innerWidth;return w>=1400?5:w>=1024?4:w>=700?3:2}
+var prog=(function(){
+  var inflight=0,total=0,done=0,showT=null,hideT=null;
+  function paint(){
+    var r=total?done/total:0;
+    $('pgBar').style.transform='scaleX('+r+')';
+    $('pgRing').style.strokeDashoffset=String(100-r*100);
+    $('pgTxt').textContent='Memuat foto '+done+'/'+total;
+  }
+  return{
+    start:function(){inflight++;total++;clearTimeout(hideT);
+      if(!showT&&!document.body.classList.contains('pgon'))showT=setTimeout(function(){showT=null;if(inflight>0)document.body.classList.add('pgon')},350);
+      paint()},
+    done:function(){inflight--;done++;paint();
+      if(inflight<=0){inflight=0;clearTimeout(showT);showT=null;
+        hideT=setTimeout(function(){document.body.classList.remove('pgon');total=0;done=0;paint()},600)}}
+  };
+})();
+function startImg(f){
+  var im=f._im;if(!im||f.classList.contains('ld'))return;
+  f.classList.remove('er');prog.start();
+  im.onload=function(){f.classList.add('ld');prog.done()};
+  im.onerror=function(){f.classList.add('er');prog.done()};
+  im.src=f._src+(f._retry?(f._src.indexOf('?')>-1?'&':'?')+'r='+f._retry:'');
+}
+function render(){
+  var gr=$('grid');
+  if(io)io.disconnect();
+  if(!current.length){gr.innerHTML='<div class="msg">Belum ada foto di bagian ini.</div>';return}
+  colCount=cols();
+  gr.innerHTML='<div class="cols">'+Array(colCount+1).join('<div class="col"></div>')+'</div>';
+  var cs=gr.querySelectorAll('.col');
+  io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){io.unobserve(en.target);startImg(en.target)}})},{rootMargin:'900px 0px'});
+  current.forEach(function(p,i){
+    var f=document.createElement('div');f.className='ph';f.dataset.i=i;
+    var im=new Image();im.alt='';im.decoding='async';f._im=im;f._src=p.thumb;
+    var a=document.createElement('a');a.className='dl';a.href=p.downloadUrl;a.target='_blank';a.rel='noopener';a.setAttribute('aria-label','Unduh foto');a.innerHTML=DL;
+    a.addEventListener('click',function(e){e.stopPropagation();if(IS_IOS){e.preventDefault();openDl(p)}});
+    f.appendChild(im);f.appendChild(a);cs[i%colCount].appendChild(f);io.observe(f);
+  });
+}
+$('grid').addEventListener('click',function(e){var f=e.target.closest('.ph');if(!f)return;if(f.classList.contains('er')){f._retry=(f._retry||0)+1;startImg(f);return}openLb(+f.dataset.i)});
+var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){if(project&&cols()!==colCount)render()},200)});
+
+/* lightbox */
+function showLb(){
+  var p=current[lbI];if(!p)return;
+  var im=$('lbImg'),lb=$('lb');lb.classList.add('busy');im.style.opacity=0;
+  im.onload=function(){im.style.opacity=1;lb.classList.remove('busy')};im.onerror=function(){lb.classList.remove('busy')};resetZoom();
+  im.src=p.full;$('lbName').textContent=p.name||'';$('lbD').href=p.downloadUrl;
+  if(im.complete){im.style.opacity=1;lb.classList.remove('busy')}
+}
+function openLb(i){lbI=i;showLb();$('lb').classList.add('on');document.body.classList.add('lock')}
+function closeLb(){$('lb').classList.remove('on');document.body.classList.remove('lock')}
+function stepLb(d){lbI=(lbI+d+current.length)%current.length;showLb()}
+$('lbX').onclick=closeLb;$('lbP').onclick=function(){stepLb(-1)};$('lbN').onclick=function(){stepLb(1)};
+/* zoom & gestures */
+var Z={s:1,x:0,y:0},LB=$('lbImg'),G={d0:0,s0:1,x0:0,y0:0,mx:0,my:0,sx:0,sy:0,moved:false,lastTap:0},drag=null;
+function applyZ(){LB.style.transform='translate('+Z.x+'px,'+Z.y+'px) scale('+Z.s+')'}
+function resetZoom(){Z.s=1;Z.x=0;Z.y=0;applyZ()}
+function clampZ(){
+  Z.s=Math.min(5,Math.max(1,Z.s));
+  var lx=Math.max(0,(LB.clientWidth*Z.s-innerWidth)/2),ly=Math.max(0,(LB.clientHeight*Z.s-innerHeight)/2);
+  Z.x=Math.min(lx,Math.max(-lx,Z.x));Z.y=Math.min(ly,Math.max(-ly,Z.y));
+  if(Z.s===1){Z.x=0;Z.y=0}
+}
+function zoomAt(ns,px,py){
+  var r=ns/Z.s,cx=innerWidth/2,cy=innerHeight/2;
+  Z.x=px-cx-(px-cx-Z.x)*r;Z.y=py-cy-(py-cy-Z.y)*r;Z.s=ns;clampZ();applyZ();
+}
+function anim(){LB.classList.add('anim');setTimeout(function(){LB.classList.remove('anim')},320)}
+function toggleZoom(x,y){anim();if(Z.s>1)resetZoom();else zoomAt(2.5,x,y)}
+function tdist(t){return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)}
+function tmid(t){return{x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2}}
+function onCtl(e){return e.target.closest&&e.target.closest('button,a')}
+$('lb').addEventListener('touchstart',function(e){
+  if(onCtl(e))return;
+  var t=e.touches;G.moved=false;
+  if(t.length===2){var m=tmid(t);G.d0=tdist(t);G.s0=Z.s;G.x0=Z.x;G.y0=Z.y;G.mx=m.x;G.my=m.y}
+  else if(t.length===1){G.sx=t[0].clientX;G.sy=t[0].clientY;G.x0=Z.x;G.y0=Z.y}
+},{passive:true});
+$('lb').addEventListener('touchmove',function(e){
+  if(onCtl(e))return;
+  e.preventDefault();
+  var t=e.touches;
+  if(t.length===2){
+    G.moved=true;
+    var m=tmid(t),ns=Math.min(5,Math.max(1,G.s0*tdist(t)/G.d0)),r=ns/G.s0,cx=innerWidth/2,cy=innerHeight/2;
+    Z.x=m.x-cx-(G.mx-cx-G.x0)*r;Z.y=m.y-cy-(G.my-cy-G.y0)*r;Z.s=ns;clampZ();applyZ();
+  }else if(t.length===1&&Z.s>1){
+    G.moved=true;Z.x=G.x0+t[0].clientX-G.sx;Z.y=G.y0+t[0].clientY-G.sy;clampZ();applyZ();
+  }
+},{passive:false});
+$('lb').addEventListener('touchend',function(e){
+  if(onCtl(e))return;
+  var t=e.touches;
+  if(t.length>0){G.sx=t[0].clientX;G.sy=t[0].clientY;G.x0=Z.x;G.y0=Z.y;G.moved=true;return}
+  if(Z.s<1.05)resetZoom();
+  var c=e.changedTouches[0],dx=c.clientX-G.sx,dy=c.clientY-G.sy;
+  if(G.moved)return;
+  if(Math.abs(dx)<10&&Math.abs(dy)<10){
+    var now=Date.now();
+    if(now-G.lastTap<300){G.lastTap=0;toggleZoom(c.clientX,c.clientY)}else G.lastTap=now;
+  }else if(Z.s===1&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){stepLb(dx<0?1:-1)}
+});
+document.addEventListener('gesturestart',function(e){if($('lb').classList.contains('on'))e.preventDefault()},{passive:false});
+$('lb').addEventListener('wheel',function(e){e.preventDefault();zoomAt(Math.min(5,Math.max(1,Z.s*Math.exp(-e.deltaY*0.002))),e.clientX,e.clientY)},{passive:false});
+LB.addEventListener('dblclick',function(e){toggleZoom(e.clientX,e.clientY)});
+LB.addEventListener('mousedown',function(e){if(Z.s>1){drag={x:e.clientX-Z.x,y:e.clientY-Z.y};e.preventDefault()}});
+window.addEventListener('mousemove',function(e){if(drag){Z.x=e.clientX-drag.x;Z.y=e.clientY-drag.y;clampZ();applyZ()}});
+window.addEventListener('mouseup',function(){drag=null});
+
+/* slideshow */
+function stopSs(){clearInterval(ssTimer);$('ss').classList.remove('on');document.body.classList.remove('lock')}
+function startSs(){
+  if(!current.length){toast('Tidak ada foto untuk diputar');return}
+  var i=0,top=0,imgs=[$('ssA'),$('ssB')];
+  imgs.forEach(function(m){m.classList.remove('on')});
+  function next(){var m=imgs[top];m.src=current[i].full;m.classList.add('on');imgs[1-top].classList.remove('on');top=1-top;i=(i+1)%current.length}
+  next();$('ss').classList.add('on');document.body.classList.add('lock');
+  ssTimer=setInterval(next,3500);
+}
+$('ss').onclick=stopSs;$('play').onclick=startSs;
+$('dlFolder').addEventListener('click',function(){toast('Membuka Google Drive · unduh semua berbentuk ZIP')});
+$('share').onclick=function(){
+  var u=Brands.link(BK,projectId);
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){toast('Link disalin')},function(){toast('Gagal menyalin')})}
+  else{var t=document.createElement('textarea');t.value=u;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('Link disalin')}catch(e){toast('Gagal menyalin')}t.remove()}
+};
+
+/* deteksi perangkat: lembar Files/Foto hanya untuk iOS, Android & PC unduh langsung */
+var UA=navigator.userAgent||'';
+var IS_IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var IS_ANDROID=/Android/i.test(UA);
+var PLATFORM=IS_IOS?'ios':IS_ANDROID?'android':'pc';
+document.documentElement.setAttribute('data-platform',PLATFORM);
+/* unduh: Files (asli) / Foto (ringan) */
+var PH_MAX=(CONFIG.PHOTO_MAX_PX|0)||2048,PH_Q=CONFIG.PHOTO_QUALITY||0.9;
+var dlP=null,dlTok=0,dlRes=null,dlCache={};
+$('phTag').textContent='MAKS. '+PH_MAX+' PX · JPG';
+$('phDesc').innerHTML='Versi ringan: sisi terpanjang maksimal <b>'+PH_MAX+' px</b>, cocok untuk galeri HP dan dibagikan ke sosmed. Di lembar yang muncul, pilih <b>Simpan Gambar</b> agar masuk ke Foto.';
+function fmtSize(b){return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.round(b/1024)+' KB'}
+function bigUrl(u){
+  u=String(u||'');
+  u=u.replace(/([?&]sz=w)\d+/,'$1'+PH_MAX);
+  if(/googleusercontent\.com/.test(u))u=u.replace(/=[sw]\d+(-[a-z0-9-]+)?$/i,'=s'+PH_MAX);
+  return u;
+}
+function loadImg(u){return new Promise(function(res,rej){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){res(im)};im.onerror=function(){rej(new Error('load'))};im.src=u})}
+function makeLite(p){
+  if(dlCache[p.full])return Promise.resolve(dlCache[p.full]);
+  return loadImg(bigUrl(p.full)).catch(function(){return loadImg(p.full)}).then(function(im){
+    var w=im.naturalWidth,h=im.naturalHeight,s=Math.min(1,PH_MAX/Math.max(w,h));
+    var cw=Math.round(w*s),ch=Math.round(h*s);
+    var c=document.createElement('canvas');c.width=cw;c.height=ch;
+    var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cw,ch);x.imageSmoothingQuality='high';x.drawImage(im,0,0,cw,ch);
+    return new Promise(function(res,rej){
+      c.toBlob(function(b){
+        if(!b)return rej(new Error('blob'));
+        var r={blob:b,w:cw,h:ch};
+        if(Object.keys(dlCache).length>=6)dlCache={};
+        dlCache[p.full]=r;res(r);
+      },'image/jpeg',PH_Q);
+    });
+  });
+}
+function openDl(p){
+  dlP=p;var tok=++dlTok;dlRes=null;
+  $('dlName').textContent=p.name||'';
+  $('optFiles').href=p.downloadUrl;
+  $('dlPrev').classList.add('hide');$('dlPrev').innerHTML='';
+  var b=$('optPhotos');b.disabled=true;$('phSt').textContent='Menyiapkan versi untuk Foto…';
+  $('dl').classList.add('on');document.body.classList.add('lock');
+  makeLite(p).then(function(r){
+    if(tok!==dlTok)return;
+    dlRes=r;b.disabled=false;
+    $('phSt').textContent='Siap · '+r.w+' × '+r.h+' px · '+fmtSize(r.blob.size);
+  },function(){
+    if(tok!==dlTok)return;
+    dlRes=null;b.disabled=false;
+    $('phSt').textContent='Ketuk untuk membuka foto, lalu tekan lama dan pilih Tambahkan ke Foto';
+  });
+}
+function closeDl(){
+  dlTok++;$('dl').classList.remove('on');
+  if(!$('lb').classList.contains('on')&&!$('ss').classList.contains('on'))document.body.classList.remove('lock');
+}
+function saveBlob(b,name){
+  var u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(u)},30000);
+}
+function showPrev(){
+  var d=$('dlPrev');
+  d.innerHTML='<img alt="" src="'+escapeHTML(dlP.full)+'"><p>Tekan lama foto di atas, lalu pilih <b>Tambahkan ke Foto</b>.</p>';
+  d.classList.remove('hide');d.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('optPhotos').addEventListener('click',function(){
+  if(!dlP)return;
+  if(!dlRes){showPrev();return}
+  var nm=(dlP.name||'foto').replace(/\.[^.]+$/,'').replace(/[^\w\-. ]+/g,'_')+'.jpg';
+  var f;try{f=new File([dlRes.blob],nm,{type:'image/jpeg'})}catch(e){saveBlob(dlRes.blob,nm);return}
+  if(navigator.canShare&&navigator.canShare({files:[f]})){
+    navigator.share({files:[f]}).catch(function(e){if(e&&e.name==='AbortError')return;saveBlob(dlRes.blob,nm)});
+  }else{saveBlob(dlRes.blob,nm);toast('Foto diunduh')}
+});
+$('dlX').onclick=closeDl;
+$('dl').addEventListener('click',function(e){if(e.target===this)closeDl()});
+$('lbD').addEventListener('click',function(e){if(IS_IOS){e.preventDefault();if(current[lbI])openDl(current[lbI])}});
+window.addEventListener('keydown',function(e){
+  if($('dl').classList.contains('on')){if(e.key==='Escape')closeDl();return}
+  if($('ss').classList.contains('on')){if(e.key==='Escape')stopSs();return}
+  if(!$('lb').classList.contains('on'))return;
+  if(e.key==='Escape')closeLb();else if(e.key==='ArrowLeft')stepLb(-1);else if(e.key==='ArrowRight')stepLb(1);
+});
+init();
+</script>
+</body>
+</html>

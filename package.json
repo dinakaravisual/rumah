@@ -1,0 +1,10 @@
+{
+  "name": "rumah-bydinakara",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "20.x" },
+  "scripts": {
+    "test": "node --test test/app.test.js test/security.test.js"
+  }
+}
