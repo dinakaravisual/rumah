@@ -550,8 +550,14 @@
       try { const x = new URL(v); if (x.protocol === 'https:' && v.length <= 600) return x.href; } catch (e) {}
       return fallback;
     }
+    // Link berbagi Google Drive (file/d/ID, open?id=, uc?id=) otomatis diubah menjadi alamat gambar langsung.
+    // Syarat: file di Drive dibagikan "Siapa saja yang memiliki link" (Anyone with the link).
+    function driveToImg(u) {
+      const m = String(u || '').trim().match(/^https:\/\/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([A-Za-z0-9_-]{10,100})/);
+      return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w900' : String(u || '');
+    }
     function safeImg(u, fallback) {
-      const v = String(u || '').trim();
+      const v = driveToImg(u).trim();
       if (/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= 200000) return v;
       return safeHref(v, '') && /^https:/.test(v) ? v : (/^\/(?![\/\\])/.test(v) ? v : fallback);
     }
@@ -971,7 +977,7 @@
           <input type="text" class="form-input" id="testi-family-${i}" value="${escapeHtml(t.family)}" />
           <label class="form-label">Keterangan Sesi / Lokasi</label>
           <input type="text" class="form-input" id="testi-session-${i}" value="${escapeHtml(t.session)}" />
-          <label class="form-label">URL Foto Keluarga</label>
+          <label class="form-label">Foto Keluarga (tempel link Google Drive atau URL gambar https)</label>
           <input type="text" class="form-input" id="testi-photo-${i}" value="${escapeHtml(t.photo)}" />
           <label class="form-label">Isi Kutipan Testimoni</label>
           <textarea class="form-textarea" id="testi-quote-${i}">${escapeHtml(t.quote)}</textarea>
