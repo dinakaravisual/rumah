@@ -7,8 +7,8 @@
   <meta id="meta-desc" name="description" content="Sesi dokumentasi foto keluarga natural dan intim tanpa flash di kenyamanan rumah Anda bersama Dinakara Visual Yogyakarta." />
 
   <!-- Open Graph / WhatsApp Share Preview -->
-  <meta id="og-title" property="og:title" content="Rumah by Dinakara — Sesi Foto Keluarga Hangat di Rumah" />
-  <meta id="og-desc" property="og:description" content="Abadikan momen jujur bersama si kecil tanpa flash & tanpa terburu-buru di rumah Anda. Area Yogyakarta & sekitarnya." />
+  <meta id="og-title" property="og:title" content="Berkunjung ke Rumah by Dinakara" />
+  <meta id="og-desc" property="og:description" content="Abadikan momen kebersamaan bersama keluarga. Area Yogyakarta & sekitarnya." />
   <meta id="og-image" property="og:image" content="https://resapi.id/images/psychologist/1795183427_logo.jpg" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rumah.bydinakara.com" />
@@ -534,14 +534,10 @@
 
   <div class="toast" id="toast-box"></div>
 
-  <script src="/site-config.js"></script>
   <script>
-    // WAJIB DIISI SEKALI di file site-config.js (bukan di sini): URL Web App Google Apps Script berakhiran /exec.
+    // WAJIB DIISI SEKALI: URL Web App Google Apps Script (berakhiran /exec) dari langkah di SETUP.md.
     // Tanpa ini pengunjung tidak akan menerima perubahan dari dashboard (slideshow Drive, teks, testimoni).
-    const DEFAULT_GAS_URL = (typeof window.SITE_GAS_URL === 'string') ? window.SITE_GAS_URL : '';   // diisi di file site-config.js
-    // Foto cadangan milik sendiri (diisi di site-config.js): hanya path internal /img/... atau https://
-    const SITE_FALLBACKS = (Array.isArray(window.SITE_FALLBACK_SLIDES) ? window.SITE_FALLBACK_SLIDES : [])
-      .map(u => String(u || '').trim()).filter(u => !u.includes('..') && (/^\/img\/[A-Za-z0-9_.\-\/]{1,120}$/.test(u) || /^https:\/\//.test(u))).slice(0, 12);
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbxOuVbVW4zUXEsZu1NEWh0BAAa6WV-Tl3sOsKhQ2p8hDPSiBiZosikDoMFExAPRdZim/exec';
 
     /* ===== PENGAMAN: semua data dari server / penyimpanan browser dianggap TIDAK DIPERCAYA ===== */
     const GAS_RE = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
@@ -591,7 +587,6 @@
         family: clip(t.family, 80), session: clip(t.session, 100), quote: clip(t.quote, 500), photo: safeImg(t.photo, '')
       }));
       if (Array.isArray(c.fallbackSlides)) out.fallbackSlides = c.fallbackSlides.slice(0, 12).map(u => safeImg(u, '')).filter(Boolean);
-      if (SITE_FALLBACKS.length) out.fallbackSlides = SITE_FALLBACKS.slice();   // foto cadangan dari site-config.js diutamakan
       out.gasUrl = cleanGas(base.gasUrl);   // alamat backend TIDAK PERNAH boleh datang dari data yang bisa diubah
       return out;
     }
@@ -642,7 +637,7 @@
       gasUrl: DEFAULT_GAS_URL,
       driveFolderId: '',
       slideInterval: 5,
-      fallbackSlides: SITE_FALLBACKS.length ? SITE_FALLBACKS.slice() : [
+      fallbackSlides: [
         'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1400&q=82',
         'https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?auto=format&fit=crop&w=1400&q=82',
         'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1400&q=82'
@@ -696,35 +691,12 @@
       } catch (e) {}
     }
 
-    /* ===== Slideshow: tidak menampilkan foto cadangan sementara foto Drive masih dimuat ===== */
-    const PHOTO_CACHE_KEY = 'rumah_dinakara_photos_v1';
-    let slidesShown = false, lastSlideKey = '';
-    function readPhotoCache() {
-      try {
-        const a = JSON.parse(localStorage.getItem(PHOTO_CACHE_KEY) || '[]');
-        return Array.isArray(a) ? a.slice(0, 12).map(u => safeImg(u, '')).filter(Boolean) : [];
-      } catch (e) { return []; }
-    }
-    function writePhotoCache(urls) { try { localStorage.setItem(PHOTO_CACHE_KEY, JSON.stringify(urls)); } catch (e) {} }
-    function showSlides(urls) {
-      const key = (urls || []).join('|');
-      if (slidesShown && key === lastSlideKey) return;     // sama dengan yang sedang tampil: jangan render ulang (tanpa kedip)
-      slidesShown = true; lastSlideKey = key;
-      renderSlideshow(urls);
-    }
-    // Muat foto pertama dulu di belakang layar, baru ditampilkan agar tidak muncul kosong lalu melompat
-    function showSlidesWhenReady(urls) {
-      if (!urls.length) return showSlides(urls);
-      const probe = new Image(); let done = false;
-      const go = () => { if (!done) { done = true; showSlides(urls); } };
-      probe.onload = go; probe.onerror = go; probe.referrerPolicy = 'no-referrer'; probe.src = urls[0];
-      setTimeout(go, 4000);
-    }
     async function syncFromBackend() {
       const url = cleanGas(state.gasUrl);
-      if (!url) { showSlides(state.fallbackSlides); return; }
-      // Cadangan darurat: bila server tak menjawab dalam 7 detik dan belum ada foto tampil, pakai foto cadangan
-      const safety = setTimeout(() => { if (!slidesShown) showSlides(state.fallbackSlides); }, 7000);
+      if (!url) {
+        renderSlideshow(state.fallbackSlides);
+        return;
+      }
       try {
         const res = await fetch(url + '?action=getAll', { credentials: 'omit', referrerPolicy: 'no-referrer' });
         const data = await res.json();
@@ -734,13 +706,15 @@
             persistLocalConfig();
             renderAll();
           }
-          const photos = Array.isArray(data.photos) ? data.photos.map(p => safeImg(p && p.url, '')).filter(Boolean) : [];
-          if (photos.length > 0) { writePhotoCache(photos); showSlidesWhenReady(photos); }
-          else { writePhotoCache([]); showSlides(state.fallbackSlides); }
-        } else if (!slidesShown) { showSlides(state.fallbackSlides); }
+          if (data.photos && data.photos.length > 0) {
+            renderSlideshow(data.photos.map(p => safeImg(p && p.url, '')).filter(Boolean));
+          } else {
+            renderSlideshow(state.fallbackSlides);
+          }
+        }
       } catch (err) {
-        if (!slidesShown) showSlides(state.fallbackSlides);
-      } finally { clearTimeout(safety); }
+        renderSlideshow(state.fallbackSlides);
+      }
     }
 
     function renderAll() {
@@ -1131,10 +1105,7 @@
 
     // Initial Boot
     renderAll();
-    if (cleanGas(state.gasUrl)) {
-      const cached = readPhotoCache();      // kunjungan berikutnya: foto Drive terakhir langsung tampil
-      if (cached.length) showSlides(cached);
-    }
+    renderSlideshow(state.fallbackSlides);
     syncFromBackend();
   </script>
 </body>
