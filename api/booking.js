@@ -60,7 +60,8 @@ export default async function handler(req, res) {
     return res.status(e?.code === 'not_configured' ? 500 : 502).json({ error: 'Server belum siap menerima booking. Hubungi admin.' });
   }
   const { config } = pub;
-  const quote = computeQuote(config, { packageId: String(data.packageId || ''), addonIds: data.addonIds, sessionDate, bookingDate: todayWIB });
+  const totalPeople = Math.max(1, Math.min(50, parseInt(data.totalPeople, 10) || 1));
+  const quote = computeQuote(config, { packageId: String(data.packageId || ''), addonIds: data.addonIds, sessionDate, totalPeople, bookingDate: todayWIB });
   if (!quote) return res.status(400).json({ error: 'Paket tidak tersedia. Muat ulang halaman lalu pilih paket lagi.' });
   const sessionType = config.sessionTypes.includes(String(data.sessionType)) ? String(data.sessionType) : null;
   if (!sessionType) return res.status(400).json({ error: 'Tipe sesi tidak valid.' });
@@ -85,7 +86,7 @@ export default async function handler(req, res) {
     sessionDate,
     timeSlot: `${timeStart} - ${timeEnd}`,
     location: safe(location, 250),
-    totalPeople: Math.max(1, Math.min(50, parseInt(data.totalPeople, 10) || 1)),
+    totalPeople,
     childrenCount: children,
     childrenDetails: safe(data.childrenDetails || '-', 300),
     packageName: safe(quote.pkg.name, 80),
@@ -104,6 +105,7 @@ export default async function handler(req, res) {
     discountLabel: safe(quote.discountLabel, 80),
     totalPrice: quote.total,
     dpAmount: quote.dp,
+    breakdown: quote.breakdown,
   };
 
   try {
@@ -137,6 +139,8 @@ export default async function handler(req, res) {
     `👨‍👩‍👧 <b>Peserta:</b> ${booking.totalPeople} orang (${children} anak)`,
     `📦 <b>Paket:</b> ${escapeTg(quote.pkg.name)}`,
     `➕ <b>Add-Ons:</b> ${escapeTg(addonsText)}`,
+    quote.extraFee > 0 ? `👥 <b>Peserta tambahan:</b> ${quote.extraPeople} orang × Rp ${quote.extraUnit.toLocaleString('id-ID')} = Rp ${quote.extraFee.toLocaleString('id-ID')}` : null,
+    quote.addonDiscount > 0 ? `🎁 <b>Diskon add-on:</b> -Rp ${quote.addonDiscount.toLocaleString('id-ID')}` : null,
     quote.discountAmount > 0 ? `🏷️ <b>Diskon:</b> ${escapeTg(discountInfo)}` : null,
     note(booking.preferences) ? `📝 <b>Momen yang diinginkan:</b> ${escapeTg(booking.preferences)}` : null,
     note(booking.restrictions) ? `⛔ <b>Hal yang tidak boleh:</b> ${escapeTg(booking.restrictions)}` : null,
@@ -149,7 +153,7 @@ export default async function handler(req, res) {
     booking: {
       packageName: quote.pkg.name, addons: addonsText, subtotalPrice: quote.subtotal,
       discountAmount: quote.discountAmount, discountLabel: quote.discountLabel,
-      totalPrice: quote.total, dpAmount: quote.dp, whatsapp: phone,
+      totalPrice: quote.total, dpAmount: quote.dp, whatsapp: phone, breakdown: quote.breakdown,
     },
   });
 }

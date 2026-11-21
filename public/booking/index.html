@@ -193,6 +193,7 @@
             <div>
               <label class="block text-xs font-bold text-[#132A23] mb-1.5">Total Orang yang Difoto</label>
               <input type="number" id="totalPeople" min="1" max="50" value="3" class="glass-input w-full rounded-xl px-3.5 py-2 text-sm font-semibold" />
+              <p id="peopleFeeHint" class="hidden mt-1.5 text-[10px] font-semibold text-[#5C7C68] leading-snug"></p>
             </div>
             <div>
               <label class="block text-xs font-bold text-[#132A23] mb-1.5">Jumlah Anak</label>
@@ -542,6 +543,16 @@
           <option value="Foto cetak"></option><option value="Photobook / Album"></option><option value="Video"></option>
           <option value="Jumlah orang"></option><option value="Lokasi"></option>
         </datalist>
+        <div class="bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3 max-w-2xl">
+          <div>
+            <h3 class="text-sm font-extrabold text-[#132A23]">Biaya Peserta Tambahan</h3>
+            <p class="text-[11px] text-[#5C7C68] mt-0.5">Orang di atas jumlah yang sudah termasuk paket dikenakan biaya per orang. Isi biaya 0 untuk menonaktifkan. Promo tidak memotong biaya ini. Tekan <strong>Simpan Semua Perubahan</strong> setelah mengubah.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="text-[10px] font-bold text-[#5C7C68]">Sudah termasuk (orang)<input type="number" id="settingIncludedPeople" min="1" max="50" oninput="updateExtraPeopleSetting()" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+            <label class="text-[10px] font-bold text-[#5C7C68]">Biaya per orang tambahan (Rp)<input type="number" id="settingExtraFee" min="0" step="1000" oninput="updateExtraPeopleSetting()" class="glass-input w-full rounded-xl px-2.5 py-2 text-xs mt-0.5" /></label>
+          </div>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2 bg-white/75 rounded-2xl p-4 border border-[#132A23]/10 space-y-3">
             <div>
@@ -1111,7 +1122,7 @@
               <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleAddon('${a.id}')" class="accent-[#132A23] w-4 h-4" />
               <span class="text-xs font-semibold text-[#132A23]">${escapeHTML(a.name)}</span>
             </div>
-            <span class="text-xs font-bold text-[#5C7C68]">+${formatRp(a.price)}</span>
+            <span class="text-xs font-bold text-[#5C7C68] text-right">${addonDiscountOf(a) > 0 ? `<s class="font-medium opacity-60 block">${formatRp(a.price)}</s><span class="text-emerald-800">+${formatRp(a.price - addonDiscountOf(a))}</span>` : `+${formatRp(a.price)}`}</span>
           </label>`;
       }).join('');
 
@@ -1119,10 +1130,11 @@
     }
 
     function updateLiveOfferCard() {
-      const { pkg, chosenAddons, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
-      document.getElementById('liveOfferBreakdown').textContent = chosenAddons.length
-        ? `${pkg.name} + ${chosenAddons.length} Add-On`
-        : `${pkg.name}`;
+      const { pkg, chosenAddons, extra, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
+      updatePeopleHint();
+      document.getElementById('liveOfferBreakdown').textContent = [pkg.name,
+        chosenAddons.length ? `${chosenAddons.length} Add-On` : '',
+        extra.extra > 0 ? `${extra.extra} orang tambahan` : ''].filter(Boolean).join(' + ');
       document.getElementById('liveOfferFinalPrice').textContent = formatRp(total);
       document.getElementById('liveOfferDpHint').textContent = `DP 50%: ${formatRp(dp)}`;
 
@@ -1138,6 +1150,8 @@
         noteEl.classList.add('hidden');
       }
     }
+
+    document.addEventListener('input', (e) => { if (e.target && e.target.id === 'totalPeople') updateLiveOfferCard(); });
 
     function toggleAddon(id) {
       selectedAddonIds = selectedAddonIds.includes(id) ? selectedAddonIds.filter(x => x !== id) : [...selectedAddonIds, id];
@@ -1220,17 +1234,46 @@
       goToStep(3);
     }
 
+    // Diskon satu add-on (persen / nominal), tidak melebihi harga add-on. Sama dengan perhitungan di server.
+    function addonDiscountOf(a) {
+      const v = Number(a && a.discountValue) || 0, price = Number(a && a.price) || 0;
+      if (v <= 0 || price <= 0) return 0;
+      const raw = a.discountType === 'nominal' ? v : Math.round(price * v / 100);
+      return Math.max(0, Math.min(price, raw));
+    }
+    // Biaya peserta tambahan: orang di atas jumlah yang sudah termasuk paket.
+    function extraPeopleInfo(n) {
+      const fee = Math.max(0, Number(state.settings.extraPersonFee) || 0);
+      const inc = Math.max(1, Number(state.settings.includedPeople) || 3);
+      const people = Math.max(1, Math.min(50, parseInt(n, 10) || 1));
+      const extra = fee > 0 ? Math.max(0, people - inc) : 0;
+      return { fee, inc, people, extra, amount: extra * fee };
+    }
+    function updatePeopleHint() {
+      const el = document.getElementById('peopleFeeHint'), inp = document.getElementById('totalPeople');
+      if (!el || !inp) return;
+      const x = extraPeopleInfo(inp.value);
+      if (x.fee <= 0) { el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+      el.textContent = x.extra > 0
+        ? `Paket sudah termasuk ${x.inc} orang. Tambahan ${x.extra} orang × ${formatRp(x.fee)} = ${formatRp(x.amount)}.`
+        : `Paket sudah termasuk ${x.inc} orang. Orang ke-${x.inc + 1} dan seterusnya +${formatRp(x.fee)}/orang.`;
+    }
     function calculateTotals() {
       const pkg = state.packages.find(p => p.id === selectedPkgId) || { id: '', name: '-', price: 0 };
       const chosenAddons = state.addons.filter(a => selectedAddonIds.includes(a.id));
-      const addonsTotal = chosenAddons.reduce((sum, a) => sum + Number(a.price || 0), 0);
-      const subtotal = Number(pkg.price || 0) + addonsTotal;
+      const addonDiscount = chosenAddons.reduce((sum, a) => sum + addonDiscountOf(a), 0);
+      const addonsTotal = chosenAddons.reduce((sum, a) => sum + Number(a.price || 0), 0) - addonDiscount;
+      const extra = extraPeopleInfo((document.getElementById('totalPeople') || {}).value);
+      const subtotal = Number(pkg.price || 0) + addonsTotal + extra.amount;
       const pricing = getPackageDiscountedPrice(pkg.price, pkg.id, selectedDateStr);
       const discountAmount = pricing.discountAmount;
       const total = Math.max(0, subtotal - discountAmount);
       return {
         pkg,
         chosenAddons,
+        extra,
+        addonDiscount,
         subtotal,
         discountAmount,
         discountLabel: discountAmount > 0 ? pricing.promos.map(x => x.title).join(' + ') : '',
@@ -1252,7 +1295,7 @@
     }
 
     function buildSummary() {
-      const { pkg, chosenAddons, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
+      const { pkg, chosenAddons, extra, subtotal, discountAmount, discountLabel, total, dp } = calculateTotals();
       const name = escapeHTML(document.getElementById('clientName').value);
       const wa = escapeHTML(normalizeWaInput(document.getElementById('clientWa').value));
       const type = escapeHTML(document.getElementById('sessionTypeSelect').value);
@@ -1274,7 +1317,8 @@
         </div>
         <div class="space-y-1.5 pt-1">
           <div class="flex justify-between"><span>Paket: <strong>${escapeHTML(pkg.name)}</strong></span><strong>${formatRp(pkg.price)}</strong></div>
-          ${chosenAddons.map(a => `<div class="flex justify-between text-xs text-[#4C6158]"><span>+ ${escapeHTML(a.name)}</span><span>${formatRp(a.price)}</span></div>`).join('')}
+          ${chosenAddons.map(a => { const dsc = addonDiscountOf(a); return `<div class="flex justify-between text-xs text-[#4C6158]"><span>+ ${escapeHTML(a.name)}${dsc > 0 ? ` <em class="text-emerald-800 not-italic font-bold">(diskon −${formatRp(dsc)})</em>` : ''}</span><span>${formatRp(a.price - dsc)}</span></div>`; }).join('')}
+          ${extra.amount > 0 ? `<div class="flex justify-between text-xs text-[#4C6158]"><span>+ Peserta tambahan (${extra.extra} orang × ${formatRp(extra.fee)})</span><span>${formatRp(extra.amount)}</span></div>` : ''}
           ${discountAmount > 0 ? `
             <div class="flex justify-between text-xs text-[#5C7C68] pt-1 border-t border-dashed border-[#132A23]/15">
               <span>Subtotal</span><span>${formatRp(subtotal)}</span>
@@ -1450,8 +1494,32 @@
     }
 
     // Isi invoice (gaya inline). Dipakai oleh Unduh PDF dan versi cetak.
-    function invoiceInnerHTML(booking) {
-      const s = state.settings;
+    // Rincian harga yang dibekukan saat booking dibuat (kolom "Rincian Harga"). Booking lama tidak punya -> tampilan lama.
+    function parseBreakdown(b) {
+      try {
+        const a = JSON.parse((b && b.breakdown) || '');
+        return Array.isArray(a) && a.length && a.every(l => l && typeof l === 'object') ? a : null;
+      } catch (e) { return null; }
+    }
+    function invoiceRowsHTML(booking, subtotal, bd) {
+      const td = 'padding:10px; border-bottom:1px solid #ddd;';
+      const promo = booking.discountAmount > 0 ? `<tr><td style="padding:8px 10px; color:#065F46; font-weight:bold;">Diskon: ${escapeHTML(booking.discountLabel || 'Promo')}</td><td style="padding:8px 10px; text-align:right; color:#065F46; font-weight:bold;">-${formatRp(booking.discountAmount)}</td></tr>` : '';
+      if (!bd) {
+        return `<tr><td style="${td}"><strong>${escapeHTML(booking.packageName)}</strong> (${escapeHTML(booking.sessionType)})</td><td style="${td} text-align:right;">${formatRp(subtotal)}</td></tr>
+          ${booking.addons && booking.addons !== '-' ? `<tr><td colspan="2" style="padding:8px 10px; font-size:11px; color:#4C6158;">Add-Ons: ${escapeHTML(booking.addons)}</td></tr>` : ''}${promo}`;
+      }
+      const rows = bd.filter(l => l.k !== 'promo').map(l => {
+        if (l.k === 'pkg') return `<tr><td style="${td}"><strong>${escapeHTML(l.n)}</strong> (${escapeHTML(booking.sessionType)})</td><td style="${td} text-align:right;">${formatRp(l.a)}</td></tr>`;
+        if (l.k === 'add') return `<tr><td style="${td} padding-left:22px;">+ ${escapeHTML(l.n)}</td><td style="${td} text-align:right;">${formatRp(l.a)}</td></tr>`
+          + (l.d > 0 ? `<tr><td style="padding:6px 10px 6px 34px; color:#065F46; font-size:11px; border-bottom:1px solid #ddd;">Diskon add-on</td><td style="padding:6px 10px; text-align:right; color:#065F46; font-size:11px; border-bottom:1px solid #ddd;">-${formatRp(l.d)}</td></tr>` : '');
+        if (l.k === 'ppl') return `<tr><td style="${td}">Peserta tambahan (${Number(l.q) || 0} orang × ${formatRp(l.u)})</td><td style="${td} text-align:right;">${formatRp(l.a)}</td></tr>`;
+        return '';
+      }).join('');
+      return rows + promo;
+    }
+
+    function invoiceInnerHTML(booking, mode = 'tagihan') {
+      const s = state.settings, final = mode === 'final', bd = parseBreakdown(booking);
       const subtotal = booking.subtotalPrice || (booking.totalPrice + (booking.discountAmount || 0));
       return `
         <div style="padding:36px; font-family:Helvetica,Arial,sans-serif; color:#132A23; background:#fff;">
@@ -1461,7 +1529,7 @@
               <div style="font-size:11px; color:#5C7C68; margin-top:4px;">Home &amp; Family Documentary Photography</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:18px; font-weight:800;">INVOICE</div>
+              <div style="font-size:18px; font-weight:800;">INVOICE${final ? ' FINAL' : ''}</div>
               <div style="font-size:12px; margin-top:4px;">No: <strong>${escapeHTML(booking.id)}</strong></div>
               <div style="font-size:11px; color:#5C7C68;">Tanggal: ${escapeHTML(booking.createdAt)}</div>
             </div>
@@ -1479,24 +1547,24 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style="padding:10px; border-bottom:1px solid #ddd;"><strong>${escapeHTML(booking.packageName)}</strong> (${escapeHTML(booking.sessionType)})</td>
-                <td style="padding:10px; border-bottom:1px solid #ddd; text-align:right;">${formatRp(subtotal)}</td>
-              </tr>
-              ${booking.addons && booking.addons !== '-' ? `<tr><td colspan="2" style="padding:8px 10px; font-size:11px; color:#4C6158;">Add-Ons: ${escapeHTML(booking.addons)}</td></tr>` : ''}
-              ${booking.discountAmount > 0 ? `<tr><td style="padding:8px 10px; color:#065F46; font-weight:bold;">Diskon: ${escapeHTML(booking.discountLabel || 'Promo')}</td><td style="padding:8px 10px; text-align:right; color:#065F46; font-weight:bold;">-${formatRp(booking.discountAmount)}</td></tr>` : ''}
+              ${invoiceRowsHTML(booking, subtotal, bd)}
             </tbody>
           </table>
           <div style="margin-top:18px; text-align:right; font-size:13px; line-height:1.8;">
+            ${final ? `<div>Total Biaya: <strong>${formatRp(booking.totalPrice)}</strong></div>
+            <div style="color:#1F4035;">DP diterima (50%): <strong>${formatRp(booking.dpAmount)}</strong></div>
+            <div>Pelunasan diterima: <strong>${formatRp(booking.totalPrice - booking.dpAmount)}</strong></div>
+            <div>Sisa tagihan: <strong>${formatRp(0)}</strong></div>
+            <div style="margin-top:8px; display:inline-block; border:2px solid #065F46; color:#065F46; font-weight:800; letter-spacing:2px; padding:4px 16px; border-radius:8px;">LUNAS</div>` : `
             <div>Total Tagihan Akhir: <strong>${formatRp(booking.totalPrice)}</strong></div>
             <div style="color:#1F4035;">Wajib DP (50%): <strong>${formatRp(booking.dpAmount)}</strong></div>
-            <div>Sisa Pelunasan: <strong>${formatRp(booking.totalPrice - booking.dpAmount)}</strong></div>
+            <div>Sisa Pelunasan: <strong>${formatRp(booking.totalPrice - booking.dpAmount)}</strong></div>`}
           </div>
-          <div style="margin-top:26px; padding:14px; background:#F4F7F5; border-radius:10px; font-size:11px; line-height:1.6;">
+          ${final ? `<div style="margin-top:26px; padding:14px; background:#F4F7F5; border-radius:10px; font-size:11px; line-height:1.6;">Terima kasih telah mempercayakan momen keluarga Anda kepada <strong>Berkunjung ke RUMAH</strong>. Invoice ini adalah bukti pembayaran lunas.</div>` : `<div style="margin-top:26px; padding:14px; background:#F4F7F5; border-radius:10px; font-size:11px; line-height:1.6;">
             <strong>Metode Pembayaran Resmi (a.n. ${escapeHTML(s.accountHolder)}):</strong><br/>
             ${s.bcaActive !== false && s.bcaNo ? `• Bank BCA: <strong>${escapeHTML(s.bcaNo)}</strong><br/>` : ''}
             ${s.jagoActive !== false && s.jagoNo ? `• Bank Jago: <strong>${escapeHTML(s.jagoNo)}</strong>` : ''}
-          </div>
+          </div>`}
         </div>`;
     }
 
@@ -1591,16 +1659,17 @@
       return api;
     }
 
-    function buildInvoicePdf(booking) {
+    function buildInvoicePdf(booking, mode = 'tagihan') {
       const s = state.settings, d = pdfBuilder(), L = d.M, R = d.W - d.M, CW = R - L;
       const GREEN = '#132A23', SOFT = '#5C7C68', DEEP = '#1F4035', MUTED = '#4C6158';
       const subtotal = booking.subtotalPrice || (booking.totalPrice + (booking.discountAmount || 0));
       const rp = (n) => formatRp(n);
+      const final = mode === 'final', bd = parseBreakdown(booking);
 
       // Kepala
       d.text(L, d.y + 24, 'Berkunjung ke RUMAH', { size: 22, bold: true, color: GREEN });
       d.text(L, d.y + 40, 'Home & Family Documentary Photography', { size: 9, color: SOFT });
-      d.text(R, d.y + 20, 'INVOICE', { size: 17, bold: true, align: 'right', color: GREEN });
+      d.text(R, d.y + 20, final ? 'INVOICE FINAL' : 'INVOICE', { size: 17, bold: true, align: 'right', color: GREEN });
       const idW = d.text(R, d.y + 36, booking.id, { size: 10, bold: true, align: 'right', color: GREEN });
       d.text(R - idW - 2, d.y + 36, 'No:', { size: 10, align: 'right', color: GREEN });
       d.text(R, d.y + 50, 'Tanggal: ' + (booking.createdAt || '-'), { size: 9, align: 'right', color: SOFT });
@@ -1629,6 +1698,22 @@
       d.y += 24;
 
       const colW = CW - 16 - 100;                       // lebar kolom deskripsi (sisakan ruang untuk nominal)
+      // Satu baris rincian: deskripsi dibungkus, nominal di kanan.
+      const itemRow = (desc, amount, o = {}) => {
+        const lines = pdfWrap(pdfClean(desc), colW - (o.indent || 0), !!o.bold, 10.5);
+        d.ensure(lines.length * 14 + 14);
+        lines.forEach((ln, i) => d.text(L + 8 + (o.indent || 0), d.y + 18 + i * 14, ln, { size: 10.5, bold: !!o.bold, color: o.color }));
+        if (amount) d.text(R - 8, d.y + 18, amount, { size: 10.5, bold: !!o.bold, align: 'right', color: o.color });
+        d.y += 18 + (lines.length - 1) * 14 + 8;
+        d.line(L, d.y, R, 0.5, '#DDDDDD');
+      };
+      if (bd) {
+        bd.filter(l => l.k !== 'promo').forEach(l => {
+          if (l.k === 'pkg') itemRow(`${l.n} (${booking.sessionType || ''})`, rp(l.a), { bold: true });
+          else if (l.k === 'add') { itemRow('+ ' + l.n, rp(l.a), { indent: 8 }); if (l.d > 0) itemRow('Diskon add-on', '-' + rp(l.d), { indent: 20, color: '#065F46' }); }
+          else if (l.k === 'ppl') itemRow(`Peserta tambahan (${Number(l.q) || 0} orang x ${rp(l.u)})`, rp(l.a));
+        });
+      } else {
       const name = pdfClean(booking.packageName), type = pdfClean(' (' + (booking.sessionType || '') + ')');
       d.ensure(34);
       let y1 = d.y + 18;
@@ -1652,6 +1737,7 @@
         al.forEach((ln, i) => d.text(L + 8, d.y + 16 + i * 13, ln, { size: 9.5, color: MUTED }));
         d.y += al.length * 13 + 14;
       }
+      }
       if (booking.discountAmount > 0) {
         d.ensure(30);
         const dl = pdfWrap('Diskon: ' + (booking.discountLabel || 'Promo'), colW, true, 10.5);
@@ -1662,11 +1748,25 @@
       d.y += 14;
 
       // Total
-      d.ensure(70);
+      d.ensure(final ? 140 : 70);
       const total = (label, value, color, y) => {
         const vw = d.text(R, y, value, { size: 12, bold: true, align: 'right', color });
         d.text(R - vw - 4, y, label, { size: 12, align: 'right', color });
       };
+      if (final) {
+        total('Total Biaya:', rp(booking.totalPrice), GREEN, d.y + 12);
+        total('DP diterima (50%):', rp(booking.dpAmount), DEEP, d.y + 32);
+        total('Pelunasan diterima:', rp(booking.totalPrice - booking.dpAmount), GREEN, d.y + 52);
+        total('Sisa tagihan:', rp(0), GREEN, d.y + 72);
+        total('STATUS: LUNAS', '', '#065F46', d.y + 100);
+        d.y += 122;
+        const tw = pdfWrap('Terima kasih telah mempercayakan momen keluarga Anda kepada Berkunjung ke RUMAH. Invoice ini adalah bukti pembayaran lunas.', CW - 28, false, 10);
+        const bh = 20 + tw.length * 14;
+        d.ensure(bh + 4);
+        d.rect(L, d.y, CW, bh, '#F4F7F5');
+        tw.forEach((ln, i) => d.text(L + 14, d.y + 20 + i * 14, ln, { size: 10 }));
+        return d.build(`Invoice Final ${booking.id}`);
+      }
       total('Total Tagihan Akhir:', rp(booking.totalPrice), GREEN, d.y + 12);
       total('Wajib DP (50%):', rp(booking.dpAmount), DEEP, d.y + 32);
       total('Sisa Pelunasan:', rp(booking.totalPrice - booking.dpAmount), GREEN, d.y + 52);
@@ -1698,24 +1798,34 @@
     }
 
     // Unduh PDF teks sungguhan: ukuran kecil, bisa diseleksi/disalin, dan tampil sama di semua perangkat.
-    function generateInvoicePDF(booking) {
+    function generateInvoicePDF(booking, mode = 'tagihan') {
       try {
-        downloadInvoiceBytes(buildInvoicePdf(booking), `Invoice-${booking.id}-${pdfClean(booking.clientName).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'klien'}.pdf`);
+        downloadInvoiceBytes(buildInvoicePdf(booking, mode), `Invoice${mode === 'final' ? '-Final' : ''}-${booking.id}-${pdfClean(booking.clientName).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'klien'}.pdf`);
       } catch (e) {
         alert('Invoice PDF gagal dibuat di perangkat ini. Gunakan tombol "Versi cetak" sebagai cadangan.');
       }
     }
 
     // Cadangan tanpa pustaka PDF: buka invoice di tab baru lalu cetak/simpan sebagai PDF lewat bawaan browser.
-    function printInvoice(booking) {
+    function printInvoice(booking, mode = 'tagihan') {
       const w = window.open('', '_blank');
       if (!w) { alert('Izinkan pop-up untuk membuka versi cetak invoice.'); return; }
-      w.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invoice ${escapeHTML(booking.id)}</title><style>@page{size:A4;margin:12mm}body{margin:0;background:#fff;font-family:Helvetica,Arial,sans-serif}.wrap{max-width:720px;margin:0 auto}</style></head><body><div class="wrap">${invoiceInnerHTML(booking)}</div><script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script></body></html>`);
+      w.document.write(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invoice ${escapeHTML(booking.id)}</title><style>@page{size:A4;margin:12mm}body{margin:0;background:#fff;font-family:Helvetica,Arial,sans-serif}.wrap{max-width:720px;margin:0 auto}</style></head><body><div class="wrap">${invoiceInnerHTML(booking, mode)}</div><script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script></body></html>`);
       w.document.close();
     }
 
     function printLatestInvoice() { if (latestConfirmedBooking) printInvoice(latestConfirmedBooking); }
     function printInvoiceById(id) { const b = state.bookings.find(x => x.id === id); if (b) printInvoice(b); }
+
+    // Invoice FINAL: bukti lunas (total, DP diterima, pelunasan diterima, sisa Rp 0). Peringatan bila status belum "Lunas".
+    function finalInvoiceBooking(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return null;
+      if (b.payment !== 'Lunas' && !confirm(`Status pembayaran ${b.clientName} belum "Lunas" (sekarang: ${b.payment || 'Belum bayar'}).\n\nInvoice final menyatakan LUNAS. Tetap buat?`)) return null;
+      return b;
+    }
+    function downloadFinalInvoice(id) { const b = finalInvoiceBooking(id); if (b) generateInvoicePDF(b, 'final'); }
+    function printFinalInvoice(id) { const b = finalInvoiceBooking(id); if (b) printInvoice(b, 'final'); }
 
     function downloadLatestInvoicePDF() { if (latestConfirmedBooking) generateInvoicePDF(latestConfirmedBooking); }
 
@@ -2039,6 +2149,9 @@
         ${card('⛔ Hal yang tidak boleh', note(cleanNote(b.restrictions)), cleanNote(b.restrictions) ? 'border-red-200' : '')}
         ${card('Paket &amp; Biaya',
           row('Paket', escapeHTML(b.packageName)) + row('Add-on', escapeHTML(cleanNote(b.addons) || '—')) +
+          (() => { const bd = parseBreakdown(b); if (!bd) return ''; let h = ''; const ppl = bd.find(l => l.k === 'ppl'); const ad = bd.reduce((n, l) => n + (l.k === 'add' ? (Number(l.d) || 0) : 0), 0);
+            if (ppl) h += row('Peserta tambahan', `${Number(ppl.q) || 0} orang × ${formatRp(ppl.u)} = ${formatRp(ppl.a)}`);
+            if (ad > 0) h += row('Diskon add-on', `−${formatRp(ad)}`); return h; })() +
           row('Subtotal', formatRp(b.subtotalPrice)) +
           (b.discountAmount > 0 ? row('Diskon', `−${formatRp(b.discountAmount)} (${escapeHTML(b.discountLabel || 'Promo')})`) : '') +
           row('Total', `<strong>${formatRp(b.totalPrice)}</strong>`) + row('DP (50%)', formatRp(b.dpAmount)) +
@@ -2062,6 +2175,8 @@
         <button type="button" onclick="startBookingEdit()" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">✏️ Edit Data</button>
         <button type="button" onclick="downloadBookingInvoice('${id}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl">Invoice PDF</button>
         <button type="button" onclick="printInvoiceById('${id}')" class="bg-white border border-[#132A23]/20 text-[#132A23] text-xs font-bold px-4 py-2.5 rounded-xl" title="Versi cetak (cadangan)">Cetak</button>
+        <button type="button" onclick="downloadFinalInvoice('${id}')" class="bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl" title="Bukti lunas: total, DP diterima, pelunasan diterima">✅ Invoice Final</button>
+        <button type="button" onclick="printFinalInvoice('${id}')" class="bg-white border border-emerald-700/40 text-emerald-800 text-xs font-bold px-4 py-2.5 rounded-xl" title="Versi cetak invoice final">Cetak Final</button>
         <button type="button" onclick="openWaModal('${id}')" class="bg-[#132A23] text-white text-xs font-bold px-4 py-2.5 rounded-xl">Template WA &amp; Link</button>`;
     }
 
@@ -2100,7 +2215,7 @@
       const addons = state.addons.filter(a => a.active || curAddonIds.includes(a.id));
 
       document.getElementById('bdBody').innerHTML = `
-        <div class="bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold rounded-xl px-3 py-2">Mode edit: perbaiki data yang salah diisi klien. Harga dihitung ulang otomatis bila paket, add-on, atau tanggal diubah.</div>
+        <div class="bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold rounded-xl px-3 py-2">Mode edit: perbaiki data yang salah diisi klien. Harga dihitung ulang otomatis bila paket, add-on, jumlah orang, atau tanggal diubah.</div>
         <div class="bg-white rounded-2xl p-3.5 border border-[#132A23]/10 space-y-2.5">
           <div class="text-[11px] font-extrabold text-[#132A23] uppercase tracking-wide">Kontak</div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -2548,6 +2663,15 @@
               <input type="checkbox" ${a.active ? 'checked' : ''} onchange="updateAddon(${i}, 'active', this.checked)" class="accent-[#132A23] w-4 h-4" /> Tampilkan di form</label>
             <button type="button" onclick="deleteAddon(${i})" class="text-red-600 font-bold ml-auto">Hapus</button>
           </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <label class="text-[10px] font-bold text-[#5C7C68] flex items-center gap-1.5">Diskon
+              <select onchange="updateAddon(${i}, 'discountType', this.value)" class="glass-input rounded-lg px-2 py-1.5 text-xs">
+                <option value="percent" ${a.discountType !== 'nominal' ? 'selected' : ''}>%</option>
+                <option value="nominal" ${a.discountType === 'nominal' ? 'selected' : ''}>Rp</option>
+              </select>
+              <input type="number" min="0" value="${Number(a.discountValue) || 0}" oninput="updateAddon(${i}, 'discountValue', this.value)" class="glass-input w-24 rounded-lg px-2.5 py-1.5 text-xs" /></label>
+            <span class="text-[10px] font-bold text-emerald-800">Harga akhir: <span id="addonNet_${i}">${formatRp((Number(a.price) || 0) - addonDiscountOf(a))}</span></span>
+          </div>
         </div>`).join('') : '<div class="text-xs text-[#5C7C68] p-4 text-center">Belum ada add-on.</div>';
       sortableList(list, order => reorderState('addons', order));
     }
@@ -2555,8 +2679,14 @@
     function updateAddon(i, key, val) {
       const a = state.addons[i];
       if (!a) return;
-      a[key] = key === 'price' ? Math.max(0, Number(val) || 0) : key === 'active' ? Boolean(val) : String(val);
+      a[key] = (key === 'price' || key === 'discountValue') ? Math.max(0, Number(val) || 0)
+        : key === 'active' ? Boolean(val)
+        : key === 'discountType' ? (val === 'nominal' ? 'nominal' : 'percent')
+        : String(val);
+      if (a.discountType === 'percent' && Number(a.discountValue) > 100) a.discountValue = 100;
       markDirty();
+      const net = document.getElementById('addonNet_' + i);
+      if (net) net.textContent = formatRp((Number(a.price) || 0) - addonDiscountOf(a));
       if (key === 'active') renderAdminAddons();
     }
 
@@ -2564,7 +2694,7 @@
       const name = document.getElementById('newAddonName').value.trim();
       const price = Number(document.getElementById('newAddonPrice').value || 0);
       if (!name || !price) { alert('Isi nama add-on dan harga dulu.'); return; }
-      state.addons.push({ id: 'add_' + Date.now(), name, price, active: true });
+      state.addons.push({ id: 'add_' + Date.now(), name, price, active: true, discountType: 'percent', discountValue: 0 });
       document.getElementById('newAddonName').value = '';
       document.getElementById('newAddonPrice').value = '';
       markDirty(); rerenderAdminLists();
@@ -2591,6 +2721,14 @@
       document.getElementById('settingJagoNo').value = s.jagoNo;
       document.getElementById('settingBcaActive').checked = s.bcaActive !== false;
       document.getElementById('settingJagoActive').checked = s.jagoActive !== false;
+      document.getElementById('settingIncludedPeople').value = Number(s.includedPeople) || 3;
+      document.getElementById('settingExtraFee').value = Number(s.extraPersonFee) || 0;
+    }
+
+    function updateExtraPeopleSetting() {
+      state.settings.includedPeople = Math.max(1, Math.min(50, Math.round(Number(document.getElementById('settingIncludedPeople').value) || 3)));
+      state.settings.extraPersonFee = Math.max(0, Math.round(Number(document.getElementById('settingExtraFee').value) || 0));
+      markDirty();
     }
 
     function handleLogoUpload(e) {
@@ -2658,7 +2796,7 @@
     }
 
     let waEditMode = false;
-    const WA_PLACEHOLDERS = ['nama', 'id', 'tanggal', 'jam_mulai', 'jam_selesai', 'lokasi', 'paket', 'addon', 'diskon', 'total', 'dp', 'sisa', 'atas_nama', 'bca', 'jago', 'link_drive', 'link_galeri'];
+    const WA_PLACEHOLDERS = ['nama', 'id', 'tanggal', 'jam_mulai', 'jam_selesai', 'lokasi', 'paket', 'addon', 'tambahan', 'diskon', 'total', 'dp', 'sisa', 'atas_nama', 'bca', 'jago', 'link_drive', 'link_galeri'];
 
     function getWaTemplate(mode) { return (state.waTemplates && state.waTemplates[mode]) || waTemplateDefaults[mode] || ''; }
 
@@ -2677,6 +2815,8 @@
       return {
         nama: b.clientName, id: b.id, tanggal: b.sessionDate, jam_mulai: b.timeStart, jam_selesai: b.timeEnd, lokasi: b.location,
         paket: b.packageName, addon: b.addons && b.addons !== '-' ? b.addons : '',
+        tambahan: (() => { const bd = parseBreakdown(b); if (!bd) return ''; const out = []; const ppl = bd.find(l => l.k === 'ppl'); const ad = bd.reduce((n, l) => n + (l.k === 'add' ? (Number(l.d) || 0) : 0), 0);
+          if (ppl) out.push(`• Peserta tambahan (${Number(ppl.q) || 0} orang): *${formatRp(ppl.a)}*`); if (ad > 0) out.push(`• Diskon add-on: *-${formatRp(ad)}*`); return out.join('\n'); })(),
         diskon: b.discountAmount > 0 ? `• Diskon Promo: *-${formatRp(b.discountAmount)}* (${b.discountLabel})` : '',
         total: formatRp(b.totalPrice), dp: formatRp(b.dpAmount), sisa: formatRp(Math.max(0, b.totalPrice - b.dpAmount)),
         atas_nama: s.accountHolder, bca: s.bcaActive !== false ? s.bcaNo : '', jago: s.jagoActive !== false ? s.jagoNo : '',

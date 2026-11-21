@@ -151,19 +151,20 @@ async function editBooking(req, res, body) {
   const pkgId = f.packageId ? String(f.packageId) : curPkgId;
   const addonIds = Array.isArray(f.addonIds) ? f.addonIds.map(String) : curAddonIds;
   const sameSet = (a, b) => a.length === b.length && [...a].sort().join('|') === [...b].sort().join('|');
-  const changed = pkgId !== curPkgId || !sameSet(addonIds, curAddonIds) || sessionDate !== cur.sessionDate;
+  const totalPeople = Math.max(1, Math.min(50, parseInt(pick('totalPeople'), 10) || 1));
+  const changed = pkgId !== curPkgId || !sameSet(addonIds, curAddonIds) || sessionDate !== cur.sessionDate || totalPeople !== (Number(cur.totalPeople) || 0);
 
   let money = {
     packageName: cur.packageName, addons: cur.addons, subtotalPrice: cur.subtotalPrice, discountAmount: cur.discountAmount,
-    discountLabel: cur.discountLabel, totalPrice: cur.totalPrice, dpAmount: cur.dpAmount,
+    discountLabel: cur.discountLabel, totalPrice: cur.totalPrice, dpAmount: cur.dpAmount, breakdown: cur.breakdown || '',
   };
   if (changed && pkgId) {
-    const quote = computeQuote(config, { packageId: pkgId, addonIds, sessionDate, bookingDate: cur.bookingDate || wibToday(), lenient: true });
+    const quote = computeQuote(config, { packageId: pkgId, addonIds, sessionDate, totalPeople, bookingDate: cur.bookingDate || wibToday(), lenient: true });
     if (!quote) return bad('Paket tidak ditemukan.');
     const names = { packageName: quote.pkg.name, addons: quote.addons.map((a) => a.name).join(', ') || '-' };
     money = body.keepPrice === true
       ? { ...money, ...names }
-      : { ...names, subtotalPrice: quote.subtotal, discountAmount: quote.discountAmount, discountLabel: quote.discountLabel, totalPrice: quote.total, dpAmount: quote.dp };
+      : { ...names, subtotalPrice: quote.subtotal, discountAmount: quote.discountAmount, discountLabel: quote.discountLabel, totalPrice: quote.total, dpAmount: quote.dp, breakdown: quote.breakdown };
   }
   const discountInfo = money.discountAmount > 0
     ? `${money.discountLabel || 'Promo'} (-Rp ${Number(money.discountAmount).toLocaleString('id-ID')})` : '-';
@@ -176,7 +177,7 @@ async function editBooking(req, res, body) {
     sessionDate,
     timeSlot: `${timeStart} - ${timeEnd}`,
     location: safe(location, 250),
-    totalPeople: Math.max(1, Math.min(50, parseInt(pick('totalPeople'), 10) || 1)),
+    totalPeople,
     childrenCount: Math.max(0, Math.min(20, parseInt(pick('childrenCount'), 10) || 0)),
     childrenDetails: note('childrenDetails', 300),
     preferences: note('preferences', 400),
@@ -190,6 +191,7 @@ async function editBooking(req, res, body) {
     packageName: safe(money.packageName, 80),
     addons: safe(money.addons, 300),
     discountLabel: safe(money.discountLabel || '', 80),
+    breakdown: String(money.breakdown || '').slice(0, 2500),
     discountInfo: safe(discountInfo, 160),
   };
   const r = await gas('editBooking', { id, booking, force: body.force === true });
